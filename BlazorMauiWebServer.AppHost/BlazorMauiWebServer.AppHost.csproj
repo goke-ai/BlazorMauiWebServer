@@ -9,7 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GokeHyb\GokeHyb.csproj">
+      <SetTargetFramework>TargetFramework=net10.0</SetTargetFramework>
+    </ProjectReference>
     <ProjectReference Include="..\GokeWebServer\GokeWebServer\GokeWebServer.csproj" />
+    <ProjectReference Include="..\GokeWeb\GokeWeb\GokeWeb.csproj" />
   </ItemGroup>
 
 </Project>

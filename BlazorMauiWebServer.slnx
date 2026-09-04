@@ -1,6 +1,9 @@
 <Solution>
   <Project Path="BlazorMauiWebServer.AppHost/BlazorMauiWebServer.AppHost.csproj" />
   <Project Path="BlazorMauiWebServer.ServiceDefaults/BlazorMauiWebServer.ServiceDefaults.csproj" />
+  <Project Path="GokeHyb/GokeHyb.csproj" />
+  <Project Path="GokeWeb/GokeWeb.Client/GokeWeb.Client.csproj" />
+  <Project Path="GokeWeb/GokeWeb/GokeWeb.csproj" />
   <Project Path="GokeWebServer/GokeWebServer.Client/GokeWebServer.Client.csproj" />
   <Project Path="GokeWebServer/GokeWebServer/GokeWebServer.csproj" />
 </Solution>
