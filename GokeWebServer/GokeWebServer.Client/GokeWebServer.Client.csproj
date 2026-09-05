@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\GokeCore\Goke.Core\Goke.Core.csproj" />
-    <ProjectReference Include="..\..\GokeShared\GokeShared.csproj" />
+    <ProjectReference Include="..\..\GokeWebShared\GokeWebShared.csproj" />
   </ItemGroup>
 
 </Project>
