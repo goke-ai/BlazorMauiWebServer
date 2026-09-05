@@ -36,6 +36,34 @@
             </NavLink>
         </div>
 
+        <AuthorizeView Roles="Administrators">
+            <Authorized>
+                <li class="nav-item dropdown">
+                    <NavLink class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Admin
+                    </NavLink>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <NavLink class="dropdown-item" href="admin">
+                                <span class="bi bi-boxes-nav-menu" aria-hidden="true"></span> Dashboard
+                            </NavLink>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <NavLink class="dropdown-item" href="admin/users">
+                                <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Users
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink class="dropdown-item" href="admin/roles">
+                                <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Roles
+                            </NavLink>
+                        </li>
+                    </ul>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">

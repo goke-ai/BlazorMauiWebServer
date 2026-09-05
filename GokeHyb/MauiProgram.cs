@@ -25,8 +25,8 @@ public static class MauiProgram
         //+authentication
         // Load the embedded appsettings.json file
         var assembly = Assembly.GetExecutingAssembly();
-        using var stream = assembly.GetManifestResourceStream("Goke.Bank.Hyb.appsettings.json")
-            ?? throw new InvalidOperationException("Could not find embedded resource 'Goke.Bank.Hyb.appsettings.json'");
+        using var stream = assembly.GetManifestResourceStream("GokeHyb.appsettings.json")
+            ?? throw new InvalidOperationException("Could not find embedded resource 'GokeHyb.appsettings.json'");
 
         builder.Configuration.AddJsonStream(stream);
 
