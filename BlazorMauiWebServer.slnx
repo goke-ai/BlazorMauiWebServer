@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Libs/">
+    <Project Path="../GokeCore/Goke.Core/Goke.Core.csproj" />
+  </Folder>
   <Project Path="BlazorMauiWebServer.AppHost/BlazorMauiWebServer.AppHost.csproj" />
   <Project Path="BlazorMauiWebServer.ServiceDefaults/BlazorMauiWebServer.ServiceDefaults.csproj" />
   <Project Path="GokeApp/GokeApp.csproj" />
