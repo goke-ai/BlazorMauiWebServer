@@ -41,10 +41,10 @@
                 <label class="form-check-label" for="remember-me">Remember me</label>
             </div>
 
-            <button type="submit" class="btn btn-primary">Log in</button>
+            <button type="submit" class="w-100 btn btn-primary">Log in</button>
 
             <hr />
-            <a class="" href="@registerUrl">Create account</a>
+            <a class="w-100 btn btn-outline-secondary" href="@registerUrl">Create account</a>
         </form>
     </div>
 </div>
@@ -61,7 +61,7 @@
 
     private string NormalizedReturnUrl => string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ReturnUrl;
 
-    private string registerUrl => $"/register?returnUrl={Uri.EscapeDataString(NormalizedReturnUrl)}";
+    private string registerUrl => $"/Account/Register?returnUrl={Uri.EscapeDataString(NormalizedReturnUrl)}";
 
     protected override Task OnInitializedAsync()
     {
