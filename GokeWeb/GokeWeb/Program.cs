@@ -4,6 +4,7 @@ using Goke.Core.Security;
 using Goke.Core.Services;
 using GokeWeb.Client.Pages;
 using GokeWeb.Components;
+using GokeWeb.Components.Account;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -81,5 +82,8 @@ app.MapRazorComponents<App>()
         typeof(GokeWeb.Client._Imports).Assembly,
         typeof(GokeShared._Imports).Assembly
       );
+
+// Needed to log in to the backend WebServer
+app.MapAccountEndpoints();
 
 app.Run();
