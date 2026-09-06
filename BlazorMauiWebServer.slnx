@@ -13,5 +13,4 @@
   <Project Path="GokeWeb/GokeWeb/GokeWeb.csproj" />
   <Project Path="GokeWebServer/GokeWebServer.Client/GokeWebServer.Client.csproj" />
   <Project Path="GokeWebServer/GokeWebServer/GokeWebServer.csproj" />
-  <Project Path="GokeWebShared/GokeWebShared.csproj" Id="b606ac24-7f5a-4cdc-a8bd-4aa83c028687" />
 </Solution>

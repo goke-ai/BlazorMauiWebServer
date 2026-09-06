@@ -79,7 +79,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(
         typeof(GokeWeb.Client._Imports).Assembly,
-        typeof(GokeWebShared._Imports).Assembly,
         typeof(GokeShared._Imports).Assembly
       );
 

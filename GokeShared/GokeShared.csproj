@@ -14,7 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\GokeCore\Goke.Core\Goke.Core.csproj" />
-    <ProjectReference Include="..\GokeWebShared\GokeWebShared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Components\Pages\Account\" />
   </ItemGroup>
 
 
