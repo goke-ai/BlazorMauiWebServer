@@ -7,7 +7,7 @@
         xmlns:pageModels="clr-namespace:GokeApp.PageModels"
         xmlns:models="clr-namespace:GokeApp.Models"
         x:Class="GokeApp.Pages.Controls.CategoryChart"
-        x:DataType="pageModels:MainPageModel"
+        x:DataType="pageModels:DashboardPageModel"
         HeightRequest="{OnIdiom 300, Phone=200}"
         Margin="0, 12"
         Style="{StaticResource CardStyle}">

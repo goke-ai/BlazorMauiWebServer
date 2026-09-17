@@ -46,4 +46,9 @@ public partial class AppShell : Shell
     {
 		Application.Current!.UserAppTheme = e.NewIndex == 0 ? AppTheme.Light : AppTheme.Dark;
     }
+
+    public async Task RefreshMenuAsync()
+    {
+        
+    }
 }

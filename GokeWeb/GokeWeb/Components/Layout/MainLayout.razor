@@ -1,23 +1,48 @@
-﻿@inherits LayoutComponentBase
+﻿@using Goke.Blazor.Components.Layout
+@using GokeWeb.Components.Shared
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inherits LayoutComponentBase
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+<BaseLayout>
+    <BrandContent>
+        GokeWeb
+    </BrandContent>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    <AdditionalMenuItems>
+        <NavMenuItems />
+    </AdditionalMenuItems>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+    <NavMenuEndItems>
+        <ThemeNavMenu CurrentTheme="@CurrentTheme"
+                      CurrentThemeChanged="@OnCurrentThemeChanged"
+                      IsDarkTheme="@IsDarkTheme"
+                      IsDarkThemeChanged="@OnIsDarkThemeChanged" />
+    </NavMenuEndItems>
+
+    <Body>
+        @Body
+    </Body>
+</BaseLayout>
+
+                                          
+@code {
+    // theme
+    private string CurrentTheme { get; set; } = "dark";
+    private bool IsDarkTheme { get; set; }
+
+    private Task OnCurrentThemeChanged(string theme)
+    {
+        CurrentTheme = theme;
+        IsDarkTheme = string.Equals(theme, "dark", StringComparison.OrdinalIgnoreCase);
+        return Task.CompletedTask;
+    }
+
+    private Task OnIsDarkThemeChanged(bool value)
+    {
+        IsDarkTheme = value;
+        CurrentTheme = value ? "dark" : "light";
+        return Task.CompletedTask;
+    }
+}
+
+    

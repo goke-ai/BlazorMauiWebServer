@@ -1,13 +1,15 @@
-﻿using GokeApp.Models;
-using GokeApp.PageModels;
+﻿using GokeApp.PageModels;
 
 namespace GokeApp.Pages;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage(MainPageModel model)
+
+	public MainPage(MainPageModel viewModel)
 	{
 		InitializeComponent();
-		BindingContext = model;
+		BindingContext = viewModel;
 	}
+
+	
 }

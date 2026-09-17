@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:ScrollViewPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         xmlns:coreModels="clr-namespace:Goke.Core.Models;assembly=Goke.Core"
+                         xmlns:pageModels="clr-namespace:GokeApp.PageModels"
+                         xmlns:controls="clr-namespace:GokeApp.Pages.Controls"
+                         x:Class="GokeApp.Pages.WeatherPage"
+                         x:DataType="pageModels:WeatherPageModel"
+                         x:Name="WeatherPageName"
+                         Title="Weather"
+                         AppearingCommand="{Binding AppearingCommand}"
+                         NavigatedToCommand="{Binding NavigatedToCommand}"
+                         NavigatedFromCommand="{Binding NavigatedFromCommand}"
+                         RefreshCommand="{Binding RefreshCommand}"
+                         IsRefreshing="{Binding IsRefreshing}"
+                         IsBusyOverlayVisible="{Binding IsBusy}"
+                         ProgressBarColor="{StaticResource Primary}">
+
+    <VerticalStackLayout Padding="{StaticResource LayoutPadding}"
+                         Spacing="{StaticResource LayoutSpacing}">
+        <Label Text="Weather"
+               Style="{StaticResource Headline}"
+               SemanticProperties.HeadingLevel="Level1" />
+
+        <Label Text="This component demonstrates showing data."
+               Style="{StaticResource SubHeadline}"
+               SemanticProperties.HeadingLevel="Level2" />
+
+        <Grid ColumnDefinitions="*,*,*,*"
+              ColumnSpacing="12">
+            <Label Grid.Column="0" FontAttributes="Bold" Text="Date" />
+            <Label Grid.Column="1" FontAttributes="Bold" Text="Temp. (C)" />
+            <Label Grid.Column="2" FontAttributes="Bold" Text="Temp. (F)" />
+            <Label Grid.Column="3" FontAttributes="Bold" Text="Summary" />
+        </Grid>
+
+        <CollectionView ItemsSource="{Binding Forecasts}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="coreModels:WeatherForecast">
+                    <Grid Padding="0,8"
+                          ColumnDefinitions="*,*,*,*"
+                          ColumnSpacing="12">
+                        <Label Grid.Column="0" Text="{Binding Date}" />
+                        <Label Grid.Column="1" Text="{Binding TemperatureC}" />
+                        <Label Grid.Column="2" Text="{Binding TemperatureF}" />
+                        <Label Grid.Column="3" Text="{Binding Summary}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</controls:ScrollViewPage>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:AuthorizePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"   
+             xmlns:pullToRefresh="clr-namespace:Syncfusion.Maui.Toolkit.PullToRefresh;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:coreModels="clr-namespace:Goke.Core.Models;assembly=Goke.Core"
+             xmlns:pageModels="clr-namespace:GokeApp.PageModels"            
+             xmlns:controls="clr-namespace:GokeApp.Pages.Controls"
+             x:Class="GokeApp.Pages.CounterPage"
+             x:DataType="pageModels:CounterPageModel"
+             x:Name="CounterPageName"
+             Title="Counter">
+
+
+    <Grid>
+        <pullToRefresh:SfPullToRefresh
+            IsRefreshing="{Binding IsRefreshing}"
+            RefreshCommand="{Binding RefreshCommand}">
+            <pullToRefresh:SfPullToRefresh.PullableContent>
+                <ScrollView>
+                    <VerticalStackLayout Padding="{StaticResource LayoutPadding}" Spacing="{StaticResource LayoutSpacing}">
+                        <Label
+                            Text="Counter"
+                            Style="{StaticResource Headline}"
+                            SemanticProperties.HeadingLevel="Level1" />             
+
+                        <Label
+                            Text="{Binding CurrentCount}"
+                            Style="{StaticResource SubHeadline}"
+                            SemanticProperties.HeadingLevel="Level2" />
+
+                        
+
+                      
+
+
+                    </VerticalStackLayout>
+                </ScrollView>
+            </pullToRefresh:SfPullToRefresh.PullableContent>
+        </pullToRefresh:SfPullToRefresh>
+
+        <controls:AddButton 
+             IsEnabled="{Binding IsNotBusy }"
+             Command="{Binding IncrementCountCommand}"
+             ToolTipProperties.Text="Add"
+             SemanticProperties.Description="Add" />
+    </Grid>
+
+</controls:AuthorizePage>

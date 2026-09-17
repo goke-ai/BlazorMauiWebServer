@@ -5,13 +5,70 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sf="clr-namespace:Syncfusion.Maui.Toolkit.SegmentedControl;assembly=Syncfusion.Maui.Toolkit"
     xmlns:pages="clr-namespace:GokeApp.Pages"
+    
     Shell.FlyoutBehavior="Flyout"
     Title="GokeApp">
 
     <ShellContent
+         x:Name="HomeItem"
+         Title="Home"
+         Icon="{StaticResource IconHome}"
+         ContentTemplate="{DataTemplate pages:MainPage}"
+         Route="Main" />
+
+    <ShellContent
+         x:Name="CounterItem"
+         Title="Counter"
+         Icon="{StaticResource IconCounter}"
+         ContentTemplate="{DataTemplate pages:CounterPage}"
+         Route="Counter" />
+
+    <ShellContent
+         x:Name="WeatherItem"
+         Title="Weather"
+         Icon="{StaticResource IconWeather}"
+         ContentTemplate="{DataTemplate pages:WeatherPage}"
+         Route="Weather" />
+
+    <ShellContent
+         x:Name="AuthItem"
+         Title="Auth"
+         Icon="{StaticResource IconLock}"
+         ContentTemplate="{DataTemplate pages:AuthPage}"
+         Route="Auth" />
+
+    <ShellContent
+         x:Name="AdminItem"
+         Title="Admin"
+         Icon="{StaticResource IconLock}"
+         ContentTemplate="{DataTemplate pages:Admin.AdminPage}"
+         Route="Admin" />
+
+    <ShellContent
+         x:Name="LoginItem"
+         Title="Login"
+         Icon="{StaticResource IconPersonBadge}"
+         ContentTemplate="{DataTemplate pages:Account.LoginPage}"
+         Route="Login" />
+
+    <ShellContent
+         x:Name="RegisterItem"
+         Title="Register"
+         Icon="{StaticResource IconPerson}"
+         ContentTemplate="{DataTemplate pages:Account.RegisterPage}"
+         Route="Register" />
+
+    <ShellContent
+         x:Name="LogoutItem"
+         Title="Logout"
+         Icon="{StaticResource IconArrowBarLeft}"
+         ContentTemplate="{DataTemplate pages:Account.LogoutPage}"
+         Route="Logout" />
+    
+    <ShellContent
         Title="Dashboard"
         Icon="{StaticResource IconDashboard}"
-        ContentTemplate="{DataTemplate pages:MainPage}"
+        ContentTemplate="{DataTemplate pages:DashboardPage}"
         Route="main" />
 
     <ShellContent

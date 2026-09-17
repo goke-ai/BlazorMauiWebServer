@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:AuthorizePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:GokeApp.Pages.Controls"
+             xmlns:pageModels="clr-namespace:GokeApp.PageModels"
+             x:Class="GokeApp.Pages.Account.LogoutPage"
+             x:Name="LogoutPageName"
+             Title="Logout"
+             x:DataType="pageModels:LogoutPageModel"
+             AppearingCommand="{Binding AppearingCommand}"
+             NavigatedToCommand="{Binding NavigatedToCommand}"
+             NavigatedFromCommand="{Binding NavigatedFromCommand}">
+
+
+    <VerticalStackLayout Padding="{StaticResource LayoutPadding}" Spacing="{StaticResource LayoutSpacing}">
+        <ActivityIndicator IsRunning="True" />
+        <Label
+            HorizontalOptions="Center"
+            Text="Redirecting..." />    
+
+    </VerticalStackLayout>
+
+</controls:AuthorizePage>

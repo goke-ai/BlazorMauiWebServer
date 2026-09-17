@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\GokeBlazorCore\Goke.Blazor.Components\Goke.Blazor.Components.csproj" />
     <ProjectReference Include="..\..\GokeCore\Goke.Core\Goke.Core.csproj" />
   </ItemGroup>
 

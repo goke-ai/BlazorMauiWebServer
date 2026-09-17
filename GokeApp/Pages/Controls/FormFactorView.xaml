@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:GokeApp.Pages.Controls"
+             x:Class="GokeApp.Pages.Controls.FormFactorView"
+             x:DataType="controls:FormFactorViewModel">
+    <HorizontalStackLayout Spacing="4" Padding="0,6">
+        <Label Text="Welcome to your new app running on" />
+        <Label Text="{Binding Factor}" FontAttributes="Bold" />
+        <Label Text="using" />
+        <Label Text="{Binding Platform}" FontAttributes="Bold" />
+        <Label Text="." />
+    </HorizontalStackLayout>
+</ContentView>
