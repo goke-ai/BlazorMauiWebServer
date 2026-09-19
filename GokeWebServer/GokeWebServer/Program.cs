@@ -1,13 +1,12 @@
+using Goke.Core.Authorization;
 using Goke.Core.Interfaces;
-using GokeWebServer.Client.Pages;
 using GokeWebServer.Components;
 using GokeWebServer.Components.Account;
 using GokeWebServer.Data;
 using GokeWebServer.Endpoints;
+using GokeWebServer.Extensions.DependencyInjection;
 using GokeWebServer.Services;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,36 +18,15 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services
+    .AddAuthentication(builder.Configuration)
+    .AddAuthorization(builder.Configuration);
 
-// Ensure unauthenticated web clients redirect to login rather than receive 401.
-// Only DefaultChallengeScheme is set here; AddIdentityApiEndpoints sets DefaultScheme
-// to BearerAndApplicationScheme which handles both bearer tokens (MAUI) and cookies (web).
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-    });
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-// Needed for external clients to log in
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = true;
-    options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
-})
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 // Add other services
-builder.Services.AddTransient<IFormFactor, GokeWebServer.Services.FormFactorService>();
+builder.Services.AddTransient<IFormFactor, FormFactorService>();
 builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
 
 
@@ -93,5 +71,7 @@ app.MapIdentityEndpoints();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+
+app.MapWeatherForecastEndpoints();  
 
 app.Run();

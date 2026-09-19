@@ -26,24 +26,35 @@
                Style="{StaticResource SubHeadline}"
                SemanticProperties.HeadingLevel="Level2" />
 
-        <Grid ColumnDefinitions="*,*,*,*"
+        <Grid ColumnDefinitions="*,*,*,*,*"
               ColumnSpacing="12">
-            <Label Grid.Column="0" FontAttributes="Bold" Text="Date" />
-            <Label Grid.Column="1" FontAttributes="Bold" Text="Temp. (C)" />
-            <Label Grid.Column="2" FontAttributes="Bold" Text="Temp. (F)" />
-            <Label Grid.Column="3" FontAttributes="Bold" Text="Summary" />
+            <Label Grid.Column="0" FontAttributes="Bold" Text="City" />
+            <Label Grid.Column="1" FontAttributes="Bold" Text="Date" />
+            <Label Grid.Column="2" FontAttributes="Bold" Text="Temp. (C)" />
+            <Label Grid.Column="3" FontAttributes="Bold" Text="Temp. (F)" />
+            <Label Grid.Column="4" FontAttributes="Bold" Text="Summary" />
         </Grid>
 
         <CollectionView ItemsSource="{Binding Forecasts}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="coreModels:WeatherForecast">
                     <Grid Padding="0,8"
-                          ColumnDefinitions="*,*,*,*"
+                          ColumnDefinitions="*,*,*,*,*"
                           ColumnSpacing="12">
-                        <Label Grid.Column="0" Text="{Binding Date}" />
-                        <Label Grid.Column="1" Text="{Binding TemperatureC}" />
-                        <Label Grid.Column="2" Text="{Binding TemperatureF}" />
-                        <Label Grid.Column="3" Text="{Binding Summary}" />
+                        <Label Grid.Column="0" Text="{Binding City}" />
+                        <Label Grid.Column="1" Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd htt}'}" />
+                        <Label Grid.Column="2" Text="{Binding TemperatureC}" />
+                        <Label Grid.Column="3" Text="{Binding TemperatureF}" />
+                        <HorizontalStackLayout Grid.Column="4"
+                                               Spacing="6"
+                                               SemanticProperties.Description="{Binding Summary}">
+                            <Label Text="{Binding SummaryIcon}"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   SemanticProperties.Description="{Binding Summary}" />
+                            <Label Text="{Binding Summary}"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

@@ -39,13 +39,9 @@ namespace GokeApp.PageModels
             // Simulate asynchronous loading to demonstrate a loading indicator
             await Task.Delay(500);
 
-            Forecasts = [.. DATA.Where(f => DateTime.Now.AddMinutes(-1) < f.Date && f.Date <= DateTime.Now.AddMinutes(1))];
+            Forecasts = [.. DATA.Where(f => DateTime.Now.AddDays(-1) < f.Date && f.Date <= DateTime.Now.AddDays(1))];
 
         }
-
-
-
-
     }
 
     

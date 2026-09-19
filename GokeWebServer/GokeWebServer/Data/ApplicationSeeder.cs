@@ -7,12 +7,21 @@ namespace GokeWebServer.Data;
 
 public partial class ApplicationSeeder
 {
-    public static async Task SeedAllAsync(IServiceProvider sp)
+    public static async Task ResetDatabaseAsync(IServiceProvider sp)
+    {
+        var context = sp.GetRequiredService<ApplicationDbContext>();
+        await context.Database.EnsureDeletedAsync();
+    }
+
+    public static async Task SeedAllAsync(IServiceProvider sp, bool deleteDatabase=false)
     {
         var context = sp.GetRequiredService<ApplicationDbContext>();
 
         //reset the database
-        await context.Database.EnsureDeletedAsync();
+        if (deleteDatabase)
+        {
+            await context.Database.EnsureDeletedAsync();
+        }
 
         //migrate the database
         await context.Database.MigrateAsync();

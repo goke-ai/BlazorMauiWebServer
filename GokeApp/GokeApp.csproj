@@ -73,16 +73,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.11" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.11" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.100" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.11" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.101" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.12" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="15.0.1" />
-		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.11" />
+		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.12" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
 		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
 		<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.android" Version="2.1.13" />
@@ -91,6 +91,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\GokeCore\Goke.Core\Goke.Core.csproj" />
+	  <ProjectReference Include="..\..\GokeCore\Goke.Maui.Core\Goke.Maui.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -127,6 +128,10 @@
 	  <MauiXaml Update="Pages\WeatherPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Services\Auth\" />
 	</ItemGroup>
 	
 </Project>

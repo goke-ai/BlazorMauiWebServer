@@ -6,435 +6,257 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Security.Claims;
 
-namespace GokeApp.Services
+namespace GokeApp.Services;
+
+public sealed class MauiAuthenticationStateProvider(
+    AuthApiClient authApiClient,
+    IAccessTokenManager tokenManager,
+    IAuthenticatedUserPrincipalFactory claimsPrincipalFactory,
+    IAuthorizationPolicyRegistry policyRegistry,
+    IAuthorizationPolicyEvaluator policyEvaluator,
+    ILogger<MauiAuthenticationStateProvider> logger) : IAuthenticationService
 {
-    /// <summary>
-    /// This class manages the authentication state of the user.
-    /// The class handles user login, logout, and token validation, including refreshing tokens when they are close to expiration.
-    /// It uses secure storage to save and retrieve tokens, ensuring that users do not need to log in every time.
-    /// </summary>
-    public class MauiAuthenticationStateProvider(AuthApiClient authApiClient, 
-        IAuthorizationPolicyRegistry policyRegistry,
-        IAuthorizationPolicyEvaluator policyEvaluator,
-        ILogger<MauiAuthenticationStateProvider> logger) : IAuthenticationService
+    private const string AuthenticationType = "Custom authentication";
+
+    private static readonly ClaimsPrincipal DefaultUser = new(new ClaimsIdentity());
+    private static readonly Task<AuthenticationState> DefaultAuthState =
+        Task.FromResult(new AuthenticationState(DefaultUser));
+
+    private readonly AuthApiClient client = authApiClient;
+    private Task<AuthenticationState> currentAuthState = DefaultAuthState;
+
+    public LoginStatus LoginStatus { get; private set; } = LoginStatus.None;
+    public string LoginFailureMessage { get; private set; } = string.Empty;
+    public string? StatusMessage { get; private set; }
+    public string? CurrentEmail => tokenManager.CurrentEmail;
+
+    public event EventHandler? AuthenticationStateChanged;
+
+    public Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        //TODO: Place this in AppSettings or Client config file
-        private const string AuthenticationType = "Custom authentication";
-        private const int TokenExpirationBuffer = 30; //minutes
-
-        private static readonly ClaimsPrincipal defaultUser = new(new ClaimsIdentity());
-        private static readonly Task<AuthenticationState> defaultAuthState = Task.FromResult(new AuthenticationState(defaultUser));
-
-        private bool persistTokenToSecureStorage; 
-        private bool refreshInProgress = false;
-        private readonly SemaphoreSlim refreshLock = new(1, 1);
-
-        public LoginStatus LoginStatus { get; set; } = LoginStatus.None;
-        public string LoginFailureMessage { get; set; } = "";
-        public string? StatusMessage { get; private set; }
-
-        public string? CurrentEmail => accessToken?.Email;
-
-        private Task<AuthenticationState> currentAuthState = defaultAuthState;
-        private AccessTokenInfo? accessToken;
-        private readonly AuthApiClient client = authApiClient;
-        private readonly ILogger<MauiAuthenticationStateProvider> logger = logger;
-
-        public event EventHandler? AuthenticationStateChanged;
-
-        private void NotifyAuthenticationStateChanged()
+        if (currentAuthState != DefaultAuthState)
         {
-            AuthenticationStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private void NotifyAuthenticationStateChanged(Task<AuthenticationState> authStateTask)
-        {
-            AuthenticationStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        public Task<AuthenticationState> GetAuthenticationStateAsync()
-        {
-            if (currentAuthState != defaultAuthState)
-            {
-                return currentAuthState;
-            }
-
-            currentAuthState = CreateAuthenticationStateFromSecureStorageAsync();
-            NotifyAuthenticationStateChanged(currentAuthState);
-
             return currentAuthState;
         }
 
-        public async Task<bool> IsAuthenticatedAsync()
+        currentAuthState = CreateAuthenticationStateFromStoredTokenAsync();
+        NotifyAuthenticationStateChanged();
+
+        return currentAuthState;
+    }
+
+    public async Task<bool> IsAuthenticatedAsync()
+        => await tokenManager.GetValidTokenAsync() is not null;
+
+    public async Task<bool> IsInRoleAsync(string role)
+    {
+        if (string.IsNullOrWhiteSpace(role))
         {
-            return await UpdateAndValidateAccessTokenAsync();
+            return false;
         }
 
-        public async Task<bool> IsInRoleAsync(string role)
-        {
-            if (currentAuthState == defaultAuthState)
-            {
-                return false;
-            }
+        var user = (await GetAuthenticationStateAsync()).User;
+        return user.Identity?.IsAuthenticated == true && user.IsInRole(role);
+    }
 
-            ClaimsPrincipal user = (await currentAuthState).User;
-            return user.Identity?.IsAuthenticated == true && user.IsInRole(role);
+    public async Task<bool> HasClaimAsync(string claimType, string? claimValue = null)
+    {
+        if (string.IsNullOrWhiteSpace(claimType))
+        {
+            return false;
         }
 
-        //public async Task<bool> IsInRoleAsync(string role)
-        //{
-        //    if (string.IsNullOrWhiteSpace(role))
-        //    {
-        //        return false;
-        //    }
-        //    if (!await UpdateAndValidateAccessTokenAsync() || accessToken is null)
-        //    {
-        //        return false;
-        //    }
-        //    var userInfo = await GetAuthenticatedUserAsync(accessToken.LoginResponse.AccessToken);
-        //    if (userInfo is null)
-        //    {
-        //        LogoutCore("Your session expired. Sign in again.");
-        //        return false;
-        //    }
-        //    return userInfo.Roles?.Contains(role, StringComparer.OrdinalIgnoreCase) ?? false;
-        //}
+        var user = (await GetAuthenticationStateAsync()).User;
+        return user.Identity?.IsAuthenticated == true
+            && user.HasClaim(c =>
+                c.Type.Equals(claimType, StringComparison.OrdinalIgnoreCase)
+                && (claimValue is null || c.Value.Equals(claimValue, StringComparison.OrdinalIgnoreCase)));
+    }
 
+    public async Task<bool> HasClaimAsync(Predicate<Claim> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(predicate);
 
-        public async Task<bool> HasClaimAsync(string claimType, string? claimValue = null)
+        var user = (await GetAuthenticationStateAsync()).User;
+        return user.Identity?.IsAuthenticated == true && user.Claims.Any(c => predicate(c));
+    }
+
+    public async Task<bool> AuthorizePolicyAsync(string policyName)
+    {
+        if (string.IsNullOrWhiteSpace(policyName))
         {
-            if (string.IsNullOrWhiteSpace(claimType) || currentAuthState == defaultAuthState)
-            {
-                return false;
-            }
-            ClaimsPrincipal user = (await currentAuthState).User;
-            return user.Identity?.IsAuthenticated == true && user.HasClaim(c => c.Type.Equals(claimType, StringComparison.OrdinalIgnoreCase) && (claimValue == null || c.Value.Equals(claimValue, StringComparison.OrdinalIgnoreCase)));
+            return false;
         }
 
-        public async Task<bool> HasClaimAsync(Predicate<Claim> predicate)
+        if (!policyRegistry.TryGetPolicy(policyName, out var definition) || definition is null)
         {
-            if (predicate == null || currentAuthState == defaultAuthState)
-            {
-                return false;
-            }
-            ClaimsPrincipal user = (await currentAuthState).User;
-            return user.Identity?.IsAuthenticated == true && user.Claims.Any(c => predicate(c));
+            return false;
         }
 
-        public async Task<bool> AuthorizePolicyAsync(string policyName)
+        var user = (await GetAuthenticationStateAsync()).User;
+        if (user.Identity?.IsAuthenticated != true)
         {
-            if (string.IsNullOrWhiteSpace(policyName) || currentAuthState == defaultAuthState)
-            {
-                return false;
-            }
-
-            // Check if the policyRegistry is null before trying to access it
-            if (policyRegistry == null || !policyRegistry.TryGetPolicy(policyName, out var definition) || definition is null)
-            {
-                return false;
-            }
-
-            // Evaluate the policy using the policyEvaluator
-            if (policyEvaluator == null)
-            {
-                return false;
-            } 
-
-            ClaimsPrincipal user = (await currentAuthState).User;
-            return await policyEvaluator.EvaluateAsync(user, definition);
+            return false;
         }
-        
-        public async Task<AccessTokenInfo?> GetAccessTokenInfoAsync()
+
+        return await policyEvaluator.EvaluateAsync(user, definition);
+    }
+
+    public async Task<AccessTokenInfo?> GetAccessTokenInfoAsync()
+    {
+        var token = await tokenManager.GetValidTokenAsync();
+        if (token is not null)
         {
-            if (await UpdateAndValidateAccessTokenAsync())
+            return token;
+        }
+
+        SetAnonymousState("Your session expired. Sign in again.");
+        return null;
+    }
+
+    public async Task<AuthenticationResult> AuthenticateAsync(LoginRequest loginRequest)
+    {
+        ResetMessages();
+        var email = loginRequest.Email?.Trim() ?? string.Empty;
+
+        try
+        {
+            var loginResponse = await client.LoginAsync(email, loginRequest.Password);
+            if (loginResponse is null)
             {
-                return accessToken;
+                return Fail("Invalid Email or Password. Please try again.");
             }
 
-            LogoutCore("Your session expired. Sign in again.");
+            var token = await tokenManager.SetTokenAsync(loginResponse, email, loginRequest.RememberMe);
+            if (token is null)
+            {
+                tokenManager.Clear();
+                return Fail("Authentication response was invalid.");
+            }
+
+            var userInfo = await GetAuthenticatedUserAsync(token.LoginResponse.AccessToken);
+            if (userInfo is null)
+            {
+                tokenManager.Clear();
+                return Fail("Unable to load the signed-in user.");
+            }
+
+            SetAuthenticatedState(userInfo, email);
+            return AuthenticationResult.Success();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error logging in to the remote identity endpoint.");
+            Debug.WriteLine($"Error logging in: {ex}");
+            tokenManager.Clear();
+            return Fail("Server error.");
+        }
+    }
+
+    public async Task<AuthenticationResult> RegisterAsync(RegisterRequest registerRequest)
+    {
+        ResetMessages();
+
+        try
+        {
+            var error = await client.RegisterAsync(registerRequest.Email, registerRequest.Password);
+            if (string.IsNullOrWhiteSpace(error))
+            {
+                StatusMessage = "Registration succeeded. Check your email to confirm your account before signing in.";
+                return AuthenticationResult.Success();
+            }
+
+            return Fail(error);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error registering against the remote identity endpoint.");
+            Debug.WriteLine($"Error registering against the remote identity endpoint: {ex}");
+            return Fail("Server error.");
+        }
+    }
+
+    public void Logout()
+    {
+        SetAnonymousState();
+    }
+
+    private async Task<AuthenticatedUserResponse?> GetAuthenticatedUserAsync(string accessToken)
+    {
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
             return null;
         }
 
-        public void Logout()
+        return await client.GetCurrentUserAsync(accessToken);
+    }
+
+    private async Task<AuthenticationState> CreateAuthenticationStateFromStoredTokenAsync()
+    {
+        ResetMessages();
+
+        var token = await tokenManager.GetValidTokenAsync();
+        if (token is null)
         {
-            LogoutCore();
+            return new AuthenticationState(DefaultUser);
         }
 
-
-        private async Task<AuthenticatedUserResponse?> GetAuthenticatedUserAsync(string accessToken)
+        var userInfo = await GetAuthenticatedUserAsync(token.LoginResponse.AccessToken);
+        if (userInfo is null)
         {
-            if (string.IsNullOrWhiteSpace(accessToken))
-            {
-                return null;
-            }
-
-            return await client.GetCurrentUserAsync(accessToken);
+            SetAnonymousState("Your session expired. Sign in again.");
+            return new AuthenticationState(DefaultUser);
         }
 
-        private void ClearTokenState()
-        {
-            accessToken = null;
-            persistTokenToSecureStorage = false;
-            TokenStorage.RemoveToken();
-        }
+        LoginStatus = LoginStatus.Success;
+        var principal = claimsPrincipalFactory.Create(userInfo, token.Email, AuthenticationType);
+        return new AuthenticationState(principal);
+    }
 
-        private void LogoutCore(string? statusMessage = null)
-        {
-            LoginStatus = LoginStatus.None;
-            LoginFailureMessage = string.Empty;
-            StatusMessage = statusMessage;
-            currentAuthState = defaultAuthState;
-            ClearTokenState();
-            NotifyAuthenticationStateChanged(defaultAuthState);
-        }
+    private void SetAuthenticatedState(AuthenticatedUserResponse userInfo, string fallbackEmail)
+    {
+        ResetMessages();
+        LoginStatus = LoginStatus.Success;
 
-        public async Task<AuthenticationResult> AuthenticateAsync(LoginRequest loginRequest)
-        {
-            await LogInAsync(loginRequest);
-            return LoginStatus == LoginStatus.Success
-                ? AuthenticationResult.Success()
-                : AuthenticationResult.Failed(LoginFailureMessage);
-        }
+        var principal = claimsPrincipalFactory.Create(userInfo, fallbackEmail, AuthenticationType);
+        currentAuthState = Task.FromResult(new AuthenticationState(principal));
 
-        public async Task<AuthenticationResult> RegisterAsync(RegisterRequest registerRequest)
-        {
-            LoginStatus = LoginStatus.None;
-            LoginFailureMessage = string.Empty;
-            StatusMessage = null;
+        NotifyAuthenticationStateChanged();
+    }
 
-            try
-            {
-                var error = await client.RegisterAsync(registerRequest.Email, registerRequest.Password);
-                if(string.IsNullOrWhiteSpace(error))
-                {
-                    StatusMessage = "Registration succeeded. Check your email to confirm your account before signing in.";
-                    return AuthenticationResult.Success();
-                }
+    private AuthenticationResult Fail(string? message)
+    {
+        LoginStatus = LoginStatus.Failed;
+        LoginFailureMessage = string.IsNullOrWhiteSpace(message)
+            ? "Authentication failed."
+            : message;
 
-                LoginStatus = LoginStatus.Failed;
-                LoginFailureMessage = string.IsNullOrWhiteSpace(error)
-                    ? "Registration failed. Please try again."
-                    : error;
-                return AuthenticationResult.Failed(LoginFailureMessage);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error registering against the remote identity endpoint.");
-                Debug.WriteLine($"Error registering against the remote identity endpoint: {ex}");
-                LoginStatus = LoginStatus.Failed;
-                LoginFailureMessage = "Server error.";
-                return AuthenticationResult.Failed(LoginFailureMessage);
-            }
-        }
+        currentAuthState = DefaultAuthState;
+        NotifyAuthenticationStateChanged();
 
-        public Task LogInAsync(LoginRequest loginModel)
-        {
-            async Task<AuthenticationState> LogInAsyncCore(LoginRequest loginModel)
-            {
-                var user = await LoginWithProviderAsync(loginModel);
-                return new AuthenticationState(user);
-            }
+        return AuthenticationResult.Failed(LoginFailureMessage);
+    }
 
-            currentAuthState = LogInAsyncCore(loginModel);
-            NotifyAuthenticationStateChanged(currentAuthState);
+    private void SetAnonymousState(string? statusMessage = null)
+    {
+        LoginStatus = LoginStatus.None;
+        LoginFailureMessage = string.Empty;
+        StatusMessage = statusMessage;
+        currentAuthState = DefaultAuthState;
+        tokenManager.Clear();
 
-            return currentAuthState;
+        NotifyAuthenticationStateChanged();
+    }
 
-        }
+    private void ResetMessages()
+    {
+        LoginStatus = LoginStatus.None;
+        LoginFailureMessage = string.Empty;
+        StatusMessage = null;
+    }
 
-        private async Task<ClaimsPrincipal> LoginWithProviderAsync(LoginRequest loginModel)
-        {
-            var authenticatedUser = defaultUser;
-            LoginStatus = LoginStatus.None;
-            LoginFailureMessage = string.Empty;
-            StatusMessage = null;
-            persistTokenToSecureStorage = loginModel.RememberMe;
-
-            try
-            {
-                var token = await client.LoginAsync(loginModel.Email, loginModel.Password);
-                if(token is null)
-                {
-                    LoginStatus = LoginStatus.Failed;
-                    LoginFailureMessage = "Invalid Email or Password. Please try again.";
-				    NotifyAuthenticationStateChanged();
-                    return authenticatedUser;
-                }
-
-                accessToken = persistTokenToSecureStorage
-                    ? await TokenStorage.SaveTokenToSecureStorageAsync(token, loginModel.Email)
-                    : TokenStorage.DeserializeToken(token, loginModel.Email);
-
-                if (accessToken is null)
-                {
-                    LoginStatus = LoginStatus.Failed;
-                    LoginFailureMessage = "Authentication response was invalid.";
-                    ClearTokenState();
-                    NotifyAuthenticationStateChanged();
-                    return authenticatedUser;
-                }
-
-                var userInfo = await GetAuthenticatedUserAsync(accessToken.LoginResponse.AccessToken);
-                if (userInfo is null)
-                {
-                    LoginStatus = LoginStatus.Failed;
-                    LoginFailureMessage = "Unable to load the signed-in user.";
-                    ClearTokenState();
-                    NotifyAuthenticationStateChanged();
-                    return authenticatedUser;
-                }
-
-                LoginStatus = LoginStatus.Success;
-                authenticatedUser = MauiAuthenticationStateProvider.CreateAuthenticatedUser(userInfo, loginModel.Email);
-				NotifyAuthenticationStateChanged();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error logging in to the remote identity endpoint.");
-                Debug.WriteLine($"Error logging in: {ex}");
-                LoginFailureMessage = "Server error.";
-                LoginStatus = LoginStatus.Failed;
-                ClearTokenState();
-				NotifyAuthenticationStateChanged();
-            }
-
-            return authenticatedUser;
-        }
-
-        private async Task<AuthenticationState> CreateAuthenticationStateFromSecureStorageAsync()
-        {
-            LoginStatus = LoginStatus.None;
-
-            if (!await UpdateAndValidateAccessTokenAsync() || accessToken is null)
-            {
-                return new AuthenticationState(defaultUser);
-            }
-
-            var userInfo = await GetAuthenticatedUserAsync(accessToken.LoginResponse.AccessToken);
-            if (userInfo is null)
-            {
-                LogoutCore("Your session expired. Sign in again.");
-                NotifyAuthenticationStateChanged();
-                return new AuthenticationState(defaultUser);
-            }
-
-            LoginStatus = LoginStatus.Success;
-            return new AuthenticationState(MauiAuthenticationStateProvider.CreateAuthenticatedUser(userInfo, accessToken.Email));
-        }
-
-        private async Task<bool> UpdateAndValidateAccessTokenAsync()
-        {
-            try
-            {
-                if (accessToken is null)
-                {
-                    accessToken = await TokenStorage.GetTokenFromSecureStorageAsync();
-                    persistTokenToSecureStorage = accessToken is not null;
-                }
-
-                if (accessToken is null)
-                {
-                    return false;
-                }
-
-                var refreshThreshold = DateTime.UtcNow.AddMinutes(TokenExpirationBuffer);
-                if (refreshThreshold < accessToken.AccessTokenExpiration)
-                {
-                    return true;
-                }
-
-                return await RefreshAccessTokenAsync(accessToken.LoginResponse.RefreshToken, accessToken.Email);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Error checking the access token for validity.");
-                Debug.WriteLine($"Error checking token for validity: {ex}");
-                return false;
-            }
-        }
-
-        private async Task RefreshAuthenticationStateAsync()
-        {
-            if (accessToken is null)
-            {
-                return;
-            }
-
-            var userInfo = await GetAuthenticatedUserAsync(accessToken.LoginResponse.AccessToken);
-            if (userInfo is null)
-            {
-                return;
-            }
-
-            currentAuthState = Task.FromResult(new AuthenticationState(MauiAuthenticationStateProvider.CreateAuthenticatedUser(userInfo, accessToken.Email)));
-            NotifyAuthenticationStateChanged(currentAuthState);
-        }
-
-        private async Task<bool> RefreshAccessTokenAsync(string refreshToken, string email)
-        {
-            if (string.IsNullOrWhiteSpace(refreshToken))
-            {
-                return false;
-            }
-
-            await refreshLock.WaitAsync();
-
-            try
-            {
-                if (refreshInProgress)
-                {
-                    return accessToken is not null &&
-                           DateTime.UtcNow.AddMinutes(TokenExpirationBuffer) < accessToken.AccessTokenExpiration;
-                }
-
-                refreshInProgress = true;
-
-                var token = await client.RefreshTokenAsync(refreshToken);
-                if (token is not null)
-                {
-                    logger.LogInformation("Access token refreshed successfully.");
-                }
-                else
-                {
-                    logger.LogWarning("Failed to refresh access token.");
-                    LogoutCore("Your session expired. Sign in again.");
-                    return false;
-                }
-
-                accessToken = persistTokenToSecureStorage
-                    ? await TokenStorage.SaveTokenToSecureStorageAsync(token, email)
-                    : TokenStorage.DeserializeToken(token, email);
-
-                if (accessToken is null)
-                {
-                    LogoutCore("Your session expired. Sign in again.");
-                    return false;
-                }
-
-                await RefreshAuthenticationStateAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Error refreshing the access token.");
-                Debug.WriteLine($"Error refreshing access token: {ex}");
-                LogoutCore("Your session expired. Sign in again.");
-                return false;
-            }
-            finally
-            {
-                refreshInProgress = false;
-                refreshLock.Release();
-            }
-        }
-
-        private static ClaimsPrincipal CreateAuthenticatedUser(AuthenticatedUserResponse user, string fallbackEmail)
-        {
-            List<Claim> claims = ClaimBuilder.BuildClaimFomUserInfo(user, fallbackEmail);
-
-            var identity = new ClaimsIdentity(claims, AuthenticationType);
-            return new ClaimsPrincipal(identity);
-        }
-
+    private void NotifyAuthenticationStateChanged()
+    {
+        AuthenticationStateChanged?.Invoke(this, EventArgs.Empty);
     }
 }

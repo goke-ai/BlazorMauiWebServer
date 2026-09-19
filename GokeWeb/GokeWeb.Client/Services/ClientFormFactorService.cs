@@ -1,8 +1,8 @@
 ﻿using Goke.Core.Interfaces;
 
-namespace GokeWebServer.Client.Services
+namespace GokeWeb.Client.Services
 {
-    public class FormFactorService : IFormFactor
+    public class ClientFormFactorService : IFormFactor
     {
         public string GetFormFactor()
         {

@@ -2,6 +2,7 @@
   <Folder Name="/Libs/">
     <Project Path="../GokeBlazorCore/Goke.Blazor.Components/Goke.Blazor.Components.csproj" />
     <Project Path="../GokeCore/Goke.Core/Goke.Core.csproj" />
+    <Project Path="../GokeCore/Goke.Maui.Core/Goke.Maui.Core.csproj" Id="6a355088-77c0-4fa9-adc1-cb0d104ba4a8" />
   </Folder>
   <Project Path="BlazorMauiWebServer.AppHost/BlazorMauiWebServer.AppHost.csproj" />
   <Project Path="BlazorMauiWebServer.ServiceDefaults/BlazorMauiWebServer.ServiceDefaults.csproj" />

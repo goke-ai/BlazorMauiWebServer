@@ -1,0 +1,33 @@
+﻿@using Goke.Core.Models
+<table class="table">
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Date</th>
+            <th aria-label="Temperature in Celsius">Temp. (C)</th>
+            <th aria-label="Temperature in Fahrenheit">Temp. (F)</th>
+            <th>Summary</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var forecast in forecasts)
+        {
+            <tr>
+                <td>@forecast.City</td>
+                <td>@forecast.Date.ToString("yyyy-MM-dd htt")</td>
+                <td>@forecast.TemperatureC</td>
+                <td>@forecast.TemperatureF</td>
+                <td>
+                    <span aria-hidden="true">@forecast.SummaryIcon</span>
+                    <span class="ms-1">@forecast.Summary</span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public IEnumerable<WeatherForecast> forecasts { get; set; } = default!;
+
+}
