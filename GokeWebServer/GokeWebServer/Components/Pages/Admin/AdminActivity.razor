@@ -1,0 +1,48 @@
+@page "/admin/user-roles/activity"
+@using Microsoft.AspNetCore.Authorization
+@using GokeWebServer.Services
+@attribute [Authorize(Roles = "Administrators")]
+@inject AdminActivityLog ActivityLog
+
+<PageTitle>Admin Activity</PageTitle>
+
+<h1>Admin Activity</h1>
+
+<p>Review the latest user and role management actions performed in this admin area.</p>
+
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-secondary" href="/admin/user-roles">Back to overview</a>
+</div>
+
+@if (Entries.Count == 0)
+{
+    <div class="alert alert-info" role="alert">No admin activity has been recorded yet.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">When (UTC)</th>
+                    <th scope="col">Action</th>
+                    <th scope="col">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Entries.OrderByDescending(item => item.Timestamp))
+                {
+                    <tr>
+                        <td>@entry.Timestamp.ToString("u")</td>
+                        <td>@entry.Action</td>
+                        <td>@entry.Details</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private IReadOnlyList<AdminActivityEntry> Entries => ActivityLog.GetRecentEntries();
+}

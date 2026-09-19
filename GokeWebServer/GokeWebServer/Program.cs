@@ -7,6 +7,7 @@ using GokeWebServer.Endpoints;
 using GokeWebServer.Extensions.DependencyInjection;
 using GokeWebServer.Services;
 using Microsoft.AspNetCore.Identity;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,10 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 // Add other services
 builder.Services.AddTransient<IFormFactor, FormFactorService>();
 builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
+builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
+builder.Services.AddScoped<RoleAdministrationService>();
+builder.Services.AddScoped<AdminActivityLog>();
+builder.Services.AddScoped<AdminStatusMessageStore>();  
 
 
 var app = builder.Build();

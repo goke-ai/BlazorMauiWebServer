@@ -24,7 +24,7 @@
 <AuthorizeView Roles="Administrators">
     <Authorized>
         <li class="nav-item dropdown">
-            <NavLink class="nav-link dropdown-toggle" href="Account/Manage" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <NavLink class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <BsIcon Name="@Icons.PersonFillLock" />
                 Admin
             </NavLink>
@@ -37,13 +37,20 @@
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <NavLink class="dropdown-item" href="admin/users">
+                    <NavLink class="dropdown-item" href="admin/user-roles">
+                        <BsIcon Name="@Icons.PeopleFill" />
+                        <span>User-Roles</span>
+                    </NavLink>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <NavLink class="dropdown-item" href="admin/user-roles/users">
                         <BsIcon Name="@Icons.PeopleFill" />
                         <span>Users</span>
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink class="dropdown-item" href="admin/roles">
+                    <NavLink class="dropdown-item" href="admin/user-roles/roles">
                         <BsIcon Name="@Icons.PersonWorkspace" />
                         <span>Roles</span>
                     </NavLink>
