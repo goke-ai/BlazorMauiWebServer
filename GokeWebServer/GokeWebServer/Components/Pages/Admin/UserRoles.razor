@@ -4,7 +4,10 @@
 @using Microsoft.EntityFrameworkCore
 @using GokeWebServer.Data
 @using GokeWebServer.Services
+
 @attribute [Authorize(Roles = "Administrators")]
+@rendermode InteractiveServer
+
 @inject UserManager<ApplicationUser> UserManager
 @inject RoleManager<IdentityRole> RoleManager
 @inject AdminActivityLog ActivityLog

@@ -1,7 +1,10 @@
 @page "/admin/user-roles/activity"
 @using Microsoft.AspNetCore.Authorization
 @using GokeWebServer.Services
+
 @attribute [Authorize(Roles = "Administrators")]
+@rendermode InteractiveServer
+
 @inject AdminActivityLog ActivityLog
 
 <PageTitle>Admin Activity</PageTitle>
