@@ -6,7 +6,9 @@
   </Folder>
   <Project Path="BlazorMauiWebServer.AppHost/BlazorMauiWebServer.AppHost.csproj" />
   <Project Path="BlazorMauiWebServer.ServiceDefaults/BlazorMauiWebServer.ServiceDefaults.csproj" />
-  <Project Path="GokeApp/GokeApp.csproj" />
+  <Project Path="GokeApp/GokeApp.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
   <Project Path="GokeHyb/GokeHyb.csproj">
     <Deploy Solution="Debug|*" />
   </Project>
