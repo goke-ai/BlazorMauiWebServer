@@ -1,0 +1,211 @@
+﻿@using Goke.Core.Models
+
+@if (_cityForecasts.Length == 0)
+{
+    <p><em>No forecast data available.</em></p>
+}
+else
+{
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <strong>Real World Temperature Map</strong>
+        </div>
+        <div class="card-body">
+            <div class="row g-4 mb-3">
+                <div class="col-12 col-lg-6">
+                    <label class="form-label fw-semibold">
+                        Show temperatures up to: @_selectedMaxTemperature°C
+                    </label>
+
+                    <input type="range"
+                           class="form-range"
+                           min="@_absoluteMinTemperature"
+                           max="@_absoluteMaxTemperature"
+                           value="@_selectedMaxTemperature"
+                           @oninput="OnSelectedMaxTemperatureChanged" />
+
+                    <div class="small text-body-secondary">
+                        @_absoluteMinTemperature°C to @_absoluteMaxTemperature°C
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <label class="form-label fw-semibold">
+                        Selected range: @_selectedRangeMinTemperature°C to @_selectedRangeMaxTemperature°C
+                    </label>
+
+                    <div class="small text-body-secondary mb-1">
+                        Minimum
+                    </div>
+                    <input type="range"
+                           class="form-range"
+                           min="@_absoluteMinTemperature"
+                           max="@_absoluteMaxTemperature"
+                           value="@_selectedRangeMinTemperature"
+                           @oninput="OnSelectedRangeMinTemperatureChanged" />
+
+                    <div class="small text-body-secondary mb-1">
+                        Maximum
+                    </div>
+                    <input type="range"
+                           class="form-range"
+                           min="@_absoluteMinTemperature"
+                           max="@_absoluteMaxTemperature"
+                           value="@_selectedRangeMaxTemperature"
+                           @oninput="OnSelectedRangeMaxTemperatureChanged" />
+
+                    <div class="small text-body-secondary">
+                        @FilteredForecasts.Length city/cities visible
+                    </div>
+                </div>
+            </div>
+
+            @if (FilteredForecasts.Length == 0)
+            {
+                <div class="alert alert-info">
+                    No cities match the selected temperature filters.
+                </div>
+            }
+
+            <div @ref="mapElement" style="height: 520px;" class="rounded border"></div>
+        </div>
+    </div>
+
+    <WeatherForecastList Forecasts="FilteredForecasts" />
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
+
+    private ElementReference mapElement;
+    private IJSObjectReference? _mapModule;
+
+    private WeatherForecast[] _cityForecasts = [];
+    private int _absoluteMinTemperature;
+    private int _absoluteMaxTemperature;
+    private int _selectedMaxTemperature;
+    private int _selectedRangeMinTemperature;
+    private int _selectedRangeMaxTemperature;
+    private bool _filtersInitialized;
+
+    private WeatherForecast[] FilteredForecasts =>
+        _cityForecasts
+            .Where(f =>
+                f.TemperatureC <= _selectedMaxTemperature &&
+                f.TemperatureC >= _selectedRangeMinTemperature &&
+                f.TemperatureC <= _selectedRangeMaxTemperature)
+            .OrderBy(f => f.City)
+            .ToArray();
+
+    protected override void OnParametersSet()
+    {
+        _cityForecasts = (Forecasts ?? [])
+            .GroupBy(f => f.City, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.OrderByDescending(f => f.Date).First())
+            .OrderBy(f => f.City)
+            .ToArray();
+
+        if (_cityForecasts.Length == 0)
+        {
+            return;
+        }
+
+        var minTemperature = _cityForecasts.Min(f => f.TemperatureC);
+        var maxTemperature = _cityForecasts.Max(f => f.TemperatureC);
+
+        if (!_filtersInitialized ||
+            minTemperature != _absoluteMinTemperature ||
+            maxTemperature != _absoluteMaxTemperature)
+        {
+            _absoluteMinTemperature = minTemperature;
+            _absoluteMaxTemperature = maxTemperature;
+            _selectedMaxTemperature = maxTemperature;
+            _selectedRangeMinTemperature = minTemperature;
+            _selectedRangeMaxTemperature = maxTemperature;
+            _filtersInitialized = true;
+        }
+
+        _selectedMaxTemperature = Math.Clamp(
+            _selectedMaxTemperature,
+            _absoluteMinTemperature,
+            _absoluteMaxTemperature);
+
+        _selectedRangeMinTemperature = Math.Clamp(
+            _selectedRangeMinTemperature,
+            _absoluteMinTemperature,
+            _selectedRangeMaxTemperature);
+
+        _selectedRangeMaxTemperature = Math.Clamp(
+            _selectedRangeMaxTemperature,
+            _selectedRangeMinTemperature,
+            _absoluteMaxTemperature);
+    }
+protected override async Task OnAfterRenderAsync(bool firstRender)
+{
+    if (_cityForecasts.Length == 0)
+    {
+        return;
+    }
+
+    _mapModule ??= await JS.InvokeAsync<IJSObjectReference>(
+        "import",
+        "./_content/GokeShared/js/weatherMap.js");
+
+    await _mapModule.InvokeVoidAsync(
+        "renderWeatherMap",
+        mapElement,
+        BuildMapForecasts(),
+        _absoluteMinTemperature,
+        _absoluteMaxTemperature);
+}
+
+    private object[] BuildMapForecasts()
+    {
+        return FilteredForecasts
+            .Select(f => new
+            {
+                f.City,
+                f.Latitude,
+                f.Longitude,
+                f.TemperatureC,
+                f.Summary,
+                Date = f.Date.ToString("yyyy-MM-dd HH:mm")
+            })
+            .Cast<object>()
+            .ToArray();
+    }
+
+    private void OnSelectedMaxTemperatureChanged(ChangeEventArgs e)
+    {
+        _selectedMaxTemperature = ParseSliderValue(e, _selectedMaxTemperature);
+    }
+
+    private void OnSelectedRangeMinTemperatureChanged(ChangeEventArgs e)
+    {
+        var value = ParseSliderValue(e, _selectedRangeMinTemperature);
+        _selectedRangeMinTemperature = Math.Clamp(
+            value,
+            _absoluteMinTemperature,
+            _selectedRangeMaxTemperature);
+    }
+
+    private void OnSelectedRangeMaxTemperatureChanged(ChangeEventArgs e)
+    {
+        var value = ParseSliderValue(e, _selectedRangeMaxTemperature);
+        _selectedRangeMaxTemperature = Math.Clamp(
+            value,
+            _selectedRangeMinTemperature,
+            _absoluteMaxTemperature);
+    }
+
+    private static int ParseSliderValue(ChangeEventArgs e, int fallback)
+    {
+        return int.TryParse($"{e.Value}", out var value)
+            ? value
+            : fallback;
+    }
+}

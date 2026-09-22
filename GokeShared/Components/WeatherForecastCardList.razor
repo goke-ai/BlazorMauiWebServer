@@ -6,134 +6,210 @@
 }
 else
 {
-    <div class="row g-3">
-        @foreach (var forecast in Forecasts)
-        {
-            <div class="col-12 col-xl-6">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>@forecast.City</strong>
-                            <div class="text-body-secondary small">
-                                @forecast.Date.ToString("yyyy-MM-dd htt")
-                            </div>
-                        </div>
-                        <div class="fs-4" title="@forecast.Summary">@forecast.SummaryIcon</div>
-                    </div>
+    @foreach (var cityGroup in Forecasts
+        .OrderBy(f => f.City)
+        .GroupBy(f => f.City))
+    {
+        <section class="mb-4">
+            <h3 class="mb-3">@cityGroup.Key</h3>
 
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <div class="d-flex flex-wrap gap-3 align-items-end">
-                                    <div>
-                                        <div class="text-body-secondary small">Temperature</div>
-                                        <div class="fs-3 fw-semibold">
-                                            @forecast.TemperatureC°C
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="text-body-secondary small">Feels like</div>
-                                        <div class="fs-5">@forecast.FeelsLikeTemperatureC°C</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-body-secondary small">Range</div>
-                                        <div>@forecast.MinimumTemperatureC°C - @forecast.MaximumTemperatureC°C</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-body-secondary small">Summary</div>
-                                        <div>@forecast.Summary</div>
-                                    </div>
+            @foreach (var dayGroup in cityGroup
+                .OrderBy(f => f.Date)
+                .GroupBy(f => f.Date.Date))
+            {
+                var orderedForecasts = dayGroup.OrderBy(f => f.Date).ToList();
+                var groupKey = GetGroupKey(cityGroup.Key, dayGroup.Key);
+                var selectedForecast = GetSelectedForecast(groupKey, orderedForecasts);
+
+                <div class="mb-4">
+                    <h5 class="text-body-secondary mb-3">@dayGroup.Key.ToString("yyyy-MM-dd")</h5>
+
+                    <ul class="nav nav-tabs" role="tablist">
+                        @foreach (var forecast in orderedForecasts)
+                        {
+                            <li class="nav-item">
+                            <button type="button"
+                                    class="nav-link @(selectedForecast.Date == forecast.Date ? "active" : null)"
+                                    @onclick="() => SelectForecast(groupKey, forecast.Date)">
+                                @forecast.Date.ToString("HH")
+                            </button>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>@selectedForecast.City</strong>
+                                <div class="text-body-secondary small">
+                                    @selectedForecast.Date.ToString("yyyy-MM-dd HH:mm")
                                 </div>
                             </div>
-
-                            <div class="col-md-6">
-                                <h6 class="border-bottom pb-1 mb-2">Location</h6>
-                                <dl class="row mb-0">
-                                    <dt class="col-5">Latitude</dt>
-                                    <dd class="col-7">@forecast.Latitude.ToString("0.####")</dd>
-
-                                    <dt class="col-5">Longitude</dt>
-                                    <dd class="col-7">@forecast.Longitude.ToString("0.####")</dd>
-
-                                    <dt class="col-5">Daylight</dt>
-                                    <dd class="col-7">@forecast.DaylightHours.ToString("0.0") hrs</dd>
-                                </dl>
+                            <div class="text-end">
+                                <div class="fs-4" title="@selectedForecast.Summary">@selectedForecast.SummaryIcon</div>
+                                <div class="small text-body-secondary">
+                                    @(selectedForecast.IsDaytime ? "Day" : "Night")
+                                </div>
                             </div>
+                        </div>
 
-                            <div class="col-md-6">
-                                <h6 class="border-bottom pb-1 mb-2">Rain & Air</h6>
-                                <dl class="row mb-0">
-                                    <dt class="col-7">Rain chance</dt>
-                                    <dd class="col-5">@forecast.RainProbabilityPercent%</dd>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="d-flex flex-wrap gap-3 align-items-end">
+                                        <div>
+                                            <div class="text-body-secondary small">Temperature</div>
+                                            <div class="fs-3 fw-semibold">@selectedForecast.TemperatureC°C</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-body-secondary small">Feels like</div>
+                                            <div class="fs-5">@selectedForecast.FeelsLikeTemperatureC°C</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-body-secondary small">Range</div>
+                                            <div>@selectedForecast.MinimumTemperatureC°C - @selectedForecast.MaximumTemperatureC°C</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-body-secondary small">Summary</div>
+                                            <div>@selectedForecast.Summary</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                    <dt class="col-7">Humidity</dt>
-                                    <dd class="col-5">@forecast.HumidityPercent%</dd>
+                                <div class="col-md-6">
+                                    <h6 class="border-bottom pb-1 mb-2">Location</h6>
+                                    <dl class="row mb-0">
+                                        <dt class="col-5">Latitude</dt>
+                                        <dd class="col-7">@selectedForecast.Latitude.ToString("0.####")</dd>
 
-                                    <dt class="col-7">Dew point</dt>
-                                    <dd class="col-5">@forecast.DewPointC.ToString("0.0")°C</dd>
+                                        <dt class="col-5">Longitude</dt>
+                                        <dd class="col-7">@selectedForecast.Longitude.ToString("0.####")</dd>
 
-                                    <dt class="col-7">Pressure</dt>
-                                    <dd class="col-5">@forecast.PressureHpa hPa</dd>
+                                        <dt class="col-5">Daylight</dt>
+                                        <dd class="col-7">@selectedForecast.DaylightHours.ToString("0.0") hrs</dd>
+                                    </dl>
+                                </div>
 
-                                    <dt class="col-7">Visibility</dt>
-                                    <dd class="col-5">@forecast.VisibilityKm.ToString("0.0") km</dd>
+                                <div class="col-md-6">
+                                    <h6 class="border-bottom pb-1 mb-2">Rain & Air</h6>
+                                    <dl class="row mb-0">
+                                        <dt class="col-7">Rain chance</dt>
+                                        <dd class="col-5">@selectedForecast.RainProbabilityPercent%</dd>
 
-                                    <dt class="col-7">AQI</dt>
-                                    <dd class="col-5">@forecast.AirQualityIndex (@GetAqiLabel(forecast.AirQualityIndex))</dd>
+                                        <dt class="col-7">Precipitation</dt>
+                                        <dd class="col-5">@selectedForecast.PrecipitationMm.ToString("0.0") mm</dd>
 
-                                    <dt class="col-7">UV</dt>
-                                    <dd class="col-5">@forecast.UVIndex (@GetUvLabel(forecast.UVIndex))</dd>
-                                </dl>
-                            </div>
+                                        <dt class="col-7">Type</dt>
+                                        <dd class="col-5">@selectedForecast.PrecipitationType</dd>
 
-                            <div class="col-md-6">
-                                <h6 class="border-bottom pb-1 mb-2">Wind</h6>
-                                <dl class="row mb-0">
-                                    <dt class="col-7">Speed</dt>
-                                    <dd class="col-5">@forecast.WindSpeedKph.ToString("0.0") kph</dd>
+                                        <dt class="col-7">Cloud cover</dt>
+                                        <dd class="col-5">@selectedForecast.CloudCoverPercent%</dd>
 
-                                    <dt class="col-7">Gust</dt>
-                                    <dd class="col-5">@forecast.WindGustKph.ToString("0.0") kph</dd>
+                                        <dt class="col-7">Humidity</dt>
+                                        <dd class="col-5">@selectedForecast.HumidityPercent%</dd>
 
-                                    <dt class="col-7">Direction</dt>
-                                    <dd class="col-5">@forecast.WindDirection (@forecast.WindDirectionDegrees°)</dd>
-                                </dl>
-                            </div>
+                                        <dt class="col-7">Dew point</dt>
+                                        <dd class="col-5">@selectedForecast.DewPointC.ToString("0.0")°C</dd>
 
-                            <div class="col-md-6">
-                                <h6 class="border-bottom pb-1 mb-2">Recommendation</h6>
-                                <p class="mb-0">@forecast.ActivityRecommendation</p>
+                                        <dt class="col-7">Pressure</dt>
+                                        <dd class="col-5">@selectedForecast.PressureHpa hPa</dd>
+
+                                        <dt class="col-7">Visibility</dt>
+                                        <dd class="col-5">@selectedForecast.VisibilityKm.ToString("0.0") km</dd>
+
+                                        <dt class="col-7">AQI</dt>
+                                        <dd class="col-5">@selectedForecast.AirQualityIndex (@selectedForecast.AirQualityLabel)</dd>
+
+                                        <dt class="col-7">UV</dt>
+                                        <dd class="col-5">@selectedForecast.UVIndex (@selectedForecast.UVLabel)</dd>
+                                    </dl>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="border-bottom pb-1 mb-2">Wind</h6>
+                                    <dl class="row mb-0">
+                                        <dt class="col-7">Speed</dt>
+                                        <dd class="col-5">@selectedForecast.WindSpeedKph.ToString("0.0") kph</dd>
+
+                                        <dt class="col-7">Gust</dt>
+                                        <dd class="col-5">@selectedForecast.WindGustKph.ToString("0.0") kph</dd>
+
+                                        <dt class="col-7">Direction</dt>
+                                        <dd class="col-5">@selectedForecast.WindDirection (@selectedForecast.WindDirectionDegrees°)</dd>
+                                    </dl>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h6 class="border-bottom pb-1 mb-2">Recommendation</h6>
+                                    <p class="mb-0">@selectedForecast.ActivityRecommendation</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </section>
+    }
 }
 
 @code {
     [Parameter]
     public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
 
-    private static string GetAqiLabel(int aqi) =>
-        aqi switch
-        {
-            <= 50 => "Good",
-            <= 100 => "Moderate",
-            <= 150 => "Unhealthy for sensitive groups",
-            <= 200 => "Unhealthy",
-            <= 300 => "Very unhealthy",
-            _ => "Hazardous"
-        };
+    private readonly Dictionary<string, DateTime> _selectedForecasts = [];
 
-    private static string GetUvLabel(int uvIndex) =>
-        uvIndex switch
+    protected override void OnParametersSet()
+    {
+        var validKeys = new HashSet<string>();
+
+        foreach (var dayGroup in Forecasts.GroupBy(f => new { f.City, Day = f.Date.Date }))
         {
-            <= 2 => "Low",
-            <= 5 => "Moderate",
-            <= 7 => "High",
-            <= 10 => "Very high",
-            _ => "Extreme"
-        };
+            var groupKey = GetGroupKey(dayGroup.Key.City, dayGroup.Key.Day);
+            var orderedForecasts = dayGroup.OrderBy(f => f.Date).ToList();
+            var defaultForecast = orderedForecasts.FirstOrDefault();
+
+            validKeys.Add(groupKey);
+
+            if (defaultForecast is null)
+            {
+                continue;
+            }
+
+            if (!_selectedForecasts.TryGetValue(groupKey, out var selectedDate) ||
+                orderedForecasts.All(f => f.Date != selectedDate))
+            {
+                _selectedForecasts[groupKey] = defaultForecast.Date;
+            }
+        }
+
+        foreach (var staleKey in _selectedForecasts.Keys.Except(validKeys).ToList())
+        {
+            _selectedForecasts.Remove(staleKey);
+        }
+    }
+
+    private static string GetGroupKey(string city, DateTime day)
+        => $"{city}|{day:yyyyMMdd}";
+
+    private WeatherForecast GetSelectedForecast(string groupKey, IReadOnlyList<WeatherForecast> forecasts)
+    {
+        if (forecasts.Count == 0)
+        {
+            throw new InvalidOperationException("Forecast group cannot be empty.");
+        }
+
+        if (_selectedForecasts.TryGetValue(groupKey, out var selectedDate))
+        {
+            var selectedForecast = forecasts.FirstOrDefault(f => f.Date == selectedDate);
+            if (selectedForecast is not null)
+            {
+                return selectedForecast;
+            }
+        }
+
+        return forecasts[0];
+    }
+
+    private void SelectForecast(string groupKey, DateTime forecastDate)
+        => _selectedForecasts[groupKey] = forecastDate;
 }

@@ -1,15 +1,14 @@
-﻿@page "/weather"
-@rendermode InteractiveServer
+﻿@page "/weather-city"
 @using Goke.Core.Models
 @using GokeWebServer.Services
 
-@attribute [StreamRendering]
+@rendermode InteractiveServer
 
 @inject IWeatherForecastService WeatherForecastService
 
 <PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
+<h1>@City Weather</h1>
 
 <p>This component demonstrates showing data.</p>
 
@@ -19,15 +18,19 @@
 }
 else
 {
-    <WeatherForecastMapList Forecasts="forecasts" />
+    <WeatherForecastCardList Forecasts="forecasts" />
 }
 
 @code {
+    [SupplyParameterFromQuery]
+    private string? City { get; set; }
+
+
     private WeatherForecast[]? forecasts;
+
     protected override async Task OnInitializedAsync()
     {
-        var forecast = await WeatherForecastService.GetWeatherForecastsForDateTime(DateTime.UtcNow);
+        var forecast = await WeatherForecastService.GetAllWeatherForecastsByCity(City);
         forecasts = forecast != null ? forecast.ToArray() : Array.Empty<WeatherForecast>();
     }
-
 }

@@ -90,7 +90,11 @@ else
                         <td>@userEntry.Email</td>
                         <td>@(userEntry.EmailConfirmed ? "Yes" : "No")</td>
                         <td>
-                            <a class="btn btn-sm btn-outline-primary" href="/admin/user-roles/users/@userEntry.UserId">Manage roles</a>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a class="btn btn-sm btn-outline-secondary" href="/admin/user-roles/users/@userEntry.UserId">Manage roles</a>
+                                <a class="btn btn-sm btn-outline-primary" href="/admin/user-roles/users/@userEntry.UserId/claims">Manage claims</a>
+                            </div>
+
                         </td>
                     </tr>
                 }

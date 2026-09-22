@@ -20,8 +20,10 @@ else
             @foreach (var forecast in Forecasts)
             {
                 <tr>
-                    <td>@forecast.City</td>
-                    <td>@forecast.Date.ToString("yyyy-MM-dd htt")</td>
+                    <td>
+                       <a href="@($"/weather-city?City={forecast.City}")">@forecast.City</a>
+                    </td>
+                    <td>@forecast.Date.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@forecast.TemperatureC</td>
                     <td>@forecast.TemperatureF</td>
                     <td>
@@ -37,5 +39,4 @@ else
 @code {
     [Parameter]
     public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
-
 }

@@ -15,7 +15,7 @@ internal static class ServiceCollectionExtensions
         services.AddAuthorizationBuilder()
             .AddPolicy("AdminOnlyPolicy", policy => policy.RequireRole("Administrators"))
             .AddPolicy("DepartmentITPolicy", policy => policy.RequireClaim("Department", "IT"))
-            .AddPolicy("ProfileEditPolicy", policy => policy.RequireClaim("Permission", "Profile.Edit"));
+            .AddPolicy("ProfileEditPolicy", policy => policy.RequireClaim("Permission", "Profile.Edit") );
 
         return services;
     }

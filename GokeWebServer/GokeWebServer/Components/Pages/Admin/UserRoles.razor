@@ -86,53 +86,56 @@
                     <div class="table-responsive">
                         <table class="table align-middle">
                             <thead>
-                                <tr>
-                                    <th scope="col">User</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Current roles</th>
-                                    <th scope="col">Add to role</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var userEntry in userEntries)
-                                {
-                                    <tr>
-                                        <td>@userEntry.UserName</td>
-                                        <td>@userEntry.Email</td>
-                                        <td>
-                                            @if (userEntry.Roles.Count == 0)
-                                            {
-                                                <span class="text-secondary">None</span>
-                                            }
-                                            else
-                                            {
-                                                <div class="d-flex flex-wrap gap-2">
-                                                    @foreach (var role in userEntry.Roles)
-                                                    {
-                                                        <span class="badge text-bg-secondary">@role</span>
-                                                    }
-                                                </div>
-                                            }
-                                        </td>
-                                        <td>
-                                            <div class="input-group">
-                                                <InputSelect @bind-Value="userEntry.SelectedRole" class="form-select" disabled="@(roles.Count == 0 || isBusy)">
-                                                    <option value="">Select role</option>
-                                                    @foreach (var role in roles)
-                                                    {
-                                                        <option value="@role.Name">@role.Name</option>
-                                                    }
-                                                </InputSelect>
-                                                <button type="button" class="btn btn-outline-primary" @onclick="() => AddUserToRoleAsync(userEntry)" disabled="@isBusy">Add</button>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-sm btn-outline-secondary" href="/admin/user-roles/users/@userEntry.UserId">Open</a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
+    <tr>
+        <th scope="col">User</th>
+        <th scope="col">Email</th>
+        <th scope="col">Current roles</th>
+        <th scope="col">Add to role</th>
+        <th scope="col">Actions</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var userEntry in userEntries)
+    {
+        <tr>
+            <td>@userEntry.UserName</td>
+            <td>@userEntry.Email</td>
+            <td>
+                @if (userEntry.Roles.Count == 0)
+                {
+                    <span class="text-secondary">None</span>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var role in userEntry.Roles)
+                        {
+                            <span class="badge text-bg-secondary">@role</span>
+                        }
+                    </div>
+                }
+            </td>
+            <td>
+                <div class="input-group">
+                    <InputSelect @bind-Value="userEntry.SelectedRole" class="form-select" disabled="@(roles.Count == 0 || isBusy)">
+                        <option value="">Select role</option>
+                        @foreach (var role in roles)
+                        {
+                            <option value="@role.Name">@role.Name</option>
+                        }
+                    </InputSelect>
+                    <button type="button" class="btn btn-outline-primary" @onclick="() => AddUserToRoleAsync(userEntry)" disabled="@isBusy">Add</button>
+                </div>
+            </td>
+            <td>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-sm btn-outline-secondary" href="/admin/user-roles/users/@userEntry.UserId">Roles</a>
+                    <a class="btn btn-sm btn-outline-primary" href="/admin/user-roles/users/@userEntry.UserId/claims">Claims</a>
+                </div>
+            </td>
+        </tr>
+    }
+</tbody>
                         </table>
                     </div>
                 }
