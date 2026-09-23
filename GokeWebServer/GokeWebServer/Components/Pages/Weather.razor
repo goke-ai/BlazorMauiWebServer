@@ -1,10 +1,12 @@
 ﻿@page "/weather"
 @rendermode InteractiveServer
+@using System.Security.Claims
 @using Goke.Core.Models
 @using GokeWebServer.Services
 
 @attribute [StreamRendering]
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IWeatherForecastService WeatherForecastService
 
 <PageTitle>Weather</PageTitle>
@@ -19,15 +21,44 @@
 }
 else
 {
-    <WeatherForecastMapList Forecasts="forecasts" />
+    <AuthorizeView Policy="WeatherMapEditPolicy">
+        <Authorized>
+            <WeatherForecastMapList Forecasts="forecasts" CanEdit="true" />
+        </Authorized>
+        <NotAuthorized>
+            <WeatherForecastMapList Forecasts="forecasts" />
+        </NotAuthorized>
+    </AuthorizeView>
 }
 
 @code {
     private WeatherForecast[]? forecasts;
     protected override async Task OnInitializedAsync()
     {
+        await GetClaimsPrincipalData();
+
         var forecast = await WeatherForecastService.GetWeatherForecastsForDateTime(DateTime.UtcNow);
         forecasts = forecast != null ? forecast.ToArray() : Array.Empty<WeatherForecast>();
     }
 
+    string? weatherMapEditClaimValue;
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider
+            .GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            // authMessage = $"{user.Identity.Name} is authenticated.";
+            claims = user.Claims;
+            weatherMapEditClaimValue = claims.FirstOrDefault(c => c.Type == "Permission" && c.Value == "WeatherMap.Edit")?.Value;
+        }
+        else
+        {
+            // authMessage = "The user is NOT authenticated.";
+        }
+    }
 }

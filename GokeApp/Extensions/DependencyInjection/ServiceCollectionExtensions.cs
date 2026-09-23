@@ -14,8 +14,8 @@ public static class ServiceCollectionExtensions
         services.AddAuthorization(options =>
         {
             options.AddPolicy("AdminOnlyPolicy", policy => policy.RequireRole("Administrators"));
-            options.AddPolicy("DepartmentITPolicy", policy => policy.RequireClaim("Department", "IT"));
-            options.AddPolicy("ProfileEditPolicy", policy => policy.RequirePermission("Profile.Edit"));
+            options.AddPolicy("AdminCanDeletePolicy", policy => policy.RequireClaim("Permission", "Admin.CanDelete"));
+            options.AddPolicy("WeatherMapEditPolicy", policy => policy.RequirePermission("WeatherMap.Edit"));
         });
 
         return services;

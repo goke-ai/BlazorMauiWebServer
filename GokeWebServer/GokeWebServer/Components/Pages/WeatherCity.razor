@@ -1,6 +1,9 @@
 ﻿@page "/weather-city"
+@using System.Security.Claims
 @using Goke.Core.Models
+@using GokeWebServer.Data
 @using GokeWebServer.Services
+@using Microsoft.AspNetCore.Identity
 
 @rendermode InteractiveServer
 
@@ -25,11 +28,10 @@ else
     [SupplyParameterFromQuery]
     private string? City { get; set; }
 
-
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync()
-    {
+    {        
         var forecast = await WeatherForecastService.GetAllWeatherForecastsByCity(City);
         forecasts = forecast != null ? forecast.ToArray() : Array.Empty<WeatherForecast>();
     }

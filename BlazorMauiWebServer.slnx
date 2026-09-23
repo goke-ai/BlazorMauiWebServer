@@ -6,6 +6,7 @@
   </Folder>
   <Project Path="BlazorMauiWebServer.AppHost/BlazorMauiWebServer.AppHost.csproj" />
   <Project Path="BlazorMauiWebServer.ServiceDefaults/BlazorMauiWebServer.ServiceDefaults.csproj" />
+  <Project Path="ConsoleApp/ConsoleApp.csproj" Id="ebc4340e-40ee-47dc-94e6-425e582dfa50" />
   <Project Path="GokeApp/GokeApp.csproj">
     <Deploy Solution="Debug|*" />
   </Project>

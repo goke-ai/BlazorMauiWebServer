@@ -11,54 +11,64 @@ else
             <strong>Real World Temperature Map</strong>
         </div>
         <div class="card-body">
-            <div class="row g-4 mb-3">
-                <div class="col-12 col-lg-6">
-                    <label class="form-label fw-semibold">
-                        Show temperatures up to: @_selectedMaxTemperature°C
-                    </label>
+            @if (!CanEdit)
+            {
+                <div class="alert alert-info">
+                    You do not have permission to edit the weather map.
+                </div>
+            }
+            else
+            {
+                <div class="row g-4 mb-3">
+                    <div class="col-12 col-lg-6">
+                        <label class="form-label fw-semibold">
+                            Show temperatures up to: @_selectedMaxTemperature°C
+                        </label>
 
-                    <input type="range"
-                           class="form-range"
-                           min="@_absoluteMinTemperature"
-                           max="@_absoluteMaxTemperature"
-                           value="@_selectedMaxTemperature"
-                           @oninput="OnSelectedMaxTemperatureChanged" />
+                        <input type="range"
+                               class="form-range"
+                               min="@_absoluteMinTemperature"
+                               max="@_absoluteMaxTemperature"
+                               value="@_selectedMaxTemperature"
+                               @oninput="OnSelectedMaxTemperatureChanged" />
 
-                    <div class="small text-body-secondary">
-                        @_absoluteMinTemperature°C to @_absoluteMaxTemperature°C
+                        <div class="small text-body-secondary">
+                            @_absoluteMinTemperature°C to @_absoluteMaxTemperature°C
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6">
+                        <label class="form-label fw-semibold">
+                            Selected range: @_selectedRangeMinTemperature°C to @_selectedRangeMaxTemperature°C
+                        </label>
+
+                        <div class="small text-body-secondary mb-1">
+                            Minimum
+                        </div>
+                        <input type="range"
+                               class="form-range"
+                               min="@_absoluteMinTemperature"
+                               max="@_absoluteMaxTemperature"
+                               value="@_selectedRangeMinTemperature"
+                               @oninput="OnSelectedRangeMinTemperatureChanged" />
+
+                        <div class="small text-body-secondary mb-1">
+                            Maximum
+                        </div>
+                        <input type="range"
+                               class="form-range"
+                               min="@_absoluteMinTemperature"
+                               max="@_absoluteMaxTemperature"
+                               value="@_selectedRangeMaxTemperature"
+                               @oninput="OnSelectedRangeMaxTemperatureChanged" />
+
+                        <div class="small text-body-secondary">
+                            @FilteredForecasts.Length city/cities visible
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-6">
-                    <label class="form-label fw-semibold">
-                        Selected range: @_selectedRangeMinTemperature°C to @_selectedRangeMaxTemperature°C
-                    </label>
-
-                    <div class="small text-body-secondary mb-1">
-                        Minimum
-                    </div>
-                    <input type="range"
-                           class="form-range"
-                           min="@_absoluteMinTemperature"
-                           max="@_absoluteMaxTemperature"
-                           value="@_selectedRangeMinTemperature"
-                           @oninput="OnSelectedRangeMinTemperatureChanged" />
-
-                    <div class="small text-body-secondary mb-1">
-                        Maximum
-                    </div>
-                    <input type="range"
-                           class="form-range"
-                           min="@_absoluteMinTemperature"
-                           max="@_absoluteMaxTemperature"
-                           value="@_selectedRangeMaxTemperature"
-                           @oninput="OnSelectedRangeMaxTemperatureChanged" />
-
-                    <div class="small text-body-secondary">
-                        @FilteredForecasts.Length city/cities visible
-                    </div>
-                </div>
-            </div>
+            }
 
             @if (FilteredForecasts.Length == 0)
             {
@@ -77,6 +87,8 @@ else
 @code {
     [Parameter]
     public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
+    [Parameter]
+    public bool  CanEdit { get; set; }
 
     [Inject]
     private IJSRuntime JS { get; set; } = default!;
