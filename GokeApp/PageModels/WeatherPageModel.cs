@@ -27,7 +27,7 @@ namespace GokeApp.PageModels
             await base.OnInitDataAsync();
 
             // Seed weather data here
-            DATA = await httpClient.GetFromJsonAsync<List<WeatherForecast>>("api/weather") ?? [];
+            DATA = await httpClient.GetFromJsonAsync<List<WeatherForecast>>($"api/weather/datetime/{current:u}") ?? [];
         }
 
         override protected async Task OnLoadDataAsync()
@@ -39,7 +39,8 @@ namespace GokeApp.PageModels
             // Simulate asynchronous loading to demonstrate a loading indicator
             await Task.Delay(500);
 
-            Forecasts = [.. DATA.Where(f => DateTime.Now.AddDays(-1) < f.Date && f.Date <= DateTime.Now.AddDays(1))];
+            //Forecasts = [.. DATA.Where(f => DateTime.Now.AddDays(-1) < f.Date && f.Date <= DateTime.Now.AddDays(1))];
+            Forecasts = [.. DATA.OrderBy(f => f.City)];
 
         }
     }

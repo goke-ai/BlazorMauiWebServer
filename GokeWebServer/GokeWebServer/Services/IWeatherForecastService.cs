@@ -9,10 +9,10 @@ namespace GokeWebServer.Services
         Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDate(DateTime date);
         Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateTime(DateTime dateTime);
 
-        Task<IEnumerable<WeatherForecast>> GetAllWeatherForecastsByCity(params string[] cities);
-        Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateRangeByCity(DateTime start, DateTime end, params string[] cities);
-        Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateByCity(DateTime date, params string[] cities);
-        Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateTimeByCity(DateTime dateTime, params string[] cities);
+        Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForCities(params string[] cities);
+        Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateRangeAndCities(DateTime start, DateTime end, params string[] cities);
+        Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateAndCities(DateTime date, params string[] cities);
+        Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateTimeAndCities(DateTime dateTime, params string[] cities);
 
     }
 }

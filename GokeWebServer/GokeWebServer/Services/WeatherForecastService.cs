@@ -13,7 +13,7 @@ public sealed class WeatherForecastService : IWeatherForecastService
         return Task.FromResult<IEnumerable<WeatherForecast>>(forecasts);
     }
 
-    public Task<IEnumerable<WeatherForecast>> GetAllWeatherForecastsByCity(params string[] cities)
+    public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForCities(params string[] cities)
     {
         var forecastWindowStart = WeatherForecastEngine.GetForecastWindowStart(DateTime.UtcNow);
         var forecasts = WeatherForecastEngine.BuildForecasts(forecastWindowStart, WeatherForecastEngine.ForecastPeriods, cities);
@@ -38,7 +38,7 @@ public sealed class WeatherForecastService : IWeatherForecastService
         return Task.FromResult<IEnumerable<WeatherForecast>>(forecasts);
     }
 
-    public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateRangeByCity(DateTime start, DateTime end, params string[] cities)
+    public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateRangeAndCities(DateTime start, DateTime end, params string[] cities)
     {
         if (end < start)
         {
@@ -63,7 +63,7 @@ public sealed class WeatherForecastService : IWeatherForecastService
         return Task.FromResult<IEnumerable<WeatherForecast>>(forecasts);
     }
 
-    public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateByCity(DateTime date, params string[] cities)
+    public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateAndCities(DateTime date, params string[] cities)
     {
         var utcDate = date.ToUniversalTime();
         var alignedDate = WeatherForecastEngine.GetForecastWindowStart(utcDate);
@@ -78,7 +78,8 @@ public sealed class WeatherForecastService : IWeatherForecastService
         var forecasts = WeatherForecastEngine.BuildForecasts(alignedDateTime, 1);
         return Task.FromResult<IEnumerable<WeatherForecast>>(forecasts);
     }
-    public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateTimeByCity(DateTime dateTime, params string[] cities)
+
+    public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForDateTimeAndCities(DateTime dateTime, params string[] cities)
     {
         var utcDateTime = dateTime.ToUniversalTime();
         var alignedDateTime = WeatherForecastEngine.AlignToForecastBoundary(utcDateTime);

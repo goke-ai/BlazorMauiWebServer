@@ -2,7 +2,8 @@
 @using Goke.Core.Models
 @using Goke.Core.Services
 
-@attribute [StreamRendering]
+@* @attribute [StreamRendering] *@
+@rendermode InteractiveServer
 
 @inject IHttpClientFactory httpClientFactory
 
@@ -18,7 +19,14 @@
 }
 else
 {
-    <WeatherForecastList Forecasts="forecasts" />
+    <AuthorizeView Policy="WeatherMapEditPolicy">
+        <Authorized>
+            <WeatherForecastMapList Forecasts="forecasts" CanEdit="true" />
+        </Authorized>
+        <NotAuthorized>
+            <WeatherForecastMapList Forecasts="forecasts" />
+        </NotAuthorized>
+    </AuthorizeView>
 }
 
 @code {
@@ -34,7 +42,7 @@ else
         HttpClient httpClient = httpClientFactory.CreateClient(BackendApiEndpoints.ClientName);
 
         // Seed weather data here
-        DATA = await httpClient.GetFromJsonAsync<List<WeatherForecast>>("api/weather") ?? [];
+        DATA = await httpClient.GetFromJsonAsync<List<WeatherForecast>>($"api/weather/datetime/{current:u}") ?? [];
 
         await OnLoadDataAsync();
     }
@@ -47,7 +55,7 @@ else
         // Simulate asynchronous loading to demonstrate a loading indicator
         await Task.Delay(500);
 
-        forecasts = [.. DATA.Where(f => DateTime.Now.AddDays(-1) < f.Date && f.Date <= DateTime.Now.AddDays(1))];
+        forecasts = [.. DATA];
 
     }
 }

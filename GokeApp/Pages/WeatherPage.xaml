@@ -22,42 +22,17 @@
                Style="{StaticResource Headline}"
                SemanticProperties.HeadingLevel="Level1" />
 
-        <Label Text="This component demonstrates showing data."
+        <Label Text="Browse the latest forecast for each city."
                Style="{StaticResource SubHeadline}"
                SemanticProperties.HeadingLevel="Level2" />
 
-        <Grid ColumnDefinitions="*,*,*,*,*"
-              ColumnSpacing="12">
-            <Label Grid.Column="0" FontAttributes="Bold" Text="City" />
-            <Label Grid.Column="1" FontAttributes="Bold" Text="Date" />
-            <Label Grid.Column="2" FontAttributes="Bold" Text="Temp. (C)" />
-            <Label Grid.Column="3" FontAttributes="Bold" Text="Temp. (F)" />
-            <Label Grid.Column="4" FontAttributes="Bold" Text="Summary" />
-        </Grid>
+        <Label Text="No forecast data available."
+               IsVisible="{Binding HasNoForecasts}" />
 
-        <CollectionView ItemsSource="{Binding Forecasts}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="coreModels:WeatherForecast">
-                    <Grid Padding="0,8"
-                          ColumnDefinitions="*,*,*,*,*"
-                          ColumnSpacing="12">
-                        <Label Grid.Column="0" Text="{Binding City}" />
-                        <Label Grid.Column="1" Text="{Binding Date, StringFormat='{}{0:yyyy-MM-dd htt}'}" />
-                        <Label Grid.Column="2" Text="{Binding TemperatureC}" />
-                        <Label Grid.Column="3" Text="{Binding TemperatureF}" />
-                        <HorizontalStackLayout Grid.Column="4"
-                                               Spacing="6"
-                                               SemanticProperties.Description="{Binding Summary}">
-                            <Label Text="{Binding SummaryIcon}"
-                                   FontSize="16"
-                                   VerticalOptions="Center"
-                                   SemanticProperties.Description="{Binding Summary}" />
-                            <Label Text="{Binding Summary}"
-                                   VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <controls:WeatherForecastMapListView x:Name="ForecastMapListView"
+                                       Forecasts="{Binding Forecasts}"
+                                       CanEdit="True" />
+
+        
     </VerticalStackLayout>
 </controls:ScrollViewPage>

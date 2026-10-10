@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Goke.Core.Extensions;
 using Goke.Core.Options;
+using System.Security.Claims;
 
 namespace GokeWebServer.Data;
 
@@ -61,7 +62,7 @@ public partial class ApplicationSeeder
 
     private static async Task EnsureDevelopmentUsersAsync(UserManager<ApplicationUser> userManager)
     {
-        await EnsureDevelopmentUserAsync(userManager, "admin@gok.loc", "admin@gok.loc", "Administrators", "Pass123$");
+        await EnsureDevelopmentUserAsync(userManager, "admin@gok.loc", "admin@gok.loc", "Administrators", "Pass123$", ("Permission", "WeatherMap.Edit"));
         await EnsureDevelopmentUserAsync(userManager, "officer@gok.loc", "officer@gok.loc", "Officers", "Pass123$");
         await EnsureDevelopmentUserAsync(userManager, "user@gok.loc", "user@gok.loc", "Users", "Pass123$");
     }
@@ -71,7 +72,8 @@ public partial class ApplicationSeeder
         string userName,
         string email,
         string role,
-        string password)
+        string password,
+        params (string, string)[] claims)
     {
         var existingUser = await userManager.FindByNameAsync(userName);
         if (existingUser != null)
@@ -95,6 +97,11 @@ public partial class ApplicationSeeder
         if (result.Succeeded)
         {
             await userManager.AddToRoleAsync(user, role);
+        }
+
+        foreach (var (claimType, claimValue) in claims)
+        {
+            await userManager.AddClaimAsync(user, new Claim(claimType, claimValue));
         }
     }
 

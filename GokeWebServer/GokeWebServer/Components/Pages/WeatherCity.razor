@@ -32,7 +32,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {        
-        var forecast = await WeatherForecastService.GetAllWeatherForecastsByCity(City);
+        var forecast = await WeatherForecastService.GetWeatherForecastsForCities(City);
         forecasts = forecast != null ? forecast.ToArray() : Array.Empty<WeatherForecast>();
     }
 }

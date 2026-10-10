@@ -77,7 +77,9 @@ else
                 </div>
             }
 
-            <div @ref="mapElement" style="height: 520px;" class="rounded border"></div>
+            <WeatherForecastMap Forecasts="FilteredForecasts"
+                                AbsoluteMinTemperature="@_absoluteMinTemperature"
+                                AbsoluteMaxTemperature="@_absoluteMaxTemperature" />
         </div>
     </div>
 
@@ -88,13 +90,7 @@ else
     [Parameter]
     public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
     [Parameter]
-    public bool  CanEdit { get; set; }
-
-    [Inject]
-    private IJSRuntime JS { get; set; } = default!;
-
-    private ElementReference mapElement;
-    private IJSObjectReference? _mapModule;
+    public bool CanEdit { get; set; }
 
     private WeatherForecast[] _cityForecasts = [];
     private int _absoluteMinTemperature;
@@ -156,40 +152,13 @@ else
             _selectedRangeMinTemperature,
             _absoluteMaxTemperature);
     }
-protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-    if (_cityForecasts.Length == 0)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        return;
-    }
-
-    _mapModule ??= await JS.InvokeAsync<IJSObjectReference>(
-        "import",
-        "./_content/GokeShared/js/weatherMap.js");
-
-    await _mapModule.InvokeVoidAsync(
-        "renderWeatherMap",
-        mapElement,
-        BuildMapForecasts(),
-        _absoluteMinTemperature,
-        _absoluteMaxTemperature);
-}
-
-    private object[] BuildMapForecasts()
-    {
-        return FilteredForecasts
-            .Select(f => new
-            {
-                f.City,
-                f.Latitude,
-                f.Longitude,
-                f.TemperatureC,
-                f.Summary,
-                Date = f.Date.ToString("yyyy-MM-dd HH:mm")
-            })
-            .Cast<object>()
-            .ToArray();
-    }
+        if (_cityForecasts.Length == 0)
+        {
+            return;
+        }
+    }    
 
     private void OnSelectedMaxTemperatureChanged(ChangeEventArgs e)
     {

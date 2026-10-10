@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment())
     // Apply migrations & create database if needed at startup
     using (var scope = app.Services.CreateScope())
     {
-        await ApplicationSeeder.SeedAllAsync(scope.ServiceProvider);
+        await ApplicationSeeder.SeedAllAsync(scope.ServiceProvider, deleteDatabase: true);
     }
 
     app.UseWebAssemblyDebugging();

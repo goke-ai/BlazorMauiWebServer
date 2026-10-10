@@ -17,7 +17,8 @@ public static class MauiProgram
 		builder
 			.UseMauiApp<App>()
 			.UseMauiCommunityToolkit()
-			.ConfigureSyncfusionToolkit()
+			.UseMauiMaps()
+            .ConfigureSyncfusionToolkit()
 			.ConfigureMauiHandlers(handlers =>
 			{
 #if WINDOWS
