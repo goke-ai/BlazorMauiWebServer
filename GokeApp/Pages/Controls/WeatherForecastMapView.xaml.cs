@@ -1,19 +1,24 @@
 using Goke.Core.Models;
-using Microsoft.Maui.Controls.Maps;
-using Microsoft.Maui.Maps;
+using System.Text;
 using System.Text.Json;
 
 namespace GokeApp.Pages.Controls;
 
 public partial class WeatherForecastMapView : ContentView
 {
+    private const string MapCoreScriptFileName = "map-core.js";
     private const string MapTemplateFileName = "weather-map-template.html";
-    private const string MapScriptFileName = "weather.js";
-    private const string GeneratedMapFileName = "leafletmap.generated.html";
+    private const string MapScriptFileName = "weather-map.js";
 
     private static string? _mapTemplateHtml;
-    private static string? _mapScript;
-    private bool saveAndLoadHtml;
+    private static string? _weatherModuleUrl;
+
+    private bool _isMapHtmlLoaded;
+    private bool _isMapPageReady;
+    private string? _pendingForecastsJson;
+    private int _pendingScaleMinTemperature;
+    private int _pendingScaleMaxTemperature;
+    private bool _pendingClear;
 
     public static readonly BindableProperty ForecastsProperty =
         BindableProperty.Create(
@@ -36,146 +41,88 @@ public partial class WeatherForecastMapView : ContentView
     }
 
     public string VisibleCity => $"{(Forecasts ?? []).Count()} city/cities visible";
-
-
-
-public WeatherForecastMapView()
-{
-    InitializeComponent();
-    ConfigureMapMode();
-}
-
-private bool UseNativeMap =>
-    OperatingSystem.IsAndroid() ||
-    OperatingSystem.IsIOS() ||
-    OperatingSystem.IsMacCatalyst();
-
-private void ConfigureMapMode()
-{
-    NativeMapContainer.IsVisible = UseNativeMap;
-    WebMapContainer.IsVisible = !UseNativeMap;
-}
-
-private async Task RefreshViewAsync()
-{
-    var filtered = (Forecasts ?? []).ToArray();
-
-    EmptyStateLabel.IsVisible = filtered.Length == 0;
-    NoMatchesLabel.IsVisible = false;
-
-    if (filtered.Length == 0)
+    public WeatherForecastMapView()
     {
-        await ClearMapAsync();
-        OnPropertyChanged(nameof(VisibleCity));
-        return;
+        InitializeComponent();
+        WeatherMapWebView.Navigated += WeatherMapWebView_Navigated;
     }
 
-    if (UseNativeMap)
+    private async Task RefreshViewAsync()
     {
-        await RenderNativeMapAsync(filtered);
-        await ClearWebMapAsync();
-    }
-    else
-    {
-        await ClearNativeMapAsync();
-        await RenderWebViewMapAsync(filtered);
-    }
+        var filtered = (Forecasts ?? []).ToArray();
+        var forecastsJson = BuildForecastsJson(filtered);
 
-    OnPropertyChanged(nameof(VisibleCity));
-}
+        EmptyStateLabel.IsVisible = filtered.Length == 0;
+        NoMatchesLabel.IsVisible = false;
+        _pendingForecastsJson = forecastsJson;
+        _pendingScaleMinTemperature = filtered.Length == 0 ? 0 : filtered.Min(f => f.TemperatureC);
+        _pendingScaleMaxTemperature = filtered.Length == 0 ? 0 : filtered.Max(f => f.TemperatureC);
+        _pendingClear = filtered.Length == 0;
 
-    private async Task RenderNativeMapAsync(WeatherForecast[] filtered)
-    {
-        var minLat = filtered.Min(f => f.Latitude);
-        var maxLat = filtered.Max(f => f.Latitude);
-        var minLon = filtered.Min(f => f.Longitude);
-        var maxLon = filtered.Max(f => f.Longitude);
-
-        var centerLat = (minLat + maxLat) / 2d;
-        var centerLon = (minLon + maxLon) / 2d;
-
-        var latKm = Math.Max(20d, (maxLat - minLat) * 111d);
-        var lonKm = Math.Max(20d, (maxLon - minLon) * 111d);
-        var radiusKm = Math.Max(latKm, lonKm) * 0.75d;
-
-        await MainThread.InvokeOnMainThreadAsync(() =>
+        if (!_isMapHtmlLoaded)
         {
-            WeatherMap.Pins.Clear();
+            await LoadInitialMapAsync();
+            OnPropertyChanged(nameof(VisibleCity));
+            return;
+        }
 
-            foreach (var forecast in filtered)
+        await PushPendingUpdateAsync();
+
+        OnPropertyChanged(nameof(VisibleCity));
+    }
+
+    private void WeatherMapWebView_Navigated(object? sender, WebNavigatedEventArgs e)
+    {
+        _isMapPageReady = true;
+        _ = PushPendingUpdateAsync();
+    }
+
+    private async Task LoadInitialMapAsync()
+    {
+        var html = await BuildLeafletHtmlAsync();
+        await LoadHtmlIntoWebViewAsync(html);
+    }
+
+    private async Task PushPendingUpdateAsync()
+    {
+        if (!_isMapHtmlLoaded || !_isMapPageReady)
+        {
+            return;
+        }
+
+        var script = _pendingClear
+            ? BuildClearScript()
+            : BuildSetForecastsScript(
+                _pendingForecastsJson ?? "[]",
+                _pendingScaleMinTemperature,
+                _pendingScaleMaxTemperature);
+
+        await InvokeWeatherMapScriptAsync(script);
+    }
+
+    private async Task InvokeWeatherMapScriptAsync(string script)
+    {
+        for (var attempt = 0; attempt < 5; attempt += 1)
+        {
+            var result = await MainThread.InvokeOnMainThreadAsync(
+                () => WeatherMapWebView.EvaluateJavaScriptAsync(script));
+
+            if (string.Equals(result, "ready", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(result, "\"ready\"", StringComparison.OrdinalIgnoreCase))
             {
-                WeatherMap.Pins.Add(new Pin
-                {
-                    Label = $"{forecast.City} - {forecast.TemperatureC}°C",
-                    Address = $"{forecast.Summary} ({forecast.Date:yyyy-MM-dd HH:mm})",
-                    Location = new Location(forecast.Latitude, forecast.Longitude)
-                });
+                return;
             }
 
-            WeatherMap.MoveToRegion(
-                MapSpan.FromCenterAndRadius(
-                    new Location(centerLat, centerLon),
-                    Distance.FromKilometers(radiusKm)));
-        });
-    }
-
-    private async Task RenderWebViewMapAsync(WeatherForecast[] filtered)
-    {
-        var html = await BuildLeafletHtmlAsync(filtered);
-
-        if (saveAndLoadHtml)
-        {
-            await SaveHtmlToFileAndLoadAsync(html);
+            await Task.Delay(100);
         }
-        else
-        {
-            await LoadHtmlIntoWebViewAsync(html);
-        }
-
-    }
-
-
-private async Task ClearNativeMapAsync()
-{
-    await MainThread.InvokeOnMainThreadAsync(() =>
-    {
-        WeatherMap.Pins.Clear();
-    });
-}
-
-private async Task ClearWebMapAsync()
-{
-    await MainThread.InvokeOnMainThreadAsync(() =>
-    {
-        WeatherMapWebView.Source = null;
-    });
-}
-
-private async Task ClearMapAsync()
-{
-    await MainThread.InvokeOnMainThreadAsync(() =>
-    {
-        WeatherMap.Pins.Clear();
-        WeatherMapWebView.Source = null;
-    });
-}
-
-    private async Task SaveHtmlToFileAndLoadAsync(string html)
-    {
-        var filePath = Path.Combine(FileSystem.CacheDirectory, GeneratedMapFileName);
-
-        await File.WriteAllTextAsync(filePath, html);
-
-        await MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            WeatherMapWebView.Source = filePath;
-        });
     }
 
     private async Task LoadHtmlIntoWebViewAsync(string html)
     {
         await MainThread.InvokeOnMainThreadAsync(() =>
         {
+            _isMapPageReady = false;
+            _isMapHtmlLoaded = true;
             WeatherMapWebView.Source = new HtmlWebViewSource
             {
                 Html = html
@@ -183,11 +130,8 @@ private async Task ClearMapAsync()
         });
     }
 
-    private static async Task<string> BuildLeafletHtmlAsync(WeatherForecast[] forecasts)
+    private static string BuildForecastsJson(WeatherForecast[] forecasts)
     {
-        var template = await GetMapTemplateHtmlAsync();
-        var mapScript = await GetMapScriptAsync();
-
         var mapForecasts = forecasts
             .Select(f => new
             {
@@ -200,17 +144,34 @@ private async Task ClearMapAsync()
             })
             .ToArray();
 
-        var json = JsonSerializer.Serialize(mapForecasts);
-        var minTemp = forecasts.Length == 0 ? 0 : forecasts.Min(f => f.TemperatureC);
-        var maxTemp = forecasts.Length == 0 ? 0 : forecasts.Max(f => f.TemperatureC);
+        return JsonSerializer.Serialize(mapForecasts);
+    }
+
+    private string BuildSetForecastsScript(string forecastsJson, int minTemp, int maxTemp)
+    {
+        var quotedForecastsJson = JsonSerializer.Serialize(forecastsJson);
+
+        return $"(() => {{ const bridge = window.weatherMapBridge; if (!bridge || bridge.isReady !== true) return 'not-ready'; bridge.setForecastsJson({quotedForecastsJson}, {minTemp}, {maxTemp}); return 'ready'; }})()";
+    }
+
+    private static string BuildClearScript()
+    {
+        return "(() => { const bridge = window.weatherMapBridge; if (!bridge || bridge.isReady !== true) return 'not-ready'; bridge.clear(); return 'ready'; })()";
+    }
+
+    private async Task<string> BuildLeafletHtmlAsync()
+    {
+        var template = await GetMapTemplateHtmlAsync();
+        var weatherModuleUrl = await GetWeatherModuleUrlAsync();
 
         return template
-            .Replace("__FORECASTS_JSON__", json, StringComparison.Ordinal)
-            .Replace("__MIN_TEMP__", minTemp.ToString(), StringComparison.Ordinal)
-            .Replace("__MAX_TEMP__", maxTemp.ToString(), StringComparison.Ordinal)
-            .Replace("__WEATHER_MAP_SCRIPT__", mapScript, StringComparison.Ordinal)
+            .Replace("__FORECASTS_JSON__", _pendingForecastsJson ?? "[]", StringComparison.Ordinal)
+            .Replace("__MIN_TEMP__", _pendingScaleMinTemperature.ToString(), StringComparison.Ordinal)
+            .Replace("__MAX_TEMP__", _pendingScaleMaxTemperature.ToString(), StringComparison.Ordinal)
+            .Replace("__WEATHER_MODULE_URL__", weatherModuleUrl, StringComparison.Ordinal)
             .Replace("__EMPTY_MESSAGE__", "No forecast data available.", StringComparison.Ordinal);
     }
+
 
     private static async Task<string> GetMapTemplateHtmlAsync()
     {
@@ -226,17 +187,36 @@ private async Task ClearMapAsync()
         return _mapTemplateHtml;
     }
 
-    private static async Task<string> GetMapScriptAsync()
+    private static async Task<string> GetMapCoreScriptAsync()
     {
-        if (!string.IsNullOrWhiteSpace(_mapScript))
+        using var stream = await FileSystem.OpenAppPackageFileAsync(MapCoreScriptFileName);
+        using var reader = new StreamReader(stream);
+
+        return await reader.ReadToEndAsync();
+    }
+
+    private static async Task<string> GetWeatherModuleUrlAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(_weatherModuleUrl))
         {
-            return _mapScript;
+            return _weatherModuleUrl;
         }
+
+        var mapCoreModuleUrl = CreateJavaScriptModuleUrl(await GetMapCoreScriptAsync());
 
         using var stream = await FileSystem.OpenAppPackageFileAsync(MapScriptFileName);
         using var reader = new StreamReader(stream);
 
-        _mapScript = await reader.ReadToEndAsync();
-        return _mapScript;
+        var mapScript = (await reader.ReadToEndAsync())
+            .Replace("__MAP_CORE_MODULE_URL__", mapCoreModuleUrl, StringComparison.Ordinal);
+
+        _weatherModuleUrl = CreateJavaScriptModuleUrl(mapScript);
+        return _weatherModuleUrl;
+    }
+
+    private static string CreateJavaScriptModuleUrl(string script)
+    {
+        var bytes = Encoding.UTF8.GetBytes(script);
+        return $"data:text/javascript;base64,{Convert.ToBase64String(bytes)}";
     }
 }

@@ -61,6 +61,18 @@
          Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
          Size="{StaticResource size240}" />
 
+    <FontImageSource x:Key="IconLocation"
+         Glyph="{x:Static f:FluentUI.location_48_regular}"
+         FontFamily="{x:Static f:FluentUI.FontFamily}"
+         Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+         Size="{StaticResource size240}" />
+
+
+    <FontImageSource x:Key="IconTracking"
+         Glyph="{x:Static f:FluentUI.eye_tracking_24_regular}"
+         FontFamily="{x:Static f:FluentUI.FontFamily}"
+         Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"
+         Size="{StaticResource size240}" />
 
     <FontImageSource x:Key="IconLock"
          Glyph="{x:Static f:FluentUI.lock_closed_48_regular}"

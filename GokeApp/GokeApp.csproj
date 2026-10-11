@@ -96,11 +96,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Pages\Controls\CurrentLocationMapView.xaml.cs">
+		<DependentUpon>CurrentLocationMapView.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Pages\Controls\WeatherForecastMapView.xaml.cs">
 	    <DependentUpon>WeatherForecastMapView.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Pages\DashboardPage.xaml.cs">
 	    <DependentUpon>DashboardPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Pages\LocationPage.xaml.cs">
+	    <DependentUpon>LocationPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -139,6 +145,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\WeatherCityPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\LocationPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\WeatherPage.xaml">

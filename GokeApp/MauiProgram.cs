@@ -76,6 +76,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<MainPageModel>();
         builder.Services.AddSingleton<CounterPageModel>();
         builder.Services.AddSingleton<WeatherPageModel>();
+        builder.Services.AddSingleton<LocationPageModel>();
         builder.Services.AddSingleton<LoginPageModel>();
         builder.Services.AddSingleton<LogoutPageModel>();
         //
