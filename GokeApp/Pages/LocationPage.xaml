@@ -32,6 +32,11 @@
         <controls:CurrentLocationMapView x:Name="LocationMapView"
                                        Markers="{Binding Markers}" />
 
-        
+
+        <controls:AddButton 
+            IsEnabled="{Binding IsNotBusy }"
+            Command="{Binding AddCommand}"
+            ToolTipProperties.Text="Add"
+            SemanticProperties.Description="Add" />
     </VerticalStackLayout>
 </controls:ScrollViewPage>

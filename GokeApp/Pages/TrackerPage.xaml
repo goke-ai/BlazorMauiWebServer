@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:ScrollViewPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         xmlns:coreModels="clr-namespace:Goke.Core.Models;assembly=Goke.Core"
+                         xmlns:pageModels="clr-namespace:GokeApp.PageModels"
+                         xmlns:controls="clr-namespace:GokeApp.Pages.Controls"
+                         x:Class="GokeApp.Pages.TrackerPage"
+                         x:DataType="pageModels:TrackerPageModel"
+                         x:Name="TrackerPageName"
+                         Title="Tracker"
+                         AppearingCommand="{Binding AppearingCommand}"
+                         NavigatedToCommand="{Binding NavigatedToCommand}"
+                         NavigatedFromCommand="{Binding NavigatedFromCommand}"
+                         RefreshCommand="{Binding RefreshCommand}"
+                         IsRefreshing="{Binding IsRefreshing}"
+                         IsBusyOverlayVisible="{Binding IsBusy}"
+                         ProgressBarColor="{StaticResource Primary}">
+
+    <VerticalStackLayout Padding="{StaticResource LayoutPadding}"
+                         Spacing="{StaticResource LayoutSpacing}">
+        <Label Text="Tracker"
+               Style="{StaticResource Headline}"
+               SemanticProperties.HeadingLevel="Level1" />
+
+        <Label Text="My Trackers."
+               Style="{StaticResource SubHeadline}"
+               SemanticProperties.HeadingLevel="Level2" />
+
+        <Label Text="No tracker data available."
+               IsVisible="{Binding HasNoTrackers}" />
+
+        <controls:TrackingMapView x:Name="TrackerMapView"
+                                       Markers="{Binding Markers}" />
+
+
+        <controls:AddButton 
+            IsEnabled="{Binding IsNotBusy }"
+            Command="{Binding AddCommand}"
+            ToolTipProperties.Text="Add"
+            SemanticProperties.Description="Add" />
+    </VerticalStackLayout>
+</controls:ScrollViewPage>

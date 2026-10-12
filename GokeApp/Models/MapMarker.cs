@@ -23,4 +23,8 @@ public sealed class MapMarker
     public string? MarkerInitials { get; set; }
 
     public double? MarkerOpacity { get; set; }
+
+    public double? MarkerValue { get; set; }
+
+
 }

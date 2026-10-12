@@ -54,34 +54,34 @@
             crossorigin=""></script>
 
     <script>
-        window.currentLocationMapConfig = {
-            markers: __MARKERS_JSON__,
+        window.__MAP_CONFIG_NAME__ = {
+            __MAP_DATA_PROPERTY__: __MAP_DATA_JSON__,
             emptyMessage: "__EMPTY_MESSAGE__",
             tileWarningMessage: "__TILE_WARNING_MESSAGE__"
         };
     </script>
     <script type="module">
-        import { clearMarkers, initializeMap, renderAsync, setMarkersJson } from "__CURRENT_LOCATION_MAP_MODULE_URL__";
+        import { __MAP_CLEAR_EXPORT__, initializeMap, renderAsync, __MAP_SET_EXPORT__ } from "__MAP_MODULE_URL__";
 
-        window.currentLocationMapBridge = {
+        window.__MAP_BRIDGE_NAME__ = {
             isReady: false,
             initialize(options) {
-                return initializeMap(options ?? window.currentLocationMapConfig ?? {});
+                return initializeMap(options ?? window.__MAP_CONFIG_NAME__ ?? {});
             },
-            setMarkersJson(markersJson, options) {
-                return setMarkersJson(markersJson, options ?? window.currentLocationMapConfig ?? {});
+            __MAP_SET_METHOD__(mapDataJson, options) {
+                return __MAP_SET_EXPORT__(mapDataJson, options ?? window.__MAP_CONFIG_NAME__ ?? {});
             },
             clear(options) {
-                return clearMarkers(options ?? window.currentLocationMapConfig ?? {});
+                return __MAP_CLEAR_EXPORT__(options ?? window.__MAP_CONFIG_NAME__ ?? {});
             }
         };
 
         renderAsync()
             .then(() => {
-                window.currentLocationMapBridge.isReady = true;
+                window.__MAP_BRIDGE_NAME__.isReady = true;
             })
             .catch(() => {
-                window.currentLocationMapBridge.isReady = false;
+                window.__MAP_BRIDGE_NAME__.isReady = false;
                 document.body.innerHTML = '<div class="empty">Map script is unavailable.</div>';
             });
     </script>

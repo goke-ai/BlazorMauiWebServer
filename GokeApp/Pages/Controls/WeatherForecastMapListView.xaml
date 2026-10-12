@@ -56,6 +56,9 @@
             </VerticalStackLayout>
         </Border>
 
+        <controls:WeatherMapView x:Name="WeatherMapViewControl"
+                                  Markers="{Binding Source={x:Reference this}, Path=FilteredMarkers}" />
+
         <controls:WeatherForecastMapView x:Name="ForecastMapView"
                                   Forecasts="{Binding Source={x:Reference this}, Path=FilteredForecasts}" />
 

@@ -68,7 +68,7 @@
          Size="{StaticResource size240}" />
 
 
-    <FontImageSource x:Key="IconTracking"
+    <FontImageSource x:Key="IconTracker"
          Glyph="{x:Static f:FluentUI.eye_tracking_24_regular}"
          FontFamily="{x:Static f:FluentUI.FontFamily}"
          Color="{AppThemeBinding Light={StaticResource DarkOnLightBackground}, Dark={StaticResource LightOnDarkBackground}}"

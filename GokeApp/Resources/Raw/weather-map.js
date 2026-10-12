@@ -1,4 +1,4 @@
-import { createMap, getColorByScale, getMarkerRadiusFromZoom, normalizePoint, escapeHtml } from "__MAP_CORE_MODULE_URL__";
+import { bindMarkerPopup, bindMarkerTooltip as bindCoreMarkerTooltip, createColoredIcon, createMap, getColorByScale, getMinMaxWithOption, normalizeMarkers } from "__MAP_CORE_MODULE_URL__";
 
 const resolveConfig = () => window.weatherMapConfig ?? {};
 
@@ -6,7 +6,34 @@ const weatherState = {
     mapHost: null,
     markers: new Map(),
     options: {},
+    hasFittedBounds: false,
     initialScale: null
+};
+
+const getTemperatureScale = (markers, options = {}) => {
+    if (weatherState.initialScale) {
+        return weatherState.initialScale;
+    }
+
+    const values = markers.map((marker) => Number(marker.markerValue) || 0);
+
+    const { min, max } = getMinMaxWithOption(values, {
+        Min: options.scaleMinTemperature,
+        Max: options.scaleMaxTemperature
+    });
+
+    const scale = {
+        minTemp: min,
+        maxTemp: max
+    };
+
+    weatherState.initialScale = scale;
+    return scale;
+};
+
+const getColor = (value) => {
+    const scale = weatherState.initialScale ?? getTemperatureScale(Array.from(weatherState.markers.values()), {});
+    return getColorByScale(value, scale.minTemp, scale.maxTemp);
 };
 
 const getEmptyStateElement = () => document.getElementById("empty-state");
@@ -17,20 +44,8 @@ const setEmptyState = (visible, message) => {
         return;
     }
 
-    emptyStateElement.textContent = message ?? "No forecast data available.";
+    emptyStateElement.textContent = message ?? "Weather forecast is unavailable.";
     emptyStateElement.style.display = visible ? "flex" : "none";
-};
-
-const updateMarkerSizes = () => {
-    if (!weatherState.mapHost) {
-        return;
-    }
-
-    //const radius = getMarkerRadiusFromZoom(weatherState.mapHost.map.getZoom());
-
-    //for (const marker of weatherState.markers.values()) {
-    //    marker.setRadius(radius);
-    //}
 };
 
 const ensureMap = (options = {}) => {
@@ -45,221 +60,143 @@ const ensureMap = (options = {}) => {
 
     weatherState.mapHost = createMap({
         mapElementId: weatherState.options.mapElementId ?? "map",
-        tileWarningMessage: weatherState.options.tileWarningMessage ?? "Map tiles are unavailable right now. Forecast markers are still shown."
+        tileWarningMessage: weatherState.options.tileWarningMessage ?? "Map tiles are unavailable right now. Weather forecast markers are still shown."
     });
-
-    //weatherState.mapHost.map.on("zoomend", updateMarkerSizes);
 
     return weatherState.mapHost;
 };
 
-const normalizeForecastsInput = (value) => {
-    if (Array.isArray(value)) {
-        return value;
+const bindMarkerTooltip = (marker, item) => {
+    bindCoreMarkerTooltip(marker, item);
+
+    if (!item.name) {
+        weatherState.mapHost?.unregisterTooltipMarker(marker);
+        return;
     }
 
-    if (typeof value === "string") {
-        try {
-            const parsed = JSON.parse(value);
-            return Array.isArray(parsed) ? parsed : [];
-        } catch {
-            return [];
-        }
-    }
-
-    return [];
+    weatherState.mapHost?.registerTooltipMarker(marker);
 };
 
-const normalizeForecasts = (forecasts) => normalizeForecastsInput(forecasts)
-    .map((forecast, index) => {
-        const point = normalizePoint(forecast);
+const updateMarkerAppearance = (marker, item) => {
+    marker.setLatLng(item.point);
+    marker.setOpacity(item.markerOpacity ?? 1);
 
-        return {
-            ...forecast,
-            key: String(forecast?.city ?? `__index_${index}`) + `_${index}`,
-            point,
-            temperatureC: Number(forecast?.temperatureC)
-        };
-    })
-    .filter((forecast) => Array.isArray(forecast.point) && Number.isFinite(forecast.temperatureC));
+    item.markerColor = getColor(item.markerValue);
 
-const getTemperatureScale = (forecasts, options = {}) => {
-    if (weatherState.initialScale) {
-        return weatherState.initialScale;
+    marker.setIcon(createColoredIcon(item.markerColor, item.markerShape, item.markerInitials, item.markerOpacity, 32, weatherState.mapHost?.map.getZoom()));
+
+    bindMarkerTooltip(marker, item);
+    bindMarkerPopup(marker, item);
+};
+
+const shouldFitBounds = (validMarkers, options = {}) => {
+    if (validMarkers.length === 0) {
+        return false;
     }
 
-    if (forecasts.length === 0) {
-        return {
-            minTemp: 0,
-            maxTemp: 0
-        };
+    if (options.fitBounds === true) {
+        return true;
     }
 
-    const scale = {
-        minTemp: Number.isFinite(options.scaleMinTemperature)
-            ? options.scaleMinTemperature
-            : Math.min(...forecasts.map((forecast) => Number(forecast.temperatureC) || 0)),
-        maxTemp: Number.isFinite(options.scaleMaxTemperature)
-            ? options.scaleMaxTemperature
-            : Math.max(...forecasts.map((forecast) => Number(forecast.temperatureC) || 0))
+    if (options.fitBounds === false) {
+        return false;
+    }
+
+    return !weatherState.hasFittedBounds;
+};
+
+export const initializeMap = (options = {}) => {
+    ensureMap(options);
+    setEmptyState(false, options.emptyMessage);
+
+    return {
+        mapHost: weatherState.mapHost,
+        markers: Array.from(weatherState.markers.values())
     };
-
-    weatherState.initialScale = scale;
-    return scale;
 };
 
+export const renderMarkers = (markers, options = {}) => {
+    const mapHost = ensureMap(options);
+    const validMarkers = normalizeMarkers(markers);
 
-const bindMarkerTooltip = (marker, forecast) => {
-    const tooltipContent = `${forecast.temperatureC}&deg;C`;
-    const tooltip = marker.getTooltip?.();
+    const nextKeys = new Set(validMarkers.map((marker) => marker.key));
+    for (const [key, marker] of weatherState.markers.entries()) {
+        if (nextKeys.has(key)) {
+            continue;
+        }
 
-    if (tooltip) {
-        tooltip.setContent(tooltipContent);
-        return;
+        mapHost.unregisterTooltipMarker(marker);
+        mapHost.map.removeLayer(marker);
+        weatherState.markers.delete(key);
     }
 
-    marker.bindTooltip(tooltipContent, {
-        permanent: false,
-        direction: "top",
-        offset: [0, -14],
-        opacity: 0.95
-    });
-};
+    const scale = getTemperatureScale(validMarkers, {});
 
-const bindMarkerPopup = (marker, forecast) => {
-    const popupHtml =
-        `<strong>${escapeHtml(forecast.city)}</strong><br/>` +
-        `Temperature: ${escapeHtml(forecast.temperatureC)}&deg;C<br/>` +
-        `Summary: ${escapeHtml(forecast.summary)}<br/>` +
-        `Time: ${escapeHtml(forecast.date)}`;
+    for (const item of validMarkers) {
+        let marker = weatherState.markers.get(item.key);
 
-    const popup = marker.getPopup?.();
-    if (popup) {
-        popup.setContent(popupHtml);
-        return;
+        if (!marker) {
+            marker = L.marker(item.point, {
+                icon: createColoredIcon(item.markerColor, item.markerShape, item.markerInitials)
+            }).addTo(mapHost.map);
+
+            weatherState.markers.set(item.key, marker);
+        }
+
+        updateMarkerAppearance(marker, item);
     }
 
-    marker.bindPopup(popupHtml);
-};
+    setEmptyState(validMarkers.length === 0, options.emptyMessage);
 
-const updateMarkerAppearance = (marker, forecast, scale) => {
-    marker.setLatLng(forecast.point);
-    marker.setStyle({
-        color: "#1f2937",
-        weight: 2,
-        fillColor: getColorByScale(forecast.temperatureC, scale.minTemp, scale.maxTemp),
-        fillOpacity: 0.85
-    });
+    if (shouldFitBounds(validMarkers, options)) {
+        mapHost.fitBounds(
+            validMarkers.map((marker) => marker.point),
+            options.singlePointZoom ?? 15,
+            options.padding ?? [30, 30]
+        );
 
-    bindMarkerTooltip(marker, forecast);
-    bindMarkerPopup(marker, forecast);
-    weatherState.mapHost?.applyTooltipVisibility(marker);
-};
-
-const createMarker = (forecast, scale) => {
-    const mapHost = ensureMap();
-    const map = mapHost.map;
-    const marker = L.circleMarker(forecast.point, {
-        radius: 16,//getMarkerRadiusFromZoom(map.getZoom()),
-        color: "#1f2937",
-        weight: 2,
-        fillColor: getColorByScale(forecast.temperatureC, scale.minTemp, scale.maxTemp),
-        fillOpacity: 0.85
-    });
-
-    bindMarkerTooltip(marker, forecast);
-    bindMarkerPopup(marker, forecast);
-    marker.addTo(map);
-    mapHost.registerTooltipMarker(marker);
-
-    return marker;
-};
-
-const removeAllMarkers = () => {
-    if (!weatherState.mapHost) {
-        weatherState.markers.clear();
-        return;
+        weatherState.hasFittedBounds = true;
     }
+
+    return {
+        mapHost,
+        markers: Array.from(weatherState.markers.values())
+    };
+};
+
+export const clearMarkers = (options = {}) => {
+    const mapHost = ensureMap(options);
 
     for (const marker of weatherState.markers.values()) {
-        weatherState.mapHost.unregisterTooltipMarker(marker);
-        weatherState.mapHost.map.removeLayer(marker);
+        mapHost.unregisterTooltipMarker(marker);
+        mapHost.map.removeLayer(marker);
     }
 
     weatherState.markers.clear();
+    setEmptyState(true, options.emptyMessage);
 };
 
-const syncMarkers = (forecasts, scale) => {
-    const activeKeys = new Set();
+export const setMarkersJson = (markersJson, options = {}) => {
+    const markers = typeof markersJson === "string"
+        ? JSON.parse(markersJson)
+        : markersJson;
 
-    for (const forecast of forecasts) {
-        activeKeys.add(forecast.key);
-
-        const existingMarker = weatherState.markers.get(forecast.key);
-        if (existingMarker) {
-            updateMarkerAppearance(existingMarker, forecast, scale);
-            continue;
-        }
-
-        weatherState.markers.set(forecast.key, createMarker(forecast, scale));
-    }
-
-    for (const [key, marker] of weatherState.markers.entries()) {
-        if (activeKeys.has(key)) {
-            continue;
-        }
-
-        weatherState.mapHost.map.removeLayer(marker);
-        weatherState.markers.delete(key);
-    }
+    return renderMarkers(markers, options);
 };
 
-const fitForecastBounds = (forecasts) => {
-    if (!weatherState.mapHost || forecasts.length === 0) {
-        return;
-    }
-
-    weatherState.mapHost.fitBounds(
-        forecasts.map((forecast) => forecast.point),
-        6,
-        [30, 30]);
-};
-
-export function clearForecasts(options = {}) {
-    ensureMap(options);
-    removeAllMarkers();
-    setEmptyState(true, options.emptyMessage ?? resolveConfig().emptyMessage ?? "No forecast data available.");
-}
-
-export function setForecastsJson(forecastsJson, scaleMinTemperature, scaleMaxTemperature, options = {}) {
-    ensureMap(options);
-
-    const forecasts = normalizeForecasts(forecastsJson);
-    if (forecasts.length === 0) {
-        clearForecasts(options);
-        return;
-    }
-
-    const scale = getTemperatureScale(forecasts, {
-        scaleMinTemperature: Number(scaleMinTemperature),
-        scaleMaxTemperature: Number(scaleMaxTemperature)
-    });
-
-    setEmptyState(false, options.emptyMessage ?? resolveConfig().emptyMessage ?? "No forecast data available.");
-    syncMarkers(forecasts, scale);
-    updateMarkerSizes();
-    fitForecastBounds(forecasts);
-}
-
-export async function renderAsync() {
+const renderAsync = async () => {
     const config = resolveConfig();
 
-    setForecastsJson(
-        config.forecasts,
-        config.scaleMinTemperature,
-        config.scaleMaxTemperature,
-        {
-            emptyMessage: config.emptyMessage
-        });
-    return Promise.resolve();
-}
+    initializeMap(config);
+
+    renderMarkers(config.markers ?? [], {
+        mapElementId: config.mapElementId,
+        emptyMessage: config.emptyMessage,
+        tileWarningMessage: config.tileWarningMessage,
+        fitBounds: config.fitBounds,
+        singlePointZoom: config.singlePointZoom,
+        padding: config.padding
+    });
+};
+
+export { renderAsync };

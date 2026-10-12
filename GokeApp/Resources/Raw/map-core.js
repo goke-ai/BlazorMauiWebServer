@@ -35,8 +35,6 @@ export const toRGBAValue = (color, alpha = 1) => {
     return { r, g, b, alpha };
 };
 
-
-
 export const toHexWithAlpha = (color, alpha = 1) => {
     const rgba = toRGBAValue(color, alpha);
 
@@ -75,6 +73,58 @@ export const escapeHtml = (value) => String(value ?? "")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
 
+export const getMinMaxOrOption = (values, options = {}) => {
+    
+    if (values.length === 0) {
+        return {
+            min: 0,
+            max: 0
+        };
+    }
+
+    const scale = {
+        min: Number.isFinite(options.Min)
+            ? options.Min
+            : Math.min(...values.map((value) => Number(value) || 0)),
+        max: Number.isFinite(options.Max)
+            ? options.Max
+            : Math.max(...values.map((value) => Number(value) || 0))
+    };
+
+    return scale;
+};
+
+export const getMinMaxWithOption = (values, options = {}) => {
+
+    if (values.length === 0) {
+        return {
+            min: 0,
+            max: 0
+        };
+    }
+
+    const all = [Number.isFinite(options.Min) ? options.Min : 0, Number.isFinite(options.Max) ? options.Max : 0, ...values];
+   
+    return getMinMax(all);
+};
+
+export const getMinMax = (values) => {
+
+    if (values.length === 0) {
+        return {
+            min: 0,
+            max: 0
+        };
+    }
+
+    const scale = {
+        min: Math.min(...values.map((value) => Number(value) || 0)),
+        max: Math.max(...values.map((value) => Number(value) || 0))
+    };
+
+    return scale;
+};
+
 export const normalizePoint = (value) => {
     if (Array.isArray(value) && value.length >= 2) {
         return [Number(value[0]), Number(value[1])];
@@ -107,7 +157,7 @@ export const getMarkerRadiusFromZoom = (zoom) => {
 };
 
 export const getMarkerIconSizeFromZoom = (zoom) => Math.max(
-    16,
+    18,
     Math.min(32, Math.round(getMarkerRadiusFromZoom(zoom) * 2))
 );
 
@@ -233,14 +283,15 @@ export const getShapeStyle = (shape) => {
     }
 };
 
-export const createColoredIcon = (markerColor, markerShape, markerInitials = "", zoom) => {
+export const createColoredIcon = (markerColor, markerShape, markerInitials = "", markerOpacity = 0.85, markerSize = 18) => {
+    
     const color = markerColor ?? "#198754";
-    const fillColor = toRGBA(color, 0.50);
+    const fillColor = toRGBA(color, markerOpacity ?? 0.85);
     const glowColor = toRGBA(color, 0.33);
     const shape = markerShape ?? "Circle";
     const initials = String(markerInitials ?? "").slice(0, 3);
     const shapeStyle = getShapeStyle(shape);
-    const iconSize = 18//getMarkerIconSizeFromZoom(zoom);
+    const iconSize = markerSize ?? 18; // getMarkerIconSizeFromZoom(zoom);
     const iconAnchor = Math.round(iconSize / 2);
     const scale = iconSize / 18;
     const label = initials
@@ -250,7 +301,6 @@ export const createColoredIcon = (markerColor, markerShape, markerInitials = "",
     const baseHtml = shape === "Triangle"
         ? `<div style="position:relative;width:18px;height:18px;"><div style="${shapeStyle}${fillColor};filter:drop-shadow(0 0 2px ${glowColor});"></div><span style="position:absolute;left:50%;top:65%;transform:translate(-50%,-50%);font-size:7px;font-weight:700;color:#fff;">${escapeHtml(initials)}</span></div>`
         : `<div style="position:relative;width:18px;height:18px;"><div style="position:absolute;left:2px;top:2px;width:14px;height:14px;${shapeStyle}background:${fillColor};border:2px solid #fff;box-shadow:0 0 0 2px ${glowColor};">${label}</div></div>`;
-        //: `<div style="position:relative;width:18px;height:18px;"><div style="position:absolute;left:2px;top:2px;width:14px;height:14px;${shapeStyle}background:${fillColor};">${label}</div></div>`;
 
     const html = `<div style="position:relative;width:${iconSize}px;height:${iconSize}px;"><div style="position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%) scale(${scale});transform-origin:center center;">${baseHtml}</div></div>`;
 

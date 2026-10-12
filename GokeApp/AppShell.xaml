@@ -38,6 +38,20 @@
          Route="Location" />
 
     <ShellContent
+         x:Name="TrackerItem"
+         Title="Tracker"
+         Icon="{StaticResource IconTracker}"
+         ContentTemplate="{DataTemplate pages:TrackerPage}"
+         Route="Tracker" />
+
+    <ShellContent
+         x:Name="DirectionItem"
+         Title="Direction"
+         Icon="{StaticResource IconTracker}"
+         ContentTemplate="{DataTemplate pages:DirectionPage}"
+         Route="Direction" />
+
+    <ShellContent
          x:Name="AuthItem"
          Title="Auth"
          Icon="{StaticResource IconLock}"

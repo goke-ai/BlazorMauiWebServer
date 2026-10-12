@@ -1,7 +1,9 @@
 using Goke.Core.Models;
+using GokeApp.Models;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
+using System.Text.Json;
 
 namespace GokeApp.Pages.Controls;
 
@@ -129,6 +131,33 @@ public partial class WeatherForecastMapListView : ContentView
     }
 
     public WeatherForecast[] FilteredForecasts => _filteredForecasts;
+    public MapMarker[] FilteredMarkers => BuildMarkersJson(_filteredForecasts);
+    private static MapMarker[] BuildMarkersJson(WeatherForecast[] forecasts)
+    {
+        var mapMarkers = forecasts
+            .Select((forecast, index) => new MapMarker
+            {
+                Id = index.ToString(),
+                Name = forecast.City,
+                Latitude = forecast.Latitude,
+                Longitude = forecast.Longitude,
+                Description = $"{forecast.TemperatureC}&deg; C",
+                //Timestamp = forecast.Timestamp,
+                PopupHtml = $"<strong>{forecast.City}</strong><br />" +
+                            $"Temperature: {forecast.TemperatureC}&deg;C<br />" +
+                            $"Summary: {forecast.Summary}<br />" +
+                            $"Time: {forecast.Date}",
+                //MarkerColor = "#1f2937",
+                //MarkerShape = forecast.MarkerShape,
+                //MarkerInitials = forecast.MarkerInitials,
+                //MarkerOpacity = 0.55,
+                MarkerValue = forecast.TemperatureC
+
+            })
+            .ToArray();
+
+        return mapMarkers;
+    }
 
     private static void OnForecastsChanged(BindableObject bindable, object oldValue, object newValue)
     {
@@ -234,7 +263,9 @@ public partial class WeatherForecastMapListView : ContentView
                 f.TemperatureC <= SelectedRangeMaxTemperature)
             .ToArray();
 
+
         OnPropertyChanged(nameof(FilteredForecasts));
+        OnPropertyChanged(nameof(FilteredMarkers));
         OnPropertyChanged(nameof(VisibleCitiesText));
     }
 

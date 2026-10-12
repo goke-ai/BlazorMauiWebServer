@@ -105,6 +105,9 @@
 	  <Compile Update="Pages\DashboardPage.xaml.cs">
 	    <DependentUpon>DashboardPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Pages\TrackerPage.xaml.cs">
+	    <DependentUpon>TrackerPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Pages\LocationPage.xaml.cs">
 	    <DependentUpon>LocationPage.xaml</DependentUpon>
 	  </Compile>
@@ -141,6 +144,12 @@
 	  <MauiXaml Update="Pages\CounterPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\DirectionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\TrackerPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\MainPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -157,6 +166,12 @@
 
 	<ItemGroup>
 	  <Folder Include="Services\Auth\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Pages\DirectionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	</ItemGroup>
 	
 </Project>

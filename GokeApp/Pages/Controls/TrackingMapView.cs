@@ -1,5 +1,4 @@
 using GokeApp.Models;
-using System.Text;
 using System.Text.Json;
 
 namespace GokeApp.Pages.Controls;
@@ -7,17 +6,13 @@ namespace GokeApp.Pages.Controls;
 public sealed partial class TrackingMapView : ContentView
 {
     private const string MapCoreScriptFileName = "map-core.js";
-    private const string MapTemplateFileName = "tracking-map-template.html";
-    private const string MapScriptFileName = "tracking.map.js";
-
-    private static string? _mapTemplateHtml;
-    private static string? _trackingModuleUrl;
+    private const string MapTemplateFileName = "map-view-template.html";
+    private const string MapScriptFileName = "tracking-map.js";
 
     private readonly Label _visibleMarkersLabel;
     private readonly Label _emptyStateLabel;
     private readonly WebView _trackingMapWebView;
-    private bool _isMapHtmlLoaded;
-    private bool _isMapPageReady;
+    private readonly MapWebViewHost _mapWebViewHost;
     private string? _pendingMarkersJson;
     private bool _pendingClear;
 
@@ -44,7 +39,7 @@ public sealed partial class TrackingMapView : ContentView
         };
 
         _trackingMapWebView = new WebView();
-        _trackingMapWebView.Navigated += TrackingMapWebView_Navigated;
+        _mapWebViewHost = new MapWebViewHost(_trackingMapWebView, PushPendingUpdateAsync);
 
         var border = new Border
         {
@@ -88,7 +83,7 @@ public sealed partial class TrackingMapView : ContentView
         _pendingMarkersJson = markersJson;
         _pendingClear = markers.Length == 0;
 
-        if (!_isMapHtmlLoaded)
+        if (!_mapWebViewHost.IsMapHtmlLoaded)
         {
             if (markers.Length == 0)
             {
@@ -107,70 +102,35 @@ public sealed partial class TrackingMapView : ContentView
         _visibleMarkersLabel.Text = $"{(Markers ?? []).Count()} marker(s) visible";
     }
 
-    private void TrackingMapWebView_Navigated(object? sender, WebNavigatedEventArgs e)
-    {
-        _isMapPageReady = true;
-        _ = PushPendingUpdateAsync();
-    }
-
     private async Task LoadInitialMapAsync(string markersJson)
     {
         var html = await BuildLeafletHtmlAsync(markersJson);
-        await LoadHtmlIntoWebViewAsync(html);
+        await _mapWebViewHost.LoadHtmlAsync(html);
     }
 
     private async Task PushPendingUpdateAsync()
     {
-        if (!_isMapHtmlLoaded || !_isMapPageReady)
-        {
-            return;
-        }
-
         var script = _pendingClear
             ? BuildClearScript()
             : BuildSetMarkersScript(_pendingMarkersJson ?? "[]");
 
-        await InvokeTrackingMapScriptAsync(script);
-    }
-
-    private async Task InvokeTrackingMapScriptAsync(string script)
-    {
-        for (var attempt = 0; attempt < 5; attempt += 1)
-        {
-            var result = await MainThread.InvokeOnMainThreadAsync(
-                () => _trackingMapWebView.EvaluateJavaScriptAsync(script));
-
-            if (string.Equals(result, "ready", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(result, "\"ready\"", StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-            await Task.Delay(100);
-        }
-    }
-
-    private async Task LoadHtmlIntoWebViewAsync(string html)
-    {
-        await MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            _isMapPageReady = false;
-            _isMapHtmlLoaded = true;
-            _trackingMapWebView.Source = new HtmlWebViewSource
-            {
-                Html = html
-            };
-        });
+        await _mapWebViewHost.InvokeWhenReadyAsync(script);
     }
 
     private static async Task<string> BuildLeafletHtmlAsync(string markersJson)
     {
-        var template = await GetMapTemplateHtmlAsync();
-        var trackingModuleUrl = await GetTrackingModuleUrlAsync();
+        var template = await MapWebViewAssetCache.GetTemplateHtmlAsync(MapTemplateFileName);
+        var trackingModuleUrl = await MapWebViewAssetCache.GetModuleUrlAsync(MapCoreScriptFileName, MapScriptFileName);
 
         return template
-            .Replace("__MARKERS_JSON__", markersJson, StringComparison.Ordinal)
-            .Replace("__TRACKING_MAP_MODULE_URL__", trackingModuleUrl, StringComparison.Ordinal)
+            .Replace("__MAP_CONFIG_NAME__", "trackingMapConfig", StringComparison.Ordinal)
+            .Replace("__MAP_BRIDGE_NAME__", "trackingMapBridge", StringComparison.Ordinal)
+            .Replace("__MAP_DATA_PROPERTY__", "markers", StringComparison.Ordinal)
+            .Replace("__MAP_DATA_JSON__", markersJson, StringComparison.Ordinal)
+            .Replace("__MAP_MODULE_URL__", trackingModuleUrl, StringComparison.Ordinal)
+            .Replace("__MAP_SET_EXPORT__", "setMarkersJson", StringComparison.Ordinal)
+            .Replace("__MAP_CLEAR_EXPORT__", "clearMarkers", StringComparison.Ordinal)
+            .Replace("__MAP_SET_METHOD__", "setMarkersJson", StringComparison.Ordinal)
             .Replace("__EMPTY_MESSAGE__", "No tracking markers available.", StringComparison.Ordinal)
             .Replace("__TILE_WARNING_MESSAGE__", "Map tiles are unavailable right now. Tracking markers are still shown.", StringComparison.Ordinal);
     }
@@ -201,58 +161,11 @@ public sealed partial class TrackingMapView : ContentView
     {
         var quotedMarkersJson = JsonSerializer.Serialize(markersJson);
 
-        return $"(() => {{ const bridge = window.trackingMapBridge; if (!bridge || bridge.isReady !== true) return 'not-ready'; bridge.setMarkersJson({quotedMarkersJson}); return 'ready'; }})()";
+        return $"(() => {{ const bridge = window.trackingMapBridge; if (!bridge || bridge.isReady !== true) return 'not-ready'; bridge.setMarkersJson({quotedMarkersJson}, window.trackingMapConfig ?? {{}}); return 'ready'; }})()";
     }
 
     private static string BuildClearScript()
     {
         return "(() => { const bridge = window.trackingMapBridge; if (!bridge || bridge.isReady !== true) return 'not-ready'; bridge.clear(); return 'ready'; })()";
-    }
-
-    private static async Task<string> GetMapTemplateHtmlAsync()
-    {
-        if (!string.IsNullOrWhiteSpace(_mapTemplateHtml))
-        {
-            return _mapTemplateHtml;
-        }
-
-        using var stream = await FileSystem.OpenAppPackageFileAsync(MapTemplateFileName);
-        using var reader = new StreamReader(stream);
-
-        _mapTemplateHtml = await reader.ReadToEndAsync();
-        return _mapTemplateHtml;
-    }
-
-    private static async Task<string> GetMapCoreScriptAsync()
-    {
-        using var stream = await FileSystem.OpenAppPackageFileAsync(MapCoreScriptFileName);
-        using var reader = new StreamReader(stream);
-
-        return await reader.ReadToEndAsync();
-    }
-
-    private static async Task<string> GetTrackingModuleUrlAsync()
-    {
-        if (!string.IsNullOrWhiteSpace(_trackingModuleUrl))
-        {
-            return _trackingModuleUrl;
-        }
-
-        var mapCoreModuleUrl = CreateJavaScriptModuleUrl(await GetMapCoreScriptAsync());
-
-        using var stream = await FileSystem.OpenAppPackageFileAsync(MapScriptFileName);
-        using var reader = new StreamReader(stream);
-
-        var mapScript = (await reader.ReadToEndAsync())
-            .Replace("__MAP_CORE_MODULE_URL__", mapCoreModuleUrl, StringComparison.Ordinal);
-
-        _trackingModuleUrl = CreateJavaScriptModuleUrl(mapScript);
-        return _trackingModuleUrl;
-    }
-
-    private static string CreateJavaScriptModuleUrl(string script)
-    {
-        var bytes = Encoding.UTF8.GetBytes(script);
-        return $"data:text/javascript;base64,{Convert.ToBase64String(bytes)}";
     }
 }
