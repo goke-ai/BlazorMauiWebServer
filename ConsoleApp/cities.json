@@ -1,0 +1,3083 @@
+﻿[
+  {
+    "City": "Abuja",
+    "Latitude": 9.0765,
+    "Longitude": 7.3986,
+    "MinTempC": 22,
+    "MaxTempC": 34,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1006,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 35,
+    "MaxAirQualityIndex": 95,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Addis Ababa",
+    "Latitude": 8.9806,
+    "Longitude": 38.7578,
+    "MinTempC": 9,
+    "MaxTempC": 25,
+    "MinHumidityPercent": 40,
+    "MaxHumidityPercent": 78,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1010,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 42,
+    "Summaries": [
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Amman",
+    "Latitude": 31.9454,
+    "Longitude": 35.9284,
+    "MinTempC": 4,
+    "MaxTempC": 33,
+    "MinHumidityPercent": 30,
+    "MaxHumidityPercent": 65,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 14,
+    "MaxAirQualityIndex": 52,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Anchorage",
+    "Latitude": 61.2181,
+    "Longitude": -149.9003,
+    "MinTempC": -15,
+    "MaxTempC": 18,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 20,
+    "MinPressureHpa": 995,
+    "MaxPressureHpa": 1020,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 30,
+    "MinAirQualityIndex": 8,
+    "MaxAirQualityIndex": 35,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Antananarivo",
+    "Latitude": -18.8792,
+    "Longitude": 47.5079,
+    "MinTempC": 10,
+    "MaxTempC": 28,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 42,
+    "Summaries": [
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Atlanta",
+    "Latitude": 33.749,
+    "Longitude": -84.388,
+    "MinTempC": 4,
+    "MaxTempC": 32,
+    "MinHumidityPercent": 50,
+    "MaxHumidityPercent": 85,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 16,
+    "MaxAirQualityIndex": 58,
+    "Summaries": [
+      {
+        "Text": "Warm",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Bangkok",
+    "Latitude": 13.7563,
+    "Longitude": 100.5018,
+    "MinTempC": 25,
+    "MaxTempC": 36,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1014,
+    "MinWindSpeedKph": 5,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 85,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Beijing",
+    "Latitude": 39.9042,
+    "Longitude": 116.4074,
+    "MinTempC": -4,
+    "MaxTempC": 32,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 75,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1026,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 25,
+    "MaxAirQualityIndex": 90,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Belfast",
+    "Latitude": 54.5973,
+    "Longitude": -5.9301,
+    "MinTempC": 4,
+    "MaxTempC": 19,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1003,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 25,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 36,
+    "Summaries": [
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Bogota",
+    "Latitude": 4.711,
+    "Longitude": -74.0721,
+    "MinTempC": 7,
+    "MaxTempC": 20,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 1010,
+    "MaxPressureHpa": 1025,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 42,
+    "Summaries": [
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Buenos Aires",
+    "Latitude": -34.6037,
+    "Longitude": -58.3816,
+    "MinTempC": 8,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 85,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 25,
+    "MinPressureHpa": 1006,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 16,
+    "MaxAirQualityIndex": 52,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      }
+    ]
+  },
+  {
+    "City": "Cairo",
+    "Latitude": 30.0444,
+    "Longitude": 31.2357,
+    "MinTempC": 14,
+    "MaxTempC": 38,
+    "MinHumidityPercent": 30,
+    "MaxHumidityPercent": 60,
+    "MinVisibilityKm": 9,
+    "MaxVisibilityKm": 30,
+    "MinPressureHpa": 1007,
+    "MaxPressureHpa": 1020,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 35,
+    "MaxAirQualityIndex": 110,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Calgary",
+    "Latitude": 51.0447,
+    "Longitude": -114.0719,
+    "MinTempC": -14,
+    "MaxTempC": 26,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 72,
+    "MinVisibilityKm": 9,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1002,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 9,
+    "MaxWindSpeedKph": 30,
+    "MinAirQualityIndex": 8,
+    "MaxAirQualityIndex": 35,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      }
+    ]
+  },
+  {
+    "City": "Cape Town",
+    "Latitude": -33.9249,
+    "Longitude": 18.4241,
+    "MinTempC": 9,
+    "MaxTempC": 28,
+    "MinHumidityPercent": 50,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1025,
+    "MinWindSpeedKph": 10,
+    "MaxWindSpeedKph": 30,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 40,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      }
+    ]
+  },
+  {
+    "City": "Caracas",
+    "Latitude": 10.4806,
+    "Longitude": -66.9036,
+    "MinTempC": 20,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 18,
+    "MaxAirQualityIndex": 62,
+    "Summaries": [
+      {
+        "Text": "Warm",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      }
+    ]
+  },
+  {
+    "City": "Cardiff",
+    "Latitude": 51.4816,
+    "Longitude": -3.1791,
+    "MinTempC": 6,
+    "MaxTempC": 21,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 38,
+    "Summaries": [
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Chicago",
+    "Latitude": 41.8781,
+    "Longitude": -87.6298,
+    "MinTempC": -12,
+    "MaxTempC": 29,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1000,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 9,
+    "MaxWindSpeedKph": 30,
+    "MinAirQualityIndex": 14,
+    "MaxAirQualityIndex": 52,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      }
+    ]
+  },
+  {
+    "City": "Dallas",
+    "Latitude": 32.7767,
+    "Longitude": -96.797,
+    "MinTempC": 8,
+    "MaxTempC": 37,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 80,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1020,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 20,
+    "MaxAirQualityIndex": 78,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Delhi",
+    "Latitude": 28.6139,
+    "Longitude": 77.209,
+    "MinTempC": 7,
+    "MaxTempC": 42,
+    "MinHumidityPercent": 25,
+    "MaxHumidityPercent": 70,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1003,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 35,
+    "MaxAirQualityIndex": 110,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      }
+    ]
+  },
+  {
+    "City": "Denver",
+    "Latitude": 39.7392,
+    "Longitude": -104.9903,
+    "MinTempC": -8,
+    "MaxTempC": 29,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 70,
+    "MinVisibilityKm": 10,
+    "MaxVisibilityKm": 30,
+    "MinPressureHpa": 1005,
+    "MaxPressureHpa": 1025,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 48,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      }
+    ]
+  },
+  {
+    "City": "Doha",
+    "Latitude": 25.2854,
+    "Longitude": 51.531,
+    "MinTempC": 16,
+    "MaxTempC": 41,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 75,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 92,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Dubai",
+    "Latitude": 25.2048,
+    "Longitude": 55.2708,
+    "MinTempC": 18,
+    "MaxTempC": 42,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 75,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 30,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 30,
+    "MaxAirQualityIndex": 95,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Dublin",
+    "Latitude": 53.3498,
+    "Longitude": -6.2603,
+    "MinTempC": 5,
+    "MaxTempC": 20,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 23,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 36,
+    "Summaries": [
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Edinburgh",
+    "Latitude": 55.9533,
+    "Longitude": -3.1883,
+    "MinTempC": 3,
+    "MaxTempC": 19,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1003,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 9,
+    "MaxWindSpeedKph": 25,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 35,
+    "Summaries": [
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Fairbanks",
+    "Latitude": 64.8378,
+    "Longitude": -147.7164,
+    "MinTempC": -28,
+    "MaxTempC": 22,
+    "MinHumidityPercent": 50,
+    "MaxHumidityPercent": 85,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 994,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 6,
+    "MaxAirQualityIndex": 28,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      }
+    ]
+  },
+  {
+    "City": "Helsinki",
+    "Latitude": 60.1699,
+    "Longitude": 24.9384,
+    "MinTempC": -10,
+    "MaxTempC": 22,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 86,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 998,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 38,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Hong Kong",
+    "Latitude": 22.3193,
+    "Longitude": 114.1694,
+    "MinTempC": 16,
+    "MaxTempC": 33,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 92,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 20,
+    "MinPressureHpa": 1005,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 24,
+    "MaxAirQualityIndex": 75,
+    "Summaries": [
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Honolulu",
+    "Latitude": 21.3069,
+    "Longitude": -157.8583,
+    "MinTempC": 22,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 62,
+    "MaxHumidityPercent": 86,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 40,
+    "Summaries": [
+      {
+        "Text": "Warm",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Iqaluit",
+    "Latitude": 63.7467,
+    "Longitude": -68.517,
+    "MinTempC": -24,
+    "MaxTempC": 12,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 992,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 9,
+    "MaxWindSpeedKph": 30,
+    "MinAirQualityIndex": 6,
+    "MaxAirQualityIndex": 24,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Jakarta",
+    "Latitude": -6.2088,
+    "Longitude": 106.8456,
+    "MinTempC": 24,
+    "MaxTempC": 33,
+    "MinHumidityPercent": 72,
+    "MaxHumidityPercent": 95,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 14,
+    "MinPressureHpa": 1005,
+    "MaxPressureHpa": 1014,
+    "MinWindSpeedKph": 5,
+    "MaxWindSpeedKph": 16,
+    "MinAirQualityIndex": 32,
+    "MaxAirQualityIndex": 88,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Rainy",
+        "Icon": "\uD83C\uDF27️"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Jeddah",
+    "Latitude": 21.4858,
+    "Longitude": 39.1925,
+    "MinTempC": 23,
+    "MaxTempC": 39,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 80,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1015,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 95,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Jerusalem",
+    "Latitude": 31.7683,
+    "Longitude": 35.2137,
+    "MinTempC": 7,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 70,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 16,
+    "MaxAirQualityIndex": 58,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Johannesburg",
+    "Latitude": -26.2041,
+    "Longitude": 28.0473,
+    "MinTempC": 4,
+    "MaxTempC": 28,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 72,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 48,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      }
+    ]
+  },
+  {
+    "City": "Kingston",
+    "Latitude": 17.9712,
+    "Longitude": -76.7936,
+    "MinTempC": 24,
+    "MaxTempC": 32,
+    "MinHumidityPercent": 68,
+    "MaxHumidityPercent": 92,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1007,
+    "MaxPressureHpa": 1017,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 22,
+    "MaxAirQualityIndex": 70,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Kuala Lumpur",
+    "Latitude": 3.139,
+    "Longitude": 101.6869,
+    "MinTempC": 24,
+    "MaxTempC": 32,
+    "MinHumidityPercent": 78,
+    "MaxHumidityPercent": 96,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 14,
+    "MinPressureHpa": 1006,
+    "MaxPressureHpa": 1016,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 35,
+    "MaxAirQualityIndex": 85,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Rainy",
+        "Icon": "\uD83C\uDF27️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Kuwait City",
+    "Latitude": 29.3759,
+    "Longitude": 47.9774,
+    "MinTempC": 10,
+    "MaxTempC": 44,
+    "MinHumidityPercent": 20,
+    "MaxHumidityPercent": 55,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 30,
+    "MinPressureHpa": 1002,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 30,
+    "MaxAirQualityIndex": 100,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Lagos",
+    "Latitude": 6.5244,
+    "Longitude": 3.3792,
+    "MinTempC": 25,
+    "MaxTempC": 33,
+    "MinHumidityPercent": 72,
+    "MaxHumidityPercent": 95,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 16,
+    "MinPressureHpa": 1007,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 55,
+    "MaxAirQualityIndex": 120,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      }
+    ]
+  },
+  {
+    "City": "Lima",
+    "Latitude": -12.0464,
+    "Longitude": -77.0428,
+    "MinTempC": 15,
+    "MaxTempC": 29,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 1009,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 16,
+    "MaxAirQualityIndex": 55,
+    "Summaries": [
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      }
+    ]
+  },
+  {
+    "City": "London",
+    "Latitude": 51.5074,
+    "Longitude": -0.1278,
+    "MinTempC": 8,
+    "MaxTempC": 18,
+    "MinHumidityPercent": 68,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1026,
+    "MinWindSpeedKph": 10,
+    "MaxWindSpeedKph": 28,
+    "MinAirQualityIndex": 20,
+    "MaxAirQualityIndex": 55,
+    "Summaries": [
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Los Angeles",
+    "Latitude": 34.0522,
+    "Longitude": -118.2437,
+    "MinTempC": 12,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 40,
+    "MaxHumidityPercent": 70,
+    "MinVisibilityKm": 9,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1009,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 18,
+    "MaxAirQualityIndex": 60,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Warm",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Madrid",
+    "Latitude": 40.4168,
+    "Longitude": -3.7038,
+    "MinTempC": 5,
+    "MaxTempC": 34,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 70,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1009,
+    "MaxPressureHpa": 1025,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 14,
+    "MaxAirQualityIndex": 52,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Maiduguri",
+    "Latitude": 11.8311,
+    "Longitude": 13.151,
+    "MinTempC": 24,
+    "MaxTempC": 39,
+    "MinHumidityPercent": 20,
+    "MaxHumidityPercent": 55,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1016,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 40,
+    "MaxAirQualityIndex": 110,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Manaus",
+    "Latitude": -3.119,
+    "Longitude": -60.0217,
+    "MinTempC": 24,
+    "MaxTempC": 33,
+    "MinHumidityPercent": 72,
+    "MaxHumidityPercent": 96,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 16,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1013,
+    "MinWindSpeedKph": 5,
+    "MaxWindSpeedKph": 16,
+    "MinAirQualityIndex": 30,
+    "MaxAirQualityIndex": 85,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Rainy",
+        "Icon": "\uD83C\uDF27️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Manila",
+    "Latitude": 14.5995,
+    "Longitude": 120.9842,
+    "MinTempC": 24,
+    "MaxTempC": 34,
+    "MinHumidityPercent": 70,
+    "MaxHumidityPercent": 94,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1014,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 85,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Mexico City",
+    "Latitude": 19.4326,
+    "Longitude": -99.1332,
+    "MinTempC": 8,
+    "MaxTempC": 27,
+    "MinHumidityPercent": 40,
+    "MaxHumidityPercent": 75,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1010,
+    "MaxPressureHpa": 1025,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 18,
+    "MaxAirQualityIndex": 65,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      }
+    ]
+  },
+  {
+    "City": "Miami",
+    "Latitude": 25.7617,
+    "Longitude": -80.1918,
+    "MinTempC": 21,
+    "MaxTempC": 34,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 92,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1007,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 85,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      }
+    ]
+  },
+  {
+    "City": "Montreal",
+    "Latitude": 45.5017,
+    "Longitude": -73.5673,
+    "MinTempC": -12,
+    "MaxTempC": 25,
+    "MinHumidityPercent": 50,
+    "MaxHumidityPercent": 85,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1001,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 40,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      }
+    ]
+  },
+  {
+    "City": "Moscow",
+    "Latitude": 55.7558,
+    "Longitude": 37.6173,
+    "MinTempC": -10,
+    "MaxTempC": 20,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1000,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 45,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Mumbai",
+    "Latitude": 19.076,
+    "Longitude": 72.8777,
+    "MinTempC": 24,
+    "MaxTempC": 34,
+    "MinHumidityPercent": 68,
+    "MaxHumidityPercent": 95,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 1002,
+    "MaxPressureHpa": 1014,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 40,
+    "MaxAirQualityIndex": 120,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Rainy",
+        "Icon": "\uD83C\uDF27️"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Murmansk",
+    "Latitude": 68.9585,
+    "Longitude": 33.0827,
+    "MinTempC": -18,
+    "MaxTempC": 16,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 20,
+    "MinPressureHpa": 994,
+    "MaxPressureHpa": 1020,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 28,
+    "MinAirQualityIndex": 8,
+    "MaxAirQualityIndex": 30,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Muscat",
+    "Latitude": 23.588,
+    "Longitude": 58.3829,
+    "MinTempC": 20,
+    "MaxTempC": 39,
+    "MinHumidityPercent": 40,
+    "MaxHumidityPercent": 78,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1017,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 24,
+    "MaxAirQualityIndex": 82,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Nairobi",
+    "Latitude": -1.2864,
+    "Longitude": 36.8172,
+    "MinTempC": 12,
+    "MaxTempC": 28,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 80,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1009,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 18,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 48,
+    "Summaries": [
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "New York",
+    "Latitude": 40.7128,
+    "Longitude": -74.006,
+    "MinTempC": 6,
+    "MaxTempC": 24,
+    "MinHumidityPercent": 48,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1005,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 9,
+    "MaxWindSpeedKph": 30,
+    "MinAirQualityIndex": 15,
+    "MaxAirQualityIndex": 60,
+    "Summaries": [
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      }
+    ]
+  },
+  {
+    "City": "Novosibirsk",
+    "Latitude": 55.0084,
+    "Longitude": 82.9357,
+    "MinTempC": -24,
+    "MaxTempC": 27,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 78,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 995,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 40,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Nuuk",
+    "Latitude": 64.1835,
+    "Longitude": -51.7216,
+    "MinTempC": -16,
+    "MaxTempC": 12,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 992,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 10,
+    "MaxWindSpeedKph": 32,
+    "MinAirQualityIndex": 6,
+    "MaxAirQualityIndex": 24,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Oslo",
+    "Latitude": 59.9139,
+    "Longitude": 10.7522,
+    "MinTempC": -6,
+    "MaxTempC": 18,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 88,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1002,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 42,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Ottawa",
+    "Latitude": 45.4215,
+    "Longitude": -75.6972,
+    "MinTempC": -14,
+    "MaxTempC": 27,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1001,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 40,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Paris",
+    "Latitude": 48.8566,
+    "Longitude": 2.3522,
+    "MinTempC": 10,
+    "MaxTempC": 22,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 86,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1009,
+    "MaxPressureHpa": 1025,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 18,
+    "MaxAirQualityIndex": 48,
+    "Summaries": [
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      }
+    ]
+  },
+  {
+    "City": "Phoenix",
+    "Latitude": 33.4484,
+    "Longitude": -112.074,
+    "MinTempC": 10,
+    "MaxTempC": 43,
+    "MinHumidityPercent": 18,
+    "MaxHumidityPercent": 45,
+    "MinVisibilityKm": 10,
+    "MaxVisibilityKm": 32,
+    "MinPressureHpa": 1003,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 95,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Port Louis",
+    "Latitude": -20.1609,
+    "Longitude": 57.5012,
+    "MinTempC": 20,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1007,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 14,
+    "MaxAirQualityIndex": 48,
+    "Summaries": [
+      {
+        "Text": "Warm",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      }
+    ]
+  },
+  {
+    "City": "Reykjavik",
+    "Latitude": 64.1466,
+    "Longitude": -21.9426,
+    "MinTempC": -4,
+    "MaxTempC": 14,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 20,
+    "MinPressureHpa": 996,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 10,
+    "MaxWindSpeedKph": 34,
+    "MinAirQualityIndex": 8,
+    "MaxAirQualityIndex": 30,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      }
+    ]
+  },
+  {
+    "City": "Rio de Janeiro",
+    "Latitude": -22.9068,
+    "Longitude": -43.1729,
+    "MinTempC": 22,
+    "MaxTempC": 34,
+    "MinHumidityPercent": 65,
+    "MaxHumidityPercent": 92,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1006,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 78,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Riyadh",
+    "Latitude": 24.7136,
+    "Longitude": 46.6753,
+    "MinTempC": 10,
+    "MaxTempC": 43,
+    "MinHumidityPercent": 20,
+    "MaxHumidityPercent": 55,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 30,
+    "MinPressureHpa": 1003,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 28,
+    "MaxAirQualityIndex": 100,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      }
+    ]
+  },
+  {
+    "City": "San Francisco",
+    "Latitude": 37.7749,
+    "Longitude": -122.4194,
+    "MinTempC": 8,
+    "MaxTempC": 24,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 42,
+    "Summaries": [
+      {
+        "Text": "Cool",
+        "Icon": "\uD83E\uDDE5"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Santiago",
+    "Latitude": -33.4489,
+    "Longitude": -70.6693,
+    "MinTempC": 3,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 35,
+    "MaxHumidityPercent": 70,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 16,
+    "MaxAirQualityIndex": 58,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      }
+    ]
+  },
+  {
+    "City": "Seattle",
+    "Latitude": 47.6062,
+    "Longitude": -122.3321,
+    "MinTempC": 2,
+    "MaxTempC": 24,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 38,
+    "Summaries": [
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Seoul",
+    "Latitude": 37.5665,
+    "Longitude": 126.978,
+    "MinTempC": -8,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 40,
+    "MaxHumidityPercent": 78,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1004,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 18,
+    "MaxAirQualityIndex": 65,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      }
+    ]
+  },
+  {
+    "City": "Singapore",
+    "Latitude": 1.3521,
+    "Longitude": 103.8198,
+    "MinTempC": 25,
+    "MaxTempC": 33,
+    "MinHumidityPercent": 74,
+    "MaxHumidityPercent": 96,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 14,
+    "MinPressureHpa": 1006,
+    "MaxPressureHpa": 1014,
+    "MinWindSpeedKph": 5,
+    "MaxWindSpeedKph": 16,
+    "MinAirQualityIndex": 30,
+    "MaxAirQualityIndex": 80,
+    "Summaries": [
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Rainy",
+        "Icon": "\uD83C\uDF27️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Suva",
+    "Latitude": -18.1248,
+    "Longitude": 178.4501,
+    "MinTempC": 22,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 72,
+    "MaxHumidityPercent": 95,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 1005,
+    "MaxPressureHpa": 1015,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 20,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 42,
+    "Summaries": [
+      {
+        "Text": "Warm",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Thunderstorms",
+        "Icon": "⛈️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Sydney",
+    "Latitude": -33.8688,
+    "Longitude": 151.2093,
+    "MinTempC": 10,
+    "MaxTempC": 27,
+    "MinHumidityPercent": 55,
+    "MaxHumidityPercent": 85,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 26,
+    "MinPressureHpa": 1008,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 9,
+    "MaxWindSpeedKph": 28,
+    "MinAirQualityIndex": 12,
+    "MaxAirQualityIndex": 45,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      }
+    ]
+  },
+  {
+    "City": "Tehran",
+    "Latitude": 35.6892,
+    "Longitude": 51.389,
+    "MinTempC": 2,
+    "MaxTempC": 36,
+    "MinHumidityPercent": 25,
+    "MaxHumidityPercent": 60,
+    "MinVisibilityKm": 8,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 1007,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 22,
+    "MaxAirQualityIndex": 78,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Dry",
+        "Icon": "\uD83C\uDFDC️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      }
+    ]
+  },
+  {
+    "City": "Tokyo",
+    "Latitude": 35.6762,
+    "Longitude": 139.6503,
+    "MinTempC": 2,
+    "MaxTempC": 32,
+    "MinHumidityPercent": 50,
+    "MaxHumidityPercent": 85,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1006,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 18,
+    "MaxAirQualityIndex": 60,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Humid",
+        "Icon": "\uD83D\uDCA7"
+      },
+      {
+        "Text": "Partly Cloudy",
+        "Icon": "⛅"
+      }
+    ]
+  },
+  {
+    "City": "Toronto",
+    "Latitude": 43.6532,
+    "Longitude": -79.3832,
+    "MinTempC": -8,
+    "MaxTempC": 27,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 25,
+    "MinPressureHpa": 1002,
+    "MaxPressureHpa": 1024,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 42,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      }
+    ]
+  },
+  {
+    "City": "Tromso",
+    "Latitude": 69.6492,
+    "Longitude": 18.9553,
+    "MinTempC": -10,
+    "MaxTempC": 15,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 5,
+    "MaxVisibilityKm": 18,
+    "MinPressureHpa": 995,
+    "MaxPressureHpa": 1018,
+    "MinWindSpeedKph": 10,
+    "MaxWindSpeedKph": 32,
+    "MinAirQualityIndex": 8,
+    "MaxAirQualityIndex": 30,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Vancouver",
+    "Latitude": 49.2827,
+    "Longitude": -123.1207,
+    "MinTempC": 3,
+    "MaxTempC": 23,
+    "MinHumidityPercent": 60,
+    "MaxHumidityPercent": 90,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 22,
+    "MinPressureHpa": 1003,
+    "MaxPressureHpa": 1021,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 36,
+    "Summaries": [
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Light Rain",
+        "Icon": "\uD83C\uDF26️"
+      },
+      {
+        "Text": "Mild",
+        "Icon": "\uD83D\uDE42"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Overcast",
+        "Icon": "\uD83C\uDF25️"
+      }
+    ]
+  },
+  {
+    "City": "Vladivostok",
+    "Latitude": 43.1155,
+    "Longitude": 131.8855,
+    "MinTempC": -12,
+    "MaxTempC": 25,
+    "MinHumidityPercent": 50,
+    "MaxHumidityPercent": 82,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 998,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 8,
+    "MaxWindSpeedKph": 28,
+    "MinAirQualityIndex": 10,
+    "MaxAirQualityIndex": 38,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  },
+  {
+    "City": "Washington, D.C.",
+    "Latitude": 38.9072,
+    "Longitude": -77.0369,
+    "MinTempC": 1,
+    "MaxTempC": 31,
+    "MinHumidityPercent": 48,
+    "MaxHumidityPercent": 84,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 1003,
+    "MaxPressureHpa": 1023,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 24,
+    "MinAirQualityIndex": 14,
+    "MaxAirQualityIndex": 55,
+    "Summaries": [
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Cloudy",
+        "Icon": "☁️"
+      },
+      {
+        "Text": "Showers",
+        "Icon": "\uD83D\uDEBF"
+      },
+      {
+        "Text": "Breezy",
+        "Icon": "\uD83C\uDF43"
+      },
+      {
+        "Text": "Hot",
+        "Icon": "\uD83D\uDD25"
+      }
+    ]
+  },
+  {
+    "City": "Yakutsk",
+    "Latitude": 62.0355,
+    "Longitude": 129.6755,
+    "MinTempC": -38,
+    "MaxTempC": 24,
+    "MinHumidityPercent": 45,
+    "MaxHumidityPercent": 78,
+    "MinVisibilityKm": 7,
+    "MaxVisibilityKm": 28,
+    "MinPressureHpa": 994,
+    "MaxPressureHpa": 1022,
+    "MinWindSpeedKph": 6,
+    "MaxWindSpeedKph": 22,
+    "MinAirQualityIndex": 6,
+    "MaxAirQualityIndex": 24,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      }
+    ]
+  },
+  {
+    "City": "Yellowknife",
+    "Latitude": 62.454,
+    "Longitude": -114.3718,
+    "MinTempC": -26,
+    "MaxTempC": 20,
+    "MinHumidityPercent": 50,
+    "MaxHumidityPercent": 84,
+    "MinVisibilityKm": 6,
+    "MaxVisibilityKm": 24,
+    "MinPressureHpa": 994,
+    "MaxPressureHpa": 1021,
+    "MinWindSpeedKph": 7,
+    "MaxWindSpeedKph": 26,
+    "MinAirQualityIndex": 6,
+    "MaxAirQualityIndex": 28,
+    "Summaries": [
+      {
+        "Text": "Cold",
+        "Icon": "\uD83E\uDD76"
+      },
+      {
+        "Text": "Snow Showers",
+        "Icon": "\uD83C\uDF28️"
+      },
+      {
+        "Text": "Sunny",
+        "Icon": "☀️"
+      },
+      {
+        "Text": "Windy",
+        "Icon": "\uD83D\uDCA8"
+      },
+      {
+        "Text": "Clear",
+        "Icon": "\uD83C\uDF24️"
+      }
+    ]
+  }
+]

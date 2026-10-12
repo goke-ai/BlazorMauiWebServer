@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+            font-family: sans-serif;
+        }
+
+        body {
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .empty {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            inset: 0;
+            color: #666;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.72);
+            z-index: 500;
+            pointer-events: none;
+        }
+
+        .leaflet-container {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="empty-state" class="empty"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <script>
+        window.__MAP_CONFIG_NAME__ = {
+            __MAP_DATA_PROPERTY__: __MAP_DATA_JSON__,
+            emptyMessage: "__EMPTY_MESSAGE__",
+            tileWarningMessage: "__TILE_WARNING_MESSAGE__"
+        };
+    </script>
+    <script type="module">
+        import { __MAP_CLEAR_EXPORT__, initializeMap, renderAsync, __MAP_SET_EXPORT__ } from "__MAP_MODULE_URL__";
+
+        window.__MAP_BRIDGE_NAME__ = {
+            isReady: false,
+            initialize(options) {
+                return initializeMap(options ?? window.__MAP_CONFIG_NAME__ ?? {});
+            },
+            __MAP_SET_METHOD__(mapDataJson, options) {
+                return __MAP_SET_EXPORT__(mapDataJson, options ?? window.__MAP_CONFIG_NAME__ ?? {});
+            },
+            clear(options) {
+                return __MAP_CLEAR_EXPORT__(options ?? window.__MAP_CONFIG_NAME__ ?? {});
+            }
+        };
+
+        renderAsync()
+            .then(() => {
+                window.__MAP_BRIDGE_NAME__.isReady = true;
+            })
+            .catch(() => {
+                window.__MAP_BRIDGE_NAME__.isReady = false;
+                document.body.innerHTML = '<div class="empty">Map script is unavailable.</div>';
+            });
+    </script>
+
+</body>
+</html>

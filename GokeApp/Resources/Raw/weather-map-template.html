@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+            font-family: sans-serif;
+        }
+
+        body {
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+            font-size: 14px;
+            position: absolute;
+            inset: 0;
+            z-index: 500;
+            background: transparent;
+            pointer-events: none;
+            white-space: pre-wrap;
+            text-align: center;
+            padding: 16px;
+        }
+
+        .leaflet-container {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="empty-state" class="empty" style="display:none">No forecast data available.</div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <script>
+        window.weatherMapConfig = {
+            forecasts: __FORECASTS_JSON__,
+            scaleMinTemperature: __MIN_TEMP__,
+            scaleMaxTemperature: __MAX_TEMP__,
+            emptyMessage: "__EMPTY_MESSAGE__"
+        };
+
+        window.weatherMapBridge = {
+            isReady: false,
+            setForecastsJson: () => undefined,
+            clear: () => undefined
+        };
+    </script>
+    <script type="module">
+        import { renderAsync, setForecastsJson, clearForecasts } from "__WEATHER_MODULE_URL__";
+
+        renderAsync().catch((error) => {
+            const errorText = error?.stack ?? error?.message ?? String(error);
+            document.getElementById('empty-state').style.display = 'flex';
+            document.getElementById('empty-state').textContent = `Map script failed:\n${errorText}`;
+        }).finally(() => {
+            window.weatherMapBridge.setForecastsJson = (forecastsJson, scaleMinTemperature, scaleMaxTemperature) =>
+                setForecastsJson(forecastsJson, scaleMinTemperature, scaleMaxTemperature, {
+                    emptyMessage: window.weatherMapConfig?.emptyMessage
+                });
+            window.weatherMapBridge.clear = () =>
+                clearForecasts({
+                    emptyMessage: window.weatherMapConfig?.emptyMessage
+                });
+            window.weatherMapBridge.isReady = true;
+        });
+    </script>
+
+</body>
+</html>

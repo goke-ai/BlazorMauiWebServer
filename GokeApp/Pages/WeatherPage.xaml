@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<controls:ScrollViewPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         xmlns:coreModels="clr-namespace:Goke.Core.Models;assembly=Goke.Core"
+                         xmlns:pageModels="clr-namespace:GokeApp.PageModels"
+                         xmlns:controls="clr-namespace:GokeApp.Pages.Controls"
+                         x:Class="GokeApp.Pages.WeatherPage"
+                         x:DataType="pageModels:WeatherPageModel"
+                         x:Name="WeatherPageName"
+                         Title="Weather"
+                         AppearingCommand="{Binding AppearingCommand}"
+                         NavigatedToCommand="{Binding NavigatedToCommand}"
+                         NavigatedFromCommand="{Binding NavigatedFromCommand}"
+                         RefreshCommand="{Binding RefreshCommand}"
+                         IsRefreshing="{Binding IsRefreshing}"
+                         IsBusyOverlayVisible="{Binding IsBusy}"
+                         ProgressBarColor="{StaticResource Primary}">
+
+    <VerticalStackLayout Padding="{StaticResource LayoutPadding}"
+                         Spacing="{StaticResource LayoutSpacing}">
+        <Label Text="Weather"
+               Style="{StaticResource Headline}"
+               SemanticProperties.HeadingLevel="Level1" />
+
+        <Label Text="Browse the latest forecast for each city."
+               Style="{StaticResource SubHeadline}"
+               SemanticProperties.HeadingLevel="Level2" />
+
+        <Label Text="No forecast data available."
+               IsVisible="{Binding HasNoForecasts}" />
+
+        <controls:WeatherForecastMapListView x:Name="ForecastMapListView"
+                                       Forecasts="{Binding Forecasts}"
+                                       CanEdit="True" />
+
+        
+    </VerticalStackLayout>
+</controls:ScrollViewPage>

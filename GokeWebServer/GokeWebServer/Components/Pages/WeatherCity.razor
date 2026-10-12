@@ -1,0 +1,38 @@
+﻿@page "/weather-city"
+@using System.Security.Claims
+@using Goke.Core.Models
+@using GokeWebServer.Data
+@using GokeWebServer.Services
+@using Microsoft.AspNetCore.Identity
+
+@rendermode InteractiveServer
+
+@inject IWeatherForecastService WeatherForecastService
+
+<PageTitle>Weather</PageTitle>
+
+<h1>@City Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <WeatherForecastCardList Forecasts="forecasts" />
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? City { get; set; }
+
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {        
+        var forecast = await WeatherForecastService.GetWeatherForecastsForCities(City);
+        forecasts = forecast != null ? forecast.ToArray() : Array.Empty<WeatherForecast>();
+    }
+}

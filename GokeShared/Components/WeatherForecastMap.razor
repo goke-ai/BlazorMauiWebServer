@@ -1,0 +1,65 @@
+﻿@using Goke.Core.Models
+
+@if (Forecasts is null || !Forecasts.Any())
+{
+    <p><em>No forecast data available.</em></p>
+}
+else
+{
+    <div @ref="mapElement" style="height: 520px;" class="rounded border"></div>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
+    [Parameter]
+    public int AbsoluteMinTemperature { get; set; }
+    [Parameter]
+    public int AbsoluteMaxTemperature { get; set; }
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
+
+    private ElementReference mapElement;
+    private IJSObjectReference? _mapModule;
+
+    
+
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Forecasts.Count() == 0)
+        {
+            return;
+        }
+
+        _mapModule ??= await JS.InvokeAsync<IJSObjectReference>(
+            "import",
+            "./_content/GokeShared/js/weatherMap.js");
+
+        await _mapModule.InvokeVoidAsync(
+            "renderWeatherMap",
+            mapElement,
+            BuildMapForecasts(),
+            AbsoluteMinTemperature,
+            AbsoluteMaxTemperature);
+    }
+
+    private object[] BuildMapForecasts()
+    {
+        return Forecasts
+            .Select(f => new
+            {
+                f.City,
+                f.Latitude,
+                f.Longitude,
+                f.TemperatureC,
+                f.Summary,
+                Date = f.Date.ToString("yyyy-MM-dd HH:mm")
+            })
+            .Cast<object>()
+            .ToArray();
+    }
+
+   
+}

@@ -1,0 +1,42 @@
+﻿@using Goke.Core.Models
+
+@if (Forecasts is null || !Forecasts.Any())
+{
+    <p><em>No forecast data available.</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>City</th>
+                <th>Date</th>
+                <th aria-label="Temperature in Celsius">Temp. (C)</th>
+                <th aria-label="Temperature in Fahrenheit">Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in Forecasts)
+            {
+                <tr>
+                    <td>
+                       <a href="@($"/weather-city?City={forecast.City}")">@forecast.City</a>
+                    </td>
+                    <td>@forecast.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>
+                        <span aria-hidden="true">@forecast.SummaryIcon</span>
+                        <span class="ms-1">@forecast.Summary</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
+}

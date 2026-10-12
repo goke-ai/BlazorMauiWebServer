@@ -1,0 +1,135 @@
+﻿@using Goke.Blazor.Components
+
+<li class="nav-item">
+    <NavLink class="nav-link" href="counter">
+        <BsIcon Name="@Icons.PlusSquareFill" />
+        Counter
+    </NavLink>
+</li>
+
+<li class="nav-item">
+    <NavLink class="nav-link" href="weather">
+        <BsIcon Name="@Icons.CloudsFill" />
+        Weather
+    </NavLink>
+</li>
+
+<li class="nav-item">
+    <NavLink class="nav-link" href="auth">
+        <BsIcon Name="@Icons.LockFill" />
+        Auth Required
+    </NavLink>
+</li>
+
+<AuthorizeView Roles="Administrators">
+    <Authorized>
+        <li class="nav-item dropdown">
+            <NavLink class="nav-link dropdown-toggle" href="Account/Manage" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <BsIcon Name="@Icons.PersonFillLock" />
+                Admin
+            </NavLink>
+            <ul class="dropdown-menu">
+                <li>
+                    <NavLink class="dropdown-item" href="admin/dashboard">
+                        <BsIcon Name="@Icons.Speedometer2" />
+                        <span>Dashboard</span>
+                    </NavLink>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <NavLink class="dropdown-item" href="admin/users">
+                        <BsIcon Name="@Icons.PeopleFill" />
+                        <span>Users</span>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink class="dropdown-item" href="admin/roles">
+                        <BsIcon Name="@Icons.PersonWorkspace" />
+                        <span>Roles</span>
+                    </NavLink>
+                </li>
+            </ul>
+        </li>
+    </Authorized>
+</AuthorizeView>
+
+<AuthorizeView>
+    <Authorized>
+        <li class="nav-item dropdown">
+            <NavLink class="nav-link dropdown-toggle" href="Account/Manage" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @context.User.Identity?.Name
+            </NavLink>
+            <ul class="dropdown-menu">
+                <li>
+                    <NavLink class="dropdown-item" href="Account/Manage">
+                        <BsIcon Name="@Icons.PersonFillGear" />
+                        <span>Manage</span>
+                    </NavLink>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form action="Account/Logout" method="post">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <button type="submit" class="dropdown-item nav-button">
+                            <BsIcon Name="@Icons.BoxArrowLeft" />
+                            <span>Logout</span>
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </Authorized>
+    <NotAuthorized>
+        <li class="nav-item dropdown">
+            <NavLink class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <BsIcon Name="@Icons.PersonFillGear" />
+                Account
+            </NavLink>
+            <ul class="dropdown-menu">
+                <li class="nav-item">
+                    <NavLink class="dropdown-item" href="Account/Login">
+                        <BsIcon Name="@Icons.PersonBadge" />
+                        <span>Login</span>
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="dropdown-item" href="Account/ExternalLogin">
+                        <BsIcon Name="@Icons.PersonFillUp" />
+                        <span>External Login</span>
+                    </NavLink>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li class="nav-item">
+                    <NavLink class="dropdown-item" href="Account/Register">
+                        <BsIcon Name="@Icons.PersonFillAdd" />
+                        <span>Register</span>
+                    </NavLink>
+                </li>
+            </ul>
+        </li>
+    </NotAuthorized>
+</AuthorizeView>                
+        
+@code {
+    private string? currentUrl;
+
+   
+    // theme
+    private string CurrentTheme { get; set; } = "dark";
+    private bool IsDarkTheme { get; set; }
+
+    private Task OnCurrentThemeChanged(string theme)
+    {
+        CurrentTheme = theme;
+        IsDarkTheme = string.Equals(theme, "dark", StringComparison.OrdinalIgnoreCase);
+        return Task.CompletedTask;
+    }
+
+    private Task OnIsDarkThemeChanged(bool value)
+    {
+        IsDarkTheme = value;
+        CurrentTheme = value ? "dark" : "light";
+        return Task.CompletedTask;
+    }
+}

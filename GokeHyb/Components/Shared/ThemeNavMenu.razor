@@ -1,0 +1,27 @@
+﻿@using Goke.Blazor.Components
+<ThemeControl CurrentTheme="@CurrentTheme"
+              CurrentThemeChanged="@OnCurrentThemeChanged"
+              IsDarkTheme="@IsDarkTheme"
+              IsDarkThemeChanged="@OnIsDarkThemeChanged" />
+
+@code{
+    [Parameter]
+    public string CurrentTheme { get; set; } = "dark";
+    [Parameter]
+    public EventCallback<string> CurrentThemeChanged { get; set; }
+    [Parameter]
+    public bool IsDarkTheme { get; set; }
+    [Parameter]
+    public EventCallback<bool> IsDarkThemeChanged { get; set; }
+    private async Task OnCurrentThemeChanged(string newTheme)
+    {
+        CurrentTheme = newTheme;
+        await CurrentThemeChanged.InvokeAsync(newTheme);
+    }
+    private async Task OnIsDarkThemeChanged(bool isDark)
+    {
+        IsDarkTheme = isDark;
+        await IsDarkThemeChanged.InvokeAsync(isDark);
+    }
+
+}

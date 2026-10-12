@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps" 
+             xmlns:controls="clr-namespace:GokeApp.Pages.Controls"
+             x:Class="GokeApp.Pages.Controls.WeatherForecastMapListView"
+             x:Name="this">
+
+    <VerticalStackLayout Spacing="{StaticResource LayoutSpacing}">
+
+        <Border Padding="12"
+                IsVisible="{Binding Source={x:Reference this}, Path=CanEdit}"
+                Stroke="{AppThemeBinding Light=#DDDDDD, Dark=#444444}">
+            <VerticalStackLayout Spacing="10">
+                <Label x:Name="MaxTemperatureLabel" Text="{Binding MaxTemperatureText, Source={x:Reference this}}"
+                       FontAttributes="Bold" />
+
+                <Slider x:Name="MaxTemperatureSlider" DragCompleted="Slider_DragCompleted"
+                        Minimum="{Binding Source={x:Reference this}, Path=AbsoluteMinTemperature}"
+                        Maximum="{Binding Source={x:Reference this}, Path=AbsoluteMaxTemperature}"
+                        Value="{Binding Source={x:Reference this}, Path=SelectedMaxTemperature}" />
+
+                <Label x:Name="TemperatureRangeLabel"
+                       Text="{Binding TemperatureRangeText, Source={x:Reference this}}"
+                       FontSize="12"
+                       Opacity="0.7" />
+
+                <Label x:Name="SelectedRangeLabel"
+                       Text="{Binding SelectedRangeText, Source={x:Reference this}}"
+                       Margin="0,8,0,0"
+                       FontAttributes="Bold" />
+
+                <Label Text="Minimum"
+                       FontSize="12"
+                       Opacity="0.7" />
+
+                <Slider x:Name="RangeMinTemperatureSlider" DragCompleted="Slider_DragCompleted"
+                        Minimum="{Binding Source={x:Reference this}, Path=AbsoluteMinTemperature}"
+                        Maximum="{Binding Source={x:Reference this}, Path=AbsoluteMaxTemperature}"
+                        Value="{Binding Source={x:Reference this}, Path=SelectedRangeMinTemperature}" />
+
+                <Label Text="Maximum"
+                       FontSize="12"
+                       Opacity="0.7" />
+
+                <Slider x:Name="RangeMaxTemperatureSlider" DragCompleted="Slider_DragCompleted"
+                        Minimum="{Binding Source={x:Reference this}, Path=AbsoluteMinTemperature}"
+                        Maximum="{Binding Source={x:Reference this}, Path=AbsoluteMaxTemperature}"
+                        Value="{Binding Source={x:Reference this}, Path=SelectedRangeMaxTemperature}" />
+
+                <Label x:Name="VisibleCitiesLabel"
+                       Text="{Binding VisibleCitiesText, Source={x:Reference this}}"
+                       FontSize="12"
+                       Opacity="0.7" />
+                
+            </VerticalStackLayout>
+        </Border>
+
+        <controls:WeatherMapView x:Name="WeatherMapViewControl"
+                                  Markers="{Binding Source={x:Reference this}, Path=FilteredMarkers}" />
+
+        <controls:WeatherForecastMapView x:Name="ForecastMapView"
+                                  Forecasts="{Binding Source={x:Reference this}, Path=FilteredForecasts}" />
+
+        <Border Padding="12"
+                Stroke="{AppThemeBinding Light=#DDDDDD, Dark=#444444}">
+            <controls:WeatherForecastListView x:Name="ForecastListView"
+                                              Forecasts="{Binding Source={x:Reference this}, Path=FilteredForecasts}" />
+        </Border>
+
+    </VerticalStackLayout>
+</ContentView>

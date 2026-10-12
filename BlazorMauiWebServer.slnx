@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Libs/">
+    <Project Path="../GokeBlazorCore/Goke.Blazor.Components/Goke.Blazor.Components.csproj" />
+    <Project Path="../GokeCore/Goke.Core/Goke.Core.csproj" />
+    <Project Path="../GokeCore/Goke.Maui.Core/Goke.Maui.Core.csproj" Id="6a355088-77c0-4fa9-adc1-cb0d104ba4a8" />
+  </Folder>
+  <Project Path="BlazorMauiWebServer.AppHost/BlazorMauiWebServer.AppHost.csproj" />
+  <Project Path="BlazorMauiWebServer.ServiceDefaults/BlazorMauiWebServer.ServiceDefaults.csproj" />
+  <Project Path="ConsoleApp/ConsoleApp.csproj" Id="ebc4340e-40ee-47dc-94e6-425e582dfa50" />
+  <Project Path="GokeApp/GokeApp.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="GokeHyb/GokeHyb.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="GokeShared/GokeShared.csproj" />
+  <Project Path="GokeWeb/GokeWeb.Client/GokeWeb.Client.csproj" />
+  <Project Path="GokeWeb/GokeWeb/GokeWeb.csproj" />
+  <Project Path="GokeWebServer/GokeWebServer.Client/GokeWebServer.Client.csproj" />
+  <Project Path="GokeWebServer/GokeWebServer/GokeWebServer.csproj" />
+</Solution>

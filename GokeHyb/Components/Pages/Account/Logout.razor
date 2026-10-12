@@ -1,0 +1,14 @@
+﻿@page "/Account/Logout"
+@using GokeHyb.Services
+
+@inject NavigationManager navigationManager
+@inject MauiAuthenticationStateProvider AuthStateProvider
+
+<div class="loader loader-bouncing"><span>Redirecting...</span></div>
+@code{
+    protected override void OnInitialized()
+    {
+        AuthStateProvider.Logout();
+        navigationManager.NavigateTo("/Account/login");
+    }
+}
