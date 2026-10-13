@@ -138,10 +138,10 @@ public partial class WeatherForecastMapListView : ContentView
             .Select((forecast, index) => new MapMarker
             {
                 Id = index.ToString(),
-                Name = forecast.City,
+                Name = $"{forecast.TemperatureC}&deg; C",
                 Latitude = forecast.Latitude,
                 Longitude = forecast.Longitude,
-                Description = $"{forecast.TemperatureC}&deg; C",
+                Description = $"{forecast.City} | {forecast.TemperatureC}&deg; C",
                 //Timestamp = forecast.Timestamp,
                 PopupHtml = $"<strong>{forecast.City}</strong><br />" +
                             $"Temperature: {forecast.TemperatureC}&deg;C<br />" +
