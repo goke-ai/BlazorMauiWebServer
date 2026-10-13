@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Goke.Core.Models;
+using Goke.Core.Models.Map;
 using Goke.Core.Services;
-using GokeApp.Models;
 using GokeApp.Services;
 using System.Net.Http.Json;
 
@@ -15,9 +14,9 @@ namespace GokeApp.PageModels
         [NotifyPropertyChangedFor(nameof(HasNoLocations))]
         [NotifyPropertyChangedFor(nameof(Markers))]
 
-        List<Goke.Core.Models.Location> _locations = [];
+        List<Goke.Core.Models.Map.Location> _locations = [];
 
-        List<Goke.Core.Models.Location> DATA = [];
+        List<Goke.Core.Models.Map.Location> DATA = [];
 
         DateTime current = DateTime.UtcNow;
 

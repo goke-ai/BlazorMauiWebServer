@@ -1,8 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Goke.Core.Models;
+using Goke.Core.Models.Map;
 using Goke.Core.Services;
-using GokeApp.Models;
 using GokeApp.Services;
 using System.Net.Http.Json;
 
@@ -21,9 +20,9 @@ namespace GokeApp.PageModels
         [NotifyPropertyChangedFor(nameof(HasNoTrackers))]
         [NotifyPropertyChangedFor(nameof(Markers))]
 
-        List<Goke.Core.Models.Location> _locations = [];
+        List<Goke.Core.Models.Map.Location> _locations = [];
 
-        List<Goke.Core.Models.Location> DATA = [];
+        List<Goke.Core.Models.Map.Location> DATA = [];
 
         DateTime current = DateTime.UtcNow;
 
@@ -166,7 +165,7 @@ namespace GokeApp.PageModels
 
         private void UpdateLocationsSnapshot(DateTime timestamp)
         {
-            List<Goke.Core.Models.Location> trackers;
+            List<Goke.Core.Models.Map.Location> trackers;
 
             lock (_movementSync)
             {
@@ -182,12 +181,12 @@ namespace GokeApp.PageModels
             Locations = trackers;
         }
 
-        private Goke.Core.Models.Location? GetSeedLocation(string trackerName)
+        private Goke.Core.Models.Map.Location? GetSeedLocation(string trackerName)
         {
             return DATA.FirstOrDefault(location => string.Equals(location.Name, trackerName, StringComparison.Ordinal));
         }
 
-        private Goke.Core.Models.Location BuildSimulatedLocation(Goke.Core.Models.Location seedLocation, DateTime timestamp)
+        private Goke.Core.Models.Map.Location BuildSimulatedLocation(Goke.Core.Models.Map.Location seedLocation, DateTime timestamp)
         {
             var motionState = GetOrCreateMotionState(seedLocation, timestamp);
             var elapsedSeconds = Math.Max(0, (timestamp - motionState.StartedAtUtc).TotalSeconds);
@@ -210,7 +209,7 @@ namespace GokeApp.PageModels
             };
         }
 
-        private TrackerMotionState GetOrCreateMotionState(Goke.Core.Models.Location seedLocation, DateTime startedAtUtc)
+        private TrackerMotionState GetOrCreateMotionState(Goke.Core.Models.Map.Location seedLocation, DateTime startedAtUtc)
         {
             if (_motionStates.TryGetValue(seedLocation.Name, out var existingState))
             {

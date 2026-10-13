@@ -21,6 +21,30 @@
     <Folder Include="Components\Pages\Account\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\js\current-location-map.js">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </Content>
+    <Content Update="wwwroot\js\direction-map.js">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </Content>
+    <Content Update="wwwroot\js\map-core.js">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </Content>
+    <Content Update="wwwroot\js\tracking-map.js">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </Content>
+    <Content Update="wwwroot\js\weather-forecast-map.js">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </Content>
+    <Content Update="wwwroot\js\map-view.js">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </Content>
+    <Content Update="wwwroot\js\weather-map.js">
+      <LogicalName>%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+    </Content>
+  </ItemGroup>
+
 
 
 </Project>

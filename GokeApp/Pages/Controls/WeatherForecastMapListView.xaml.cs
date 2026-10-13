@@ -1,5 +1,5 @@
 using Goke.Core.Models;
-using GokeApp.Models;
+using Goke.Core.Models.Map;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
