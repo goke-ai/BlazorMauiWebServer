@@ -24,6 +24,7 @@ builder.Services
 // Add other services
 builder.Services.AddTransient<IFormFactor, FormFactorService>();
 builder.Services.AddScoped<ILocationService, BrowserLocationService>();
+builder.Services.AddSingleton<TrackerEngine>();
 
 
 var app = builder.Build();

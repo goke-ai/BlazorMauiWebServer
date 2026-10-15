@@ -119,6 +119,10 @@ else
 
         try
         {
+            await _mapModule.InvokeVoidAsync(
+                "dispose",
+                __MAP_CONFIG_NAME__,
+                __MAP_BRIDGE_NAME__);
             await _mapModule.DisposeAsync();
         }
         catch (JSDisconnectedException)

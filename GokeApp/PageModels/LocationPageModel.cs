@@ -62,7 +62,6 @@ namespace GokeApp.PageModels
             // Simulate asynchronous loading to demonstrate a loading indicator
             await Task.Delay(500);
 
-            //Locations = [.. DATA.Where(f => DateTime.Now.AddDays(-1) < f.Date && f.Date <= DateTime.Now.AddDays(1))];
             Locations = [.. DATA.Skip(Random.Shared.Next(DATA.Count)).Take(1)];
         }
 

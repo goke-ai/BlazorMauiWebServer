@@ -9,6 +9,13 @@ const currentLocationState = {
     hasFittedBounds: false
 };
 
+const resetState = () => {
+    currentLocationState.mapHost = null;
+    currentLocationState.markers.clear();
+    currentLocationState.options = {};
+    currentLocationState.hasFittedBounds = false;
+};
+
 const getEmptyStateElement = () => document.getElementById("empty-state");
 
 const setEmptyState = (visible, message) => {
@@ -142,6 +149,23 @@ export const clearMap = (options = {}) => {
 
     currentLocationState.markers.clear();
     setEmptyState(true, options.emptyMessage);
+};
+
+export const disposeMap = () => {
+    const mapHost = currentLocationState.mapHost;
+
+    if (!mapHost?.map) {
+        resetState();
+        return;
+    }
+
+    for (const marker of currentLocationState.markers.values()) {
+        mapHost.unregisterTooltipMarker(marker);
+        mapHost.map.removeLayer(marker);
+    }
+
+    mapHost.map.remove();
+    resetState();
 };
 
 export const setMapJson = (markersJson, options = {}) => {

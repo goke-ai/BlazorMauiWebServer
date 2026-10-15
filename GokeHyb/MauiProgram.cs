@@ -37,6 +37,7 @@ public static class MauiProgram
         // Add other services
         builder.Services.AddTransient<IFormFactor, FormFactorService>();
         builder.Services.AddTransient<ILocationService, LocationService>();
+        builder.Services.AddSingleton<TrackerEngine>();
 
 
         builder.Services.AddMauiBlazorWebView();

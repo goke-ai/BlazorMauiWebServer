@@ -10,7 +10,7 @@ export async function renderMap(MapScriptFileName, __MAP_CONFIG_NAME__, __MAP_BR
 
     const mapScript = MapScriptFileName;
 
-    let { clearMap, initializeMap, renderAsync, setMapJson } = await import(mapScript);
+    let { clearMap, disposeMap, initializeMap, renderAsync, setMapJson } = await import(mapScript);
 
 
     window[__MAP_BRIDGE_NAME__] = {
@@ -23,6 +23,9 @@ export async function renderMap(MapScriptFileName, __MAP_CONFIG_NAME__, __MAP_BR
         },
         clear(options) {
             return clearMap(options ?? window[__MAP_CONFIG_NAME__] ?? {});
+        },
+        dispose(options) {
+            return disposeMap?.(options ?? window[__MAP_CONFIG_NAME__] ?? {});
         }
     };
 
@@ -48,26 +51,9 @@ export const clear = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__) => {
     bridge.clear(); return 'ready';
 };
 
-//export function updateMarkers(markers, options = {}) {
-//    const nextOptions = {
-//        ...(window.weatherMapConfig ?? {}),
-//        ...options,
-//        markers
-//    };
+export const dispose = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__) => {
+    const bridge = window[__MAP_BRIDGE_NAME__];
+    if (!bridge || bridge.isReady !== true) return 'not-ready';
+    bridge.dispose(); return 'ready';
+};
 
-//    window.weatherMapConfig = nextOptions;
-
-//    return setMapJson(markers, nextOptions);
-//}
-
-//export function clearMap(options = {}) {
-//    const nextOptions = {
-//        ...(window.weatherMapConfig ?? {}),
-//        ...options,
-//        markers: []
-//    };
-
-//    window.weatherMapConfig = nextOptions;
-
-//    return clearMap(nextOptions);
-//}

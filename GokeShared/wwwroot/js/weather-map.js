@@ -10,6 +10,15 @@ const weatherState = {
     initialScale: null
 };
 
+const resetState = () => {
+    weatherState.mapHost = null;
+    weatherState.markers.clear();
+    weatherState.options = {};
+    weatherState.hasFittedBounds = false;
+    weatherState.initialScale = null;
+};
+ 
+
 const getTemperatureScale = (markers, options = {}) => {
     if (weatherState.initialScale) {
         return weatherState.initialScale;
@@ -174,6 +183,23 @@ export const clearMap = (options = {}) => {
 
     weatherState.markers.clear();
     setEmptyState(true, options.emptyMessage);
+};
+
+export const disposeMap = () => {
+    const mapHost = weatherState.mapHost;
+
+    if (!mapHost?.map) {
+        resetState();
+        return;
+    }
+
+    for (const marker of weatherState.markers.values()) {
+        mapHost.unregisterTooltipMarker(marker);
+        mapHost.map.removeLayer(marker);
+    }
+
+    mapHost.map.remove();
+    resetState();
 };
 
 export const setMapJson = (markersJson, options = {}) => {

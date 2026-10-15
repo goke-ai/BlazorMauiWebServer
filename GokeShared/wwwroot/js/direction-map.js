@@ -1,12 +1,21 @@
 import { bindMarkerPopup, bindMarkerTooltip, createColoredIcon, createMap, fitBounds } from "./map-core.js";
 
 const resolveConfig = () => window.directionMapConfig ?? {};
+
 const directionState = {
     mapHost: null,
     routes: new Map(),
     options: {},
     hasFittedBounds: false
 };
+
+const resetState = () => {
+    directionState.mapHost = null;
+    directionState.routes.clear();
+    directionState.options = {};
+    directionState.hasFittedBounds = false;
+};
+
 
 const getEmptyStateElement = () => document.getElementById("empty-state");
 
@@ -180,6 +189,28 @@ export const clearMap = (options = {}) => {
     directionState.routes.clear();
     setEmptyState(true, options.emptyMessage);
 };
+
+
+export const disposeMap = () => {
+    const mapHost = directionState.mapHost;
+
+    if (!mapHost?.map) {
+        resetState();
+        return;
+    }
+
+    for (const routeLayers of directionState.routes.values()) {
+        mapHost.unregisterTooltipMarker(routeLayers.currentMarker);
+        mapHost.map.removeLayer(routeLayers.line);
+        mapHost.map.removeLayer(routeLayers.startMarker);
+        mapHost.map.removeLayer(routeLayers.endMarker);
+        mapHost.map.removeLayer(routeLayers.currentMarker);
+    }
+
+    mapHost.map.remove();
+    resetState();
+};
+
 
 export const setMapJson = (routesJson, options = {}) => {
     const routes = typeof routesJson === "string"

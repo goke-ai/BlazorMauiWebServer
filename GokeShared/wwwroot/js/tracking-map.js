@@ -9,6 +9,14 @@ const trackingState = {
     hasFittedBounds: false
 };
 
+const resetState = () => {
+    trackingState.mapHost = null;
+    trackingState.markers.clear();
+    trackingState.options = {};
+    trackingState.hasFittedBounds = false;
+};
+
+
 const getEmptyStateElement = () => document.getElementById("empty-state");
 
 const setEmptyState = (visible, message) => {
@@ -146,6 +154,25 @@ export const clearMap = (options = {}) => {
     trackingState.markers.clear();
     setEmptyState(true, options.emptyMessage);
 };
+
+export const disposeMap = () => {
+    const mapHost = trackingState.mapHost;
+
+    if (!mapHost?.map) {
+        resetState();
+        return;
+    }
+
+    for (const marker of trackingState.markers.values()) {
+        mapHost.unregisterTooltipMarker(marker);
+        mapHost.map.removeLayer(marker);
+    }
+
+    mapHost.map.remove();
+    resetState();
+};
+
+
 
 export const setMapJson = (markersJson, options = {}) => {
     const markers = typeof markersJson === "string"
