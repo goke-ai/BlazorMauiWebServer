@@ -7,9 +7,8 @@ using System.Net.Http.Json;
 
 namespace GokeApp.PageModels
 {
-    public partial class LocationPageModel(ModalErrorHandler errorHandler) : BasePageModel(errorHandler)
+    public partial class LocationPageModel(ModalErrorHandler errorHandler, ILocationService locationService) : BasePageModel(errorHandler)
     {
-
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasNoLocations))]
         [NotifyPropertyChangedFor(nameof(Markers))]
@@ -27,56 +26,17 @@ namespace GokeApp.PageModels
             Latitude = location.Latitude,
             Longitude = location.Longitude,
             Name = location.Name,
+            Description = $"Lat: {location.Latitude}, Lon: {location.Longitude}",
             MarkerShape = "Circle",
+            MarkerColor = MapMarker.GetColor(location.Name)
         })];
-
-        private CancellationTokenSource _cancelTokenSource;
-        private bool _isCheckingLocation;
-
-        public async Task<Microsoft.Maui.Devices.Sensors.Location?> GetCurrentLocation()
-        {
-            try
-            {
-                _isCheckingLocation = true;
-
-                GeolocationRequest request = new(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
-                _cancelTokenSource = new CancellationTokenSource();
-
-                var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-
-                if (location != null)
-                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-
-                return location;
-            }
-            // Catch one of the following exceptions:
-            //   FeatureNotSupportedException
-            //   FeatureNotEnabledException
-            //   PermissionException
-            catch (Exception ex)
-            {
-                // Unable to get location
-            }
-            finally
-            {
-                _isCheckingLocation = false;
-            }
-            return null;
-        }
-
-        public void CancelRequest()
-        {
-            if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
-                _cancelTokenSource.Cancel();
-        }
 
         protected override async Task OnInitDataAsync()
         {
             await base.OnInitDataAsync();
 
             // Get the current device location
-            var loc = await GetCurrentLocation();
+            var location = await locationService.GetCurrentLocationAsync();
 
             // Seed weather data here
             DATA =
@@ -88,14 +48,8 @@ namespace GokeApp.PageModels
                 new Goke.Core.Map.Location { Latitude = 11.813208059803452, Longitude = 13.205843552095427, Name = "UNIMAID" },
                 new Goke.Core.Map.Location { Latitude = 51.74989074677224, Longitude = 0.504468455212419, Name = "Foxglove" },
                 // current device location can be added here if needed
-                new Goke.Core.Map.Location { Latitude = loc?.Latitude ?? 0, Longitude = loc?.Longitude ?? 0, Name = "Current Location" },
-                new Goke.Core.Map.Location { Latitude = 40.712776, Longitude = -74.005974, Name = "New York" },
-                new Goke.Core.Map.Location { Latitude = 34.052235, Longitude = -118.243683, Name = "Los Angeles" },
-                new Goke.Core.Map.Location { Latitude = 41.878113, Longitude = -87.629799, Name = "Chicago" },
-                new Goke.Core.Map.Location { Latitude = 29.760427, Longitude = -95.369804, Name = "Houston" },
-                new Goke.Core.Map.Location { Latitude = 33.448376, Longitude = -112.074036, Name = "Phoenix" },
-                new Goke.Core.Map.Location { Latitude = 39.739236, Longitude = -104.990251, Name = "Denver" },
-
+                new Goke.Core.Map.Location { Latitude = location?.Latitude ?? 0, Longitude = location?.Longitude ?? 0, Name = "Current Location" },
+                .. MapEngines.LOCATIONS
             ];
         }
 
@@ -110,9 +64,7 @@ namespace GokeApp.PageModels
 
             //Locations = [.. DATA.Where(f => DateTime.Now.AddDays(-1) < f.Date && f.Date <= DateTime.Now.AddDays(1))];
             Locations = [.. DATA.Skip(Random.Shared.Next(DATA.Count)).Take(1)];
-
         }
-
 
         [RelayCommand]
         private void Add()
@@ -123,8 +75,6 @@ namespace GokeApp.PageModels
             {
                 Locations = [.. Locations, availables[Random.Shared.Next(availables.Length)]];
             }
-        }
+        }       
     }
-
-    
 }

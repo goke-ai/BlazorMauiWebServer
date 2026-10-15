@@ -36,7 +36,6 @@ export async function renderMap(MapScriptFileName, __MAP_CONFIG_NAME__, __MAP_BR
         });
 }
 
-
 export const setMap = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__, mapData, options = {}) => {
     const bridge = window[__MAP_BRIDGE_NAME__];
     if (!bridge || bridge.isReady !== true) return 'not-ready';

@@ -9,12 +9,15 @@
 else
 {
     <div class="position-relative">
-        <div id="map" style="height: 520px;" class="rounded border"></div>
+        <div class="position-relative top-0 start-0 my-2 p-1 bg-body-tertiary rounded border">
+            @VisibleMarkersLabel
+        </div>
         <div id="empty-state"
              class="position-absolute top-0 start-0 w-100 h-100 rounded border bg-body-tertiary text-body-secondary fst-italic align-items-center justify-content-center"
              style="display: none;">
             @EmptyMessage
         </div>
+        <div id="map" style="height: 520px;" class="rounded border"></div>
     </div>
 }
 
@@ -36,6 +39,9 @@ else
     private IJSObjectReference? _mapModule;
     private bool _showMapHost;
     private bool _isMapInitialized;
+
+    string VisibleMarkersLabel => $"{(Markers ?? []).Count()} marker(s) visible";
+
 
     protected override void OnParametersSet()
     {

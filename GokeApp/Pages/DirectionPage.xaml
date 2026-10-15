@@ -18,11 +18,11 @@
 
     <VerticalStackLayout Padding="{StaticResource LayoutPadding}"
                          Spacing="{StaticResource LayoutSpacing}">
-        <Label Text="Tracker"
+        <Label Text="Direction"
                Style="{StaticResource Headline}"
                SemanticProperties.HeadingLevel="Level1" />
 
-        <Label Text="My Trackers."
+        <Label Text="My Directions."
                Style="{StaticResource SubHeadline}"
                SemanticProperties.HeadingLevel="Level2" />
 
@@ -31,7 +31,6 @@
 
         <controls:DirectionMapView x:Name="DirectionMapView" 
                                        Routes="{Binding Routes}" />
-
 
         <controls:AddButton 
             IsEnabled="{Binding IsNotBusy }"

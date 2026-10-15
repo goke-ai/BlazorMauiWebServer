@@ -7,7 +7,7 @@ using System.Net.Http.Json;
 
 namespace GokeApp.PageModels
 {
-    public partial class TrackerPageModel(ModalErrorHandler errorHandler) : BasePageModel(errorHandler)
+    public partial class TrackerPageModel(ModalErrorHandler errorHandler, ILocationService locationService) : BasePageModel(errorHandler)
     {
         private const double LatitudeDegreesPerMeter = 1d / 111_320d;
         private static readonly TimeSpan MovementUpdateInterval = TimeSpan.FromSeconds(1);
@@ -44,7 +44,7 @@ namespace GokeApp.PageModels
             await base.OnInitDataAsync();
 
             // Get the current device location
-            var loc = await GetCurrentLocation();
+            var loc = await locationService.GetCurrentLocationAsync();
 
             // Seed tracker data here
             DATA =
@@ -106,45 +106,6 @@ namespace GokeApp.PageModels
                 UpdateLocationsSnapshot(DateTime.UtcNow);
             }
         }
-
-        public async Task<Microsoft.Maui.Devices.Sensors.Location?> GetCurrentLocation()
-        {
-            try
-            {
-                _isCheckingLocation = true;
-
-                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
-                _cancelTokenSource = new CancellationTokenSource();
-
-                var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-
-                if (location != null)
-                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-
-                return location;
-            }
-            // Catch one of the following exceptions:
-            //   FeatureNotSupportedException
-            //   FeatureNotEnabledException
-            //   PermissionException
-            catch (Exception ex)
-            {
-                // Unable to get location
-            }
-            finally
-            {
-                _isCheckingLocation = false;
-            }
-            return null;
-        }
-
-        public void CancelRequest()
-        {
-            if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
-                _cancelTokenSource.Cancel();
-        }
-
 
         private void EnsureMovementSimulationStarted()
         {

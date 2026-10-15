@@ -4,7 +4,7 @@ using GokeApp.Services;
 
 namespace GokeApp.PageModels;
 
-public partial class DirectionPageModel(ModalErrorHandler errorHandler) : BasePageModel(errorHandler)
+public partial class DirectionPageModel(ModalErrorHandler errorHandler, ILocationService locationService) : BasePageModel(errorHandler)
 {
     private static readonly TimeSpan MovementUpdateInterval = TimeSpan.FromSeconds(1);
     private readonly Lock _routeSync = new();
@@ -33,7 +33,8 @@ public partial class DirectionPageModel(ModalErrorHandler errorHandler) : BasePa
     {
         await base.OnInitDataAsync();
 
-        var location = await GetCurrentLocationAsync();
+        var location = await locationService.GetCurrentLocationAsync();
+
         var centerLatitude = location?.Latitude ?? 6.5244;
         var centerLongitude = location?.Longitude ?? 3.3792;
 
@@ -55,25 +56,6 @@ public partial class DirectionPageModel(ModalErrorHandler errorHandler) : BasePa
         await base.OnLoadDataAsync();
         await Task.Delay(250);
         UpdateRoutesSnapshot(DateTime.UtcNow);
-    }
-
-    private async Task<Microsoft.Maui.Devices.Sensors.Location?> GetCurrentLocationAsync()
-    {
-        try
-        {
-            _isCheckingLocation = true;
-            var request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-            _cancelTokenSource = new CancellationTokenSource();
-            return await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-        }
-        catch
-        {
-            return null;
-        }
-        finally
-        {
-            _isCheckingLocation = false;
-        }
     }
 
     private void EnsureMovementSimulationStarted()
