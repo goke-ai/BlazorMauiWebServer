@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Goke.Core.Models.Map;
+using Goke.Core.Map;
 using Goke.Core.Services;
 using GokeApp.Services;
 using System.Net.Http.Json;
@@ -15,14 +15,17 @@ namespace GokeApp.PageModels
         private readonly Dictionary<string, TrackerMotionState> _motionStates = new(StringComparer.Ordinal);
         private readonly List<string> _activeTrackerNames = [];
         private Task? _movementTask;
+        private CancellationTokenSource _cancelTokenSource;
+        private bool _isCheckingLocation;
+
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasNoTrackers))]
         [NotifyPropertyChangedFor(nameof(Markers))]
 
-        List<Goke.Core.Models.Map.Location> _locations = [];
+        List<Goke.Core.Map.Location> _locations = [];
 
-        List<Goke.Core.Models.Map.Location> DATA = [];
+        List<Goke.Core.Map.Location> DATA = [];
 
         DateTime current = DateTime.UtcNow;
 
@@ -36,47 +39,6 @@ namespace GokeApp.PageModels
             MarkerShape = "Circle",
         })];
 
-        private CancellationTokenSource _cancelTokenSource;
-        private bool _isCheckingLocation;
-
-        public async Task<Microsoft.Maui.Devices.Sensors.Location?> GetCurrentLocation()
-        {
-            try
-            {
-                _isCheckingLocation = true;
-
-                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
-                _cancelTokenSource = new CancellationTokenSource();
-
-                var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-
-                if (location != null)
-                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-
-                return location;
-            }
-            // Catch one of the following exceptions:
-            //   FeatureNotSupportedException
-            //   FeatureNotEnabledException
-            //   PermissionException
-            catch (Exception ex)
-            {
-                // Unable to get location
-            }
-            finally
-            {
-                _isCheckingLocation = false;
-            }
-            return null;
-        }
-
-        public void CancelRequest()
-        {
-            if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
-                _cancelTokenSource.Cancel();
-        }
-
         protected override async Task OnInitDataAsync()
         {
             await base.OnInitDataAsync();
@@ -87,10 +49,10 @@ namespace GokeApp.PageModels
             // Seed tracker data here
             DATA =
             [
-                new Goke.Core.Models.Location { Latitude = 6.530601541004869, Longitude = 3.2792890540792294, Name = "Joseph" },
-                new Goke.Core.Models.Location { Latitude = 51.74989074677224, Longitude = 0.504468455212419, Name = "Foxglove" },
+                new Goke.Core.Map.Location { Latitude = 6.530601541004869, Longitude = 3.2792890540792294, Name = "Joseph" },
+                new Goke.Core.Map.Location { Latitude = 51.74989074677224, Longitude = 0.504468455212419, Name = "Foxglove" },
                 // current device location can be added here if needed
-                new Goke.Core.Models.Location { Latitude = loc?.Latitude ?? 0, Longitude = loc?.Longitude ?? 0, Name = "Me" },
+                new Goke.Core.Map.Location { Latitude = loc?.Latitude ?? 0, Longitude = loc?.Longitude ?? 0, Name = "Me" },
 
             ];
 
@@ -145,6 +107,45 @@ namespace GokeApp.PageModels
             }
         }
 
+        public async Task<Microsoft.Maui.Devices.Sensors.Location?> GetCurrentLocation()
+        {
+            try
+            {
+                _isCheckingLocation = true;
+
+                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+
+                _cancelTokenSource = new CancellationTokenSource();
+
+                var location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+
+                if (location != null)
+                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+
+                return location;
+            }
+            // Catch one of the following exceptions:
+            //   FeatureNotSupportedException
+            //   FeatureNotEnabledException
+            //   PermissionException
+            catch (Exception ex)
+            {
+                // Unable to get location
+            }
+            finally
+            {
+                _isCheckingLocation = false;
+            }
+            return null;
+        }
+
+        public void CancelRequest()
+        {
+            if (_isCheckingLocation && _cancelTokenSource != null && _cancelTokenSource.IsCancellationRequested == false)
+                _cancelTokenSource.Cancel();
+        }
+
+
         private void EnsureMovementSimulationStarted()
         {
             if (_movementTask is not null)
@@ -165,7 +166,7 @@ namespace GokeApp.PageModels
 
         private void UpdateLocationsSnapshot(DateTime timestamp)
         {
-            List<Goke.Core.Models.Map.Location> trackers;
+            List<Goke.Core.Map.Location> trackers;
 
             lock (_movementSync)
             {
@@ -181,12 +182,12 @@ namespace GokeApp.PageModels
             Locations = trackers;
         }
 
-        private Goke.Core.Models.Map.Location? GetSeedLocation(string trackerName)
+        private Goke.Core.Map.Location? GetSeedLocation(string trackerName)
         {
             return DATA.FirstOrDefault(location => string.Equals(location.Name, trackerName, StringComparison.Ordinal));
         }
 
-        private Goke.Core.Models.Map.Location BuildSimulatedLocation(Goke.Core.Models.Map.Location seedLocation, DateTime timestamp)
+        private Goke.Core.Map.Location BuildSimulatedLocation(Goke.Core.Map.Location seedLocation, DateTime timestamp)
         {
             var motionState = GetOrCreateMotionState(seedLocation, timestamp);
             var elapsedSeconds = Math.Max(0, (timestamp - motionState.StartedAtUtc).TotalSeconds);
@@ -201,7 +202,7 @@ namespace GokeApp.PageModels
             var latitudeDegrees = latitudeOffsetMeters * LatitudeDegreesPerMeter;
             var longitudeDegrees = longitudeOffsetMeters * GetLongitudeDegreesPerMeter(seedLocation.Latitude);
 
-            return new Goke.Core.Models.Location
+            return new Goke.Core.Map.Location
             {
                 Name = seedLocation.Name,
                 Latitude = seedLocation.Latitude + latitudeDegrees,
@@ -209,7 +210,7 @@ namespace GokeApp.PageModels
             };
         }
 
-        private TrackerMotionState GetOrCreateMotionState(Goke.Core.Models.Map.Location seedLocation, DateTime startedAtUtc)
+        private TrackerMotionState GetOrCreateMotionState(Goke.Core.Map.Location seedLocation, DateTime startedAtUtc)
         {
             if (_motionStates.TryGetValue(seedLocation.Name, out var existingState))
             {

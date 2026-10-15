@@ -1,4 +1,4 @@
-// import { clearMarkers, initializeMap, renderAsync, setMarkersJson } from "./weather-map.js";
+// import { clearMap, initializeMap, renderAsync, setMapJson } from "./weather-map.js";
 
 export async function renderMap(MapScriptFileName, __MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__, markers, emptyMessage, tileWarningMessage) {
 
@@ -10,7 +10,7 @@ export async function renderMap(MapScriptFileName, __MAP_CONFIG_NAME__, __MAP_BR
 
     const mapScript = MapScriptFileName;
 
-    let { clearMarkers, initializeMap, renderAsync, setMarkersJson } = await import(mapScript);
+    let { clearMap, initializeMap, renderAsync, setMapJson } = await import(mapScript);
 
 
     window[__MAP_BRIDGE_NAME__] = {
@@ -18,11 +18,11 @@ export async function renderMap(MapScriptFileName, __MAP_CONFIG_NAME__, __MAP_BR
         initialize(options) {
             return initializeMap(options ?? window[__MAP_CONFIG_NAME__] ?? {});
         },
-        setMarkersJson(mapDataJson, options) {
-            return setMarkersJson(mapDataJson, options ?? window[__MAP_CONFIG_NAME__] ?? {});
+        setMapJson(mapDataJson, options) {
+            return setMapJson(mapDataJson, options ?? window[__MAP_CONFIG_NAME__] ?? {});
         },
         clear(options) {
-            return clearMarkers(options ?? window[__MAP_CONFIG_NAME__] ?? {});
+            return clearMap(options ?? window[__MAP_CONFIG_NAME__] ?? {});
         }
     };
 
@@ -37,10 +37,10 @@ export async function renderMap(MapScriptFileName, __MAP_CONFIG_NAME__, __MAP_BR
 }
 
 
-export const setMarkers = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__, markers, options = {}) => {
+export const setMap = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__, mapData, options = {}) => {
     const bridge = window[__MAP_BRIDGE_NAME__];
     if (!bridge || bridge.isReady !== true) return 'not-ready';
-    bridge.setMarkersJson(markers, { ...(window[__MAP_CONFIG_NAME__] ?? {}), fitBounds: true }); return 'ready';
+    bridge.setMapJson(mapData, { ...(window[__MAP_CONFIG_NAME__] ?? {}), fitBounds: true, ...options }); return 'ready';
 };
 
 export const clear = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__) => {
@@ -58,7 +58,7 @@ export const clear = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__) => {
 
 //    window.weatherMapConfig = nextOptions;
 
-//    return setMarkersJson(markers, nextOptions);
+//    return setMapJson(markers, nextOptions);
 //}
 
 //export function clearMap(options = {}) {
@@ -70,5 +70,5 @@ export const clear = (__MAP_CONFIG_NAME__, __MAP_BRIDGE_NAME__) => {
 
 //    window.weatherMapConfig = nextOptions;
 
-//    return clearMarkers(nextOptions);
+//    return clearMap(nextOptions);
 //}

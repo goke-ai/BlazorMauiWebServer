@@ -1,5 +1,5 @@
 ﻿@using Goke.Core.Models
-@using Goke.Core.Models.Map
+@using Goke.Core.Map
 @implements IAsyncDisposable
 
 @if (!_showMapHost)
@@ -87,7 +87,7 @@ else
         }
 
         await _mapModule.InvokeVoidAsync(
-            "setMarkers",
+            "setMap",
             __MAP_CONFIG_NAME__,
             __MAP_BRIDGE_NAME__,
             markers,

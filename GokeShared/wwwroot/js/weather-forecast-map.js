@@ -1,4 +1,4 @@
-import { bindMarkerPopup, createMap, getColorByScale, getMarkerRadiusFromZoom, getMinMaxWithOption, normalizePoint, escapeHtml } from "./map-core";
+import { bindMarkerPopup, createMap, getColorByScale, getMarkerRadiusFromZoom, getMinMaxWithOption, normalizePoint, escapeHtml } from "./map-core.js";
 
 const resolveConfig = () => window.weatherMapConfig ?? {};
 

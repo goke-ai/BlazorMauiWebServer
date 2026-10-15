@@ -1,4 +1,4 @@
-import { bindMarkerPopup, bindMarkerTooltip as bindCoreMarkerTooltip, createColoredIcon, createMap, normalizeMarkers } from "./map-core";
+import { bindMarkerPopup, bindMarkerTooltip as bindCoreMarkerTooltip, createColoredIcon, createMap, normalizeMarkers } from "./map-core.js";
 
 const resolveConfig = () => window.currentLocationMapConfig ?? {};
 
@@ -132,7 +132,7 @@ export const renderMarkers = (markers, options = {}) => {
     };
 };
 
-export const clearMarkers = (options = {}) => {
+export const clearMap = (options = {}) => {
     const mapHost = ensureMap(options);
 
     for (const marker of currentLocationState.markers.values()) {
@@ -144,7 +144,7 @@ export const clearMarkers = (options = {}) => {
     setEmptyState(true, options.emptyMessage);
 };
 
-export const setMarkersJson = (markersJson, options = {}) => {
+export const setMapJson = (markersJson, options = {}) => {
     const markers = typeof markersJson === "string"
         ? JSON.parse(markersJson)
         : markersJson;

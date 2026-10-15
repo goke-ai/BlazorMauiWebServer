@@ -1,4 +1,5 @@
 using Goke.Core.Interfaces;
+using GokeShared.Services;
 using GokeWeb.Components;
 using GokeWeb.Components.Account;
 using GokeWeb.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ builder.Services
 
 // Add other services
 builder.Services.AddTransient<IFormFactor, FormFactorService>();
+builder.Services.AddScoped<BrowserLocationService, BrowserLocationService>();
 
 
 var app = builder.Build();

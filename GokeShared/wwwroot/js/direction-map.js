@@ -1,4 +1,4 @@
-import { bindMarkerPopup, bindMarkerTooltip, createColoredIcon, createMap, fitBounds } from "./map-core";
+import { bindMarkerPopup, bindMarkerTooltip, createColoredIcon, createMap, fitBounds } from "./map-core.js";
 
 const resolveConfig = () => window.directionMapConfig ?? {};
 const directionState = {
@@ -166,7 +166,7 @@ export const renderRoutes = (routes, options = {}) => {
     };
 };
 
-export const clearRoutes = (options = {}) => {
+export const clearMap = (options = {}) => {
     const mapHost = ensureMap(options);
 
     for (const routeLayers of directionState.routes.values()) {
@@ -181,7 +181,7 @@ export const clearRoutes = (options = {}) => {
     setEmptyState(true, options.emptyMessage);
 };
 
-export const setRoutesJson = (routesJson, options = {}) => {
+export const setMapJson = (routesJson, options = {}) => {
     const routes = typeof routesJson === "string"
         ? JSON.parse(routesJson)
         : routesJson;

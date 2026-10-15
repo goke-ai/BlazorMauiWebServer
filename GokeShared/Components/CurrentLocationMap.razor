@@ -1,5 +1,5 @@
 ﻿@using Goke.Core.Models
-@using Goke.Core.Models.Map
+@using Goke.Core.Map
 @implements IAsyncDisposable
 
 @if (!_showMapHost)
@@ -24,6 +24,10 @@ else
 
     [Inject]
     private IJSRuntime JS { get; set; } = default!;
+
+    private const string MapScriptFileName = "./current-location-map.js";
+    private const string __MAP_CONFIG_NAME__ = "currentLocationMapConfig";
+    private const string __MAP_BRIDGE_NAME__ = "currentLocationMapBridge";
 
     private const string EmptyMessage = "Current location is unavailable.";
     private const string TileWarningMessage = "Map tiles are unavailable right now. Current location markers are still shown.";
@@ -61,8 +65,9 @@ else
         {
             await _mapModule.InvokeVoidAsync(
                 "renderMap",
-                "currentLocationMapConfig",
-                "currentLocationMapBridge",
+                MapScriptFileName,
+                __MAP_CONFIG_NAME__,
+                __MAP_BRIDGE_NAME__,
                 markers,
                 EmptyMessage,
                 TileWarningMessage);
@@ -75,16 +80,16 @@ else
         {
             await _mapModule.InvokeVoidAsync(
                 "clear",
-                "currentLocationMapConfig",
-                "currentLocationMapBridge");
+                __MAP_CONFIG_NAME__,
+                __MAP_BRIDGE_NAME__);
 
             return;
         }
 
         await _mapModule.InvokeVoidAsync(
-            "setMarkers",
-            "currentLocationMapConfig",
-            "currentLocationMapBridge",
+            "setMap",
+            __MAP_CONFIG_NAME__,
+            __MAP_BRIDGE_NAME__,
             markers,
             BuildMapOptions(fitBounds: true));
     }
