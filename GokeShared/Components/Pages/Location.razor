@@ -4,14 +4,11 @@
 @using Goke.Core.Services
 @using GokeShared.Services
 
-
 @inject ILocationService locationService
 
-<PageTitle>Location</PageTitle>
+<h1 class="w100 text-center">Location</h1>
 
-<h1>Location</h1>
-
-<p>This component demonstrates showing data.</p>
+<h3 class="w100 text-center">My Locations</h3>
 
 @if (Markers == null || Markers.Count == 0)
 {

@@ -1,21 +1,18 @@
-﻿@page "/weather-city"
-@using System.Security.Claims
-@using Goke.Core.Models
+﻿@using Goke.Core.Models
 @using Goke.Core.Services
-
-@rendermode InteractiveServer
+@using Microsoft.Extensions.Configuration
 
 @inject IHttpClientFactory httpClientFactory
 
-<PageTitle>Weather</PageTitle>
+<h1>@City |Weather</h1>
 
-<h1>@City Weather</h1>
-
-<p>This component demonstrates showing data.</p>
-
-@if (forecasts == null)
+@if (City == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>No city specified.</em></p>
+}
+else if (forecasts == null || forecasts.Length == 0)
+{
+    <p><em>No forecast data available for @City.</em></p>
 }
 else
 {
@@ -23,13 +20,13 @@ else
 }
 
 @code {
-    [SupplyParameterFromQuery]
-    private string? City { get; set; }
+    [Parameter]
+    public string? City { get; set; }
 
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync()
-    {        
+    {
         HttpClient httpClient = httpClientFactory.CreateClient(BackendApiEndpoints.ClientName);
 
         // Seed weather data here
