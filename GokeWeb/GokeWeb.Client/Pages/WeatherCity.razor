@@ -1,0 +1,12 @@
+﻿@page "/weather-city"
+
+@rendermode InteractiveAuto
+
+<PageTitle>@City |Weather</PageTitle>
+
+<GokeShared.Components.Pages.WeatherCity City="@City" />
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? City { get; set; }
+}

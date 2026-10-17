@@ -22,6 +22,21 @@ builder.Services
     .AddAuthentication(builder.Configuration)
     .AddAuthorization(builder.Configuration);
 
+// Add a CORS policy for the client
+builder.Services.AddCors(
+    options => options.AddDefaultPolicy(
+        policy => policy.WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins")
+                        .Get<string[]>() ?? ["https://localhost:7000", "https://localhost:7002"])
+            .SetIsOriginAllowed(origin =>
+            {
+                // Allow any HTTPS origin under *.dev.localhost
+                var uris = builder.Configuration.GetSection("Cors:AllowedOriginsForDevelopment")
+                        .Get<string[]>() ?? ["https://gokeweb.dev.localhost"];
+                return uris.Any(uri => origin.StartsWith(uri));
+            })
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()));
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
@@ -57,6 +72,9 @@ else
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
+
+// Activate the CORS policy
+app.UseCors();
 
 app.UseAntiforgery();
 

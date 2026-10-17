@@ -22,7 +22,7 @@
                Style="{StaticResource Headline}"
                SemanticProperties.HeadingLevel="Level1" />
 
-        <Label Text="My Locations."
+        <Label Text="My Locations"
                Style="{StaticResource SubHeadline}"
                SemanticProperties.HeadingLevel="Level2" />
 

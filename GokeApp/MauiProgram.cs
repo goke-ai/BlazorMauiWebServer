@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 using Goke.Core.Authorization;
 using Goke.Core.Interfaces;
+using Goke.Core.Map;
 using Goke.Maui.Core.Extensions;
+using Goke.Maui.Core.Services;
 using GokeApp.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Toolkit.Hosting;
@@ -59,6 +61,8 @@ public static class MauiProgram
 
         // Add other services
         builder.Services.AddTransient<IFormFactor, FormFactorService>();
+        builder.Services.AddTransient<ILocationService, LocationService>();
+		builder.Services.AddSingleton<TrackerEngine>();
 
         // Add repositories
         builder.Services.AddSingleton<ProjectRepository>();

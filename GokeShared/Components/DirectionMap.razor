@@ -1,0 +1,132 @@
+﻿@using Goke.Core.Models
+@using Goke.Core.Map
+@implements IAsyncDisposable
+
+@if (!_showMapHost)
+{
+    <p><em>@EmptyMessage</em></p>
+}
+else
+{
+    <div class="position-relative">
+        <div class="position-relative top-0 start-0 my-2 p-1 bg-body-tertiary rounded border">
+            @VisibleRoutesLabel
+        </div>
+        <div id="empty-state"
+             class="position-absolute top-0 start-0 w-100 h-100 rounded border bg-body-tertiary text-body-secondary fst-italic align-items-center justify-content-center"
+             style="display: none;">
+            @EmptyMessage
+        </div>
+        <div id="map" style="height: 520px;" class="rounded border"></div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<DirectionRouteMarker> Routes { get; set; } = [];
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
+
+    private const string MapScriptFileName = "./direction-map.js";
+    private const string __MAP_CONFIG_NAME__ = "directionMapConfig";
+    private const string __MAP_BRIDGE_NAME__ = "directionMapBridge";
+
+    private const string EmptyMessage = "No direction routes available.";
+    private const string TileWarningMessage = "Map tiles are unavailable right now. Current location markers are still shown.";
+
+    private DirectionRouteMarker[] _routes = [];
+    private IJSObjectReference? _mapModule;
+    private bool _showMapHost;
+    private bool _isMapInitialized;
+
+    private string VisibleRoutesLabel => $"{(Routes ?? []).Count()} route marker(s) visible";
+
+    protected override void OnParametersSet()
+    {
+        _routes = (Routes ?? []).ToArray();
+        _showMapHost = _showMapHost || _routes.Length > 0;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_showMapHost)
+        {
+            return;
+        }
+
+        await InitializeOrUpdateMapAsync();
+    }
+
+    private async Task InitializeOrUpdateMapAsync()
+    {
+        _mapModule ??= await JS.InvokeAsync<IJSObjectReference>(
+            "import",
+            "./_content/GokeShared/js/map-view.js");
+
+        var routes = _routes;
+
+        if (!_isMapInitialized)
+        {
+            await _mapModule.InvokeVoidAsync(
+                "renderMap",
+                MapScriptFileName,
+                __MAP_CONFIG_NAME__,
+                __MAP_BRIDGE_NAME__,
+                routes,
+                EmptyMessage,
+                TileWarningMessage);
+
+            _isMapInitialized = true;
+            return;
+        }
+
+        if (_routes.Length == 0)
+        {
+            await _mapModule.InvokeVoidAsync(
+                "clear",
+                __MAP_CONFIG_NAME__,
+                __MAP_BRIDGE_NAME__);
+
+            return;
+        }
+
+        await _mapModule.InvokeVoidAsync(
+            "setMap",
+            __MAP_CONFIG_NAME__,
+            __MAP_BRIDGE_NAME__,
+            routes,
+            BuildMapOptions());
+    }
+
+    private static object BuildMapOptions(bool? fitBounds = null)
+    {
+        return new
+        {
+            emptyMessage = EmptyMessage,
+            tileWarningMessage = TileWarningMessage,
+            fitBounds
+        };
+    }
+
+    
+    public async ValueTask DisposeAsync()
+    {
+        if (_mapModule is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _mapModule.InvokeVoidAsync(
+                "dispose",
+                __MAP_CONFIG_NAME__,
+                __MAP_BRIDGE_NAME__);
+            await _mapModule.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+    }
+}

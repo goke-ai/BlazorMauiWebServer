@@ -1,38 +1,22 @@
 ﻿@page "/weather-city"
-@using System.Security.Claims
-@using Goke.Core.Models
-@using Goke.Core.Services
+@using Goke.Blazor.Components.Extensions
 
+@inject NavigationManager NavigationManager
 
-@inject IHttpClientFactory httpClientFactory
+<PageTitle>@City |Weather</PageTitle>
 
-<PageTitle>Weather</PageTitle>
+<GokeShared.Components.Pages.WeatherCity City="@City" />            
 
-<h1>@City Weather</h1>
-
-<p>This component demonstrates showing data.</p>
-
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <WeatherForecastCardList Forecasts="forecasts" />
-}
 
 @code {
-    [SupplyParameterFromQuery]
-    private string? City { get; set; }
+    [Parameter]
+    public string? City { get; set; }
 
-    private WeatherForecast[]? forecasts;
 
-    protected override async Task OnInitializedAsync()
-    {        
-        HttpClient httpClient = httpClientFactory.CreateClient(BackendApiEndpoints.ClientName);
+    protected override async Task OnParametersSetAsync()
+    {
+        base.OnParametersSet();
 
-        // Seed weather data here
-        var DATA = await httpClient.GetFromJsonAsync<List<WeatherForecast>>($"api/weather/cities/{City}") ?? new List<WeatherForecast>();
-        forecasts = DATA != null ? DATA.ToArray() : Array.Empty<WeatherForecast>();
+        City ??= NavigationManager.QueryString["city"];
     }
 }

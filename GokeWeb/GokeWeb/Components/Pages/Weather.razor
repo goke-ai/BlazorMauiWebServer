@@ -1,61 +1,8 @@
 ﻿@page "/weather"
-@using Goke.Core.Models
-@using Goke.Core.Services
+@using GokeShared.Components.Pages
 
-@* @attribute [StreamRendering] *@
 @rendermode InteractiveServer
-
-@inject IHttpClientFactory httpClientFactory
 
 <PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
-
-<p>This component demonstrates showing data.</p>
-
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <AuthorizeView Policy="WeatherMapEditPolicy">
-        <Authorized>
-            <WeatherForecastMapList Forecasts="forecasts" CanEdit="true" />
-        </Authorized>
-        <NotAuthorized>
-            <WeatherForecastMapList Forecasts="forecasts" />
-        </NotAuthorized>
-    </AuthorizeView>
-}
-
-@code {
-    private WeatherForecast[]? forecasts;
-
-    List<WeatherForecast> DATA = new List<WeatherForecast>();
-
-    DateTime current = DateTime.UtcNow;
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        HttpClient httpClient = httpClientFactory.CreateClient(BackendApiEndpoints.ClientName);
-
-        // Seed weather data here
-        DATA = await httpClient.GetFromJsonAsync<List<WeatherForecast>>($"api/weather/datetime/{current:u}") ?? [];
-
-        await OnLoadDataAsync();
-    }
-
-    protected async Task OnLoadDataAsync()
-    {
-
-        current = DateTime.UtcNow;
-
-        // Simulate asynchronous loading to demonstrate a loading indicator
-        await Task.Delay(500);
-
-        forecasts = [.. DATA];
-
-    }
-}
+<Weather />

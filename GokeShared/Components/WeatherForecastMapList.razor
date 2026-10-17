@@ -1,4 +1,5 @@
 ﻿@using Goke.Core.Models
+@using Goke.Core.Map
 
 @if (_cityForecasts.Length == 0)
 {
@@ -77,6 +78,8 @@ else
                 </div>
             }
 
+            <WeatherMap Markers="FilteredMarkers" />
+
             <WeatherForecastMap Forecasts="FilteredForecasts"
                                 AbsoluteMinTemperature="@_absoluteMinTemperature"
                                 AbsoluteMaxTemperature="@_absoluteMaxTemperature" />
@@ -108,6 +111,8 @@ else
                 f.TemperatureC <= _selectedRangeMaxTemperature)
             .OrderBy(f => f.City)
             .ToArray();
+
+    MapMarker[] FilteredMarkers => BuildMarkers(FilteredForecasts);
 
     protected override void OnParametersSet()
     {
@@ -189,4 +194,32 @@ else
             ? value
             : fallback;
     }
+
+    private static MapMarker[] BuildMarkers(WeatherForecast[] forecasts)
+    {
+        var mapMarkers = forecasts
+            .Select((forecast, index) => new MapMarker
+            {
+                Id = index.ToString(),
+                Name = $"{forecast.TemperatureC}&deg; C",
+                Latitude = forecast.Latitude,
+                Longitude = forecast.Longitude,
+                Description = $"{forecast.City} | {forecast.TemperatureC}&deg; C",
+                //Timestamp = forecast.Timestamp,
+                PopupHtml = $"<strong>{forecast.City}</strong><br />" +
+                            $"Temperature: {forecast.TemperatureC}&deg;C<br />" +
+                            $"Summary: {forecast.Summary}<br />" +
+                            $"Time: {forecast.Date}",
+                //MarkerColor = "#1f2937",
+                //MarkerShape = forecast.MarkerShape,
+                //MarkerInitials = forecast.MarkerInitials,
+                //MarkerOpacity = 0.55,
+                MarkerValue = forecast.TemperatureC
+
+            })
+            .ToArray();
+
+        return mapMarkers;
+    }
+
 }

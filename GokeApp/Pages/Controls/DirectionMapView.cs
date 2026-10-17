@@ -1,9 +1,9 @@
-using GokeApp.Models;
+using Goke.Core.Map;
 using System.Text.Json;
 
 namespace GokeApp.Pages.Controls;
 
-public sealed class DirectionMapView : ContentView
+public sealed partial class DirectionMapView : ContentView
 {
     private const string MapCoreScriptFileName = "map-core.js";
     private const string MapTemplateFileName = "map-view-template.html";

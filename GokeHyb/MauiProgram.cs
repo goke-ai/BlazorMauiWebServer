@@ -1,5 +1,7 @@
 ﻿using Goke.Core.Interfaces;
+using Goke.Core.Map;
 using Goke.Maui.Core.Extensions;
+using Goke.Maui.Core.Services;
 using GokeHyb.Extensions.DependencyInjection;
 using GokeHyb.Services;
 using Microsoft.Extensions.Logging;
@@ -34,6 +36,8 @@ public static class MauiProgram
 
         // Add other services
         builder.Services.AddTransient<IFormFactor, FormFactorService>();
+        builder.Services.AddTransient<ILocationService, LocationService>();
+        builder.Services.AddSingleton<TrackerEngine>();
 
 
         builder.Services.AddMauiBlazorWebView();

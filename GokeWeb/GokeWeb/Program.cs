@@ -1,6 +1,9 @@
 using Goke.Core.Interfaces;
+using Goke.Core.Map;
+using GokeShared.Services;
 using GokeWeb.Components;
 using GokeWeb.Components.Account;
+using GokeWeb.Endpoints;
 using GokeWeb.Extensions.DependencyInjection;
 using GokeWeb.Services;
 
@@ -21,6 +24,8 @@ builder.Services
 
 // Add other services
 builder.Services.AddTransient<IFormFactor, FormFactorService>();
+builder.Services.AddScoped<ILocationService, BrowserLocationService>();
+builder.Services.AddSingleton<TrackerEngine>();
 
 
 var app = builder.Build();
@@ -57,5 +62,7 @@ app.MapRazorComponents<App>()
 
 // Needed to log in to the backend WebServer
 app.MapAccountEndpoints();
+// 
+app.MapApiEndpoints();
 
 app.Run();

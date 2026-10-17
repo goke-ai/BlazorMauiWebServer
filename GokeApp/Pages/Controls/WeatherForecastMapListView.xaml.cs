@@ -1,5 +1,5 @@
+using Goke.Core.Map;
 using Goke.Core.Models;
-using GokeApp.Models;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
@@ -138,10 +138,10 @@ public partial class WeatherForecastMapListView : ContentView
             .Select((forecast, index) => new MapMarker
             {
                 Id = index.ToString(),
-                Name = forecast.City,
+                Name = $"{forecast.TemperatureC}&deg; C",
                 Latitude = forecast.Latitude,
                 Longitude = forecast.Longitude,
-                Description = $"{forecast.TemperatureC}&deg; C",
+                Description = $"{forecast.City} | {forecast.TemperatureC}&deg; C",
                 //Timestamp = forecast.Timestamp,
                 PopupHtml = $"<strong>{forecast.City}</strong><br />" +
                             $"Temperature: {forecast.TemperatureC}&deg;C<br />" +

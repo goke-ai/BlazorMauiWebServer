@@ -1,0 +1,156 @@
+﻿@using System.Linq
+@using Goke.Core.Models
+@using Goke.Core.Map
+@using Goke.Core.Services
+@using GokeShared.Services
+
+@inject ILocationService locationService
+
+<h1>Direction</h1>
+
+<p>My Direction</p>
+
+@if (Routes == null || Routes.Count == 0)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <DirectionMap Routes="Routes" />
+}
+
+@code {
+    private static readonly TimeSpan MovementUpdateInterval = TimeSpan.FromSeconds(1);
+    private readonly Lock _routeSync = new();
+    private readonly Dictionary<string, DirectionRouteSeed> _routeSeeds = new(StringComparer.Ordinal);
+    private Task? _movementTask;
+
+    private List<DirectionRouteMarker> _routes = [];
+
+    public List<DirectionRouteMarker> Routes
+    {
+        get => _routes;
+        private set
+        {
+            if (_routes != value)
+            {
+                _routes = value;
+            }
+        }
+    }      
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var location = await locationService.GetCurrentLocationAsync();
+        var centerLatitude = location?.Latitude ?? 6.5244;
+        var centerLongitude = location?.Longitude ?? 3.3792;
+
+        lock (_routeSync)
+        {
+            _routeSeeds.Clear();
+
+            foreach (var seed in CreateSeeds(centerLatitude, centerLongitude))
+            {
+                _routeSeeds[seed.Id] = seed;
+            }
+        }
+
+        EnsureMovementSimulationStarted();
+
+        await OnLoadDataAsync();
+    }
+
+    protected async Task OnLoadDataAsync()
+    {
+        await Task.Delay(250);
+        UpdateRoutesSnapshot(DateTime.UtcNow);
+    }
+
+    private void EnsureMovementSimulationStarted()
+    {
+        if (_movementTask is not null)
+        {
+            return;
+        }
+
+        _movementTask = Task.Run(async () =>
+        {
+            using var timer = new PeriodicTimer(MovementUpdateInterval);
+
+            while (await timer.WaitForNextTickAsync())
+            {
+                await InvokeAsync(() => UpdateRoutesSnapshot(DateTime.UtcNow));
+            }
+        });
+    }
+
+    private void UpdateRoutesSnapshot(DateTime timestamp)
+    {
+        DirectionRouteSeed[] seeds;
+        lock (_routeSync)
+        {
+            seeds = [.. _routeSeeds.Values];
+        }
+
+        Routes = [.. seeds.Select(seed => DirectionEngine.BuildRouteMarker(seed, timestamp))];
+    
+        StateHasChanged();
+    }
+
+    private static IEnumerable<DirectionRouteSeed> CreateSeeds(double latitude, double longitude)
+    {
+        return
+        [
+            CreateSeed("car-1", "Car A", "Car", latitude, longitude, 0.0000, 0.0000, 0.0180, 0.0260, 14, 0, "#2563eb", "Square", "C"),
+            CreateSeed("car-2", "Car B", "Car", latitude, longitude, 0.0120, -0.0180, 0.0240, 0.0120, 16, 4, "#1d4ed8", "Square", "C"),
+            CreateSeed("train-1", "Train A", "Train", latitude, longitude, -0.0300, -0.0120, 0.0320, -0.0120, 10, 2, "#7c3aed", "Diamond", "T"),
+            CreateSeed("bus-1", "Bus A", "Bus", latitude, longitude, -0.0160, 0.0280, 0.0100, 0.0460, 18, 6, "#059669", "Hexagon", "B"),
+            CreateSeed("bus-2", "Bus B", "Bus", latitude, longitude, 0.0080, -0.0340, -0.0180, -0.0040, 20, 9, "#0f766e", "Hexagon", "B"),
+            CreateSeed("walk-1", "Walker", "Walk", latitude, longitude, -0.0060, 0.0060, 0.0040, 0.0140, 24, 12, "#ea580c", "Circle", "W")
+        ];
+    }
+
+    private static DirectionRouteSeed CreateSeed(
+        string id,
+        string name,
+        string transportMode,
+        double latitude,
+        double longitude,
+        double startLatitudeOffset,
+        double startLongitudeOffset,
+        double endLatitudeOffset,
+        double endLongitudeOffset,
+        double secondsPerLeg,
+        double startOffsetSeconds,
+        string markerColor,
+        string markerShape,
+        string markerInitials)
+    {
+        return new DirectionRouteSeed(
+            Id: id,
+            Name: name,
+            TransportMode: transportMode,
+            StartLatitude: latitude + startLatitudeOffset,
+            StartLongitude: longitude + startLongitudeOffset,
+            EndLatitude: latitude + endLatitudeOffset,
+            EndLongitude: longitude + endLongitudeOffset,
+            SecondsPerLeg: secondsPerLeg,
+            StartOffsetSeconds: startOffsetSeconds,
+            MarkerColor: markerColor,
+            MarkerShape: markerShape,
+            MarkerInitials: markerInitials,
+            StartedAtUtc: DateTime.UtcNow);
+    }
+
+    
+}
