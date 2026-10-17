@@ -65,7 +65,67 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiAsset Remove="Resources\Raw\leaflet\images\layers-2x.png" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\images\layers.png" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\images\marker-icon-2x.png" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\images\marker-icon.png" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\images\marker-shadow.png" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\leaflet-src.esm.js" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\leaflet-src.esm.js.map" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\leaflet-src.js" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\leaflet-src.js.map" />
+	  <MauiAsset Remove="Resources\Raw\leaflet\leaflet.js.map" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiCss Remove="Resources\Raw\leaflet\leaflet.css" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="appsettings.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Resources\Raw\leaflet\images\layers-2x.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\images\layers.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\images\marker-icon-2x.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\images\marker-icon.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\images\marker-shadow.png">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\leaflet-src.esm.js">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\leaflet-src.esm.js.map">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\leaflet-src.js">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\leaflet-src.js.map">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Include="Resources\Raw\leaflet\leaflet.js.map">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -166,6 +226,17 @@
 
 	<ItemGroup>
 	  <Folder Include="Services\Auth\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiAsset Update="Resources\Raw\leaflet\leaflet.css">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </MauiAsset>
+	  <MauiAsset Update="Resources\Raw\leaflet\leaflet.js">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </MauiAsset>
 	</ItemGroup>
 
 	<ItemGroup>
