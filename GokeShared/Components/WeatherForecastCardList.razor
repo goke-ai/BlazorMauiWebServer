@@ -1,4 +1,25 @@
-﻿@using Goke.Core.Models
+﻿@using Goke.Core.Map
+@using Goke.Core.Models
+
+<style>
+    .swipe-tabs {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        gap: 0.5rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .swipe-tabs::-webkit-scrollbar {
+            display: none; /* hide scrollbar on mobile */
+        }
+
+    .swipe-tab {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+    }
+</style>
 
 @if (Forecasts is null || !Forecasts.Any())
 {
@@ -13,30 +34,66 @@ else
         <section class="mb-4">
             <h3 class="mb-3">@cityGroup.Key</h3>
 
-            @foreach (var dayGroup in cityGroup
+            @{
+                //group by date first
+                var dateGroups = cityGroup
+                .GroupBy(f => f.Date.Date)
+                .OrderBy(g => g.Key).ToList();
+
+                var selectedDate = dateGroups.First().Key;
+
+                // Select the first date as default
+                var dateKey = GetGroupKey(cityGroup.Key, "DATE");
+                if (_selectedForecasts.TryGetValue(dateKey, out var storedDate))
+                {
+                    if (dateGroups.Any(g => g.Key == storedDate))
+                    {
+                        selectedDate = storedDate;
+                    }
+                }
+            }
+
+            <!-- DATE TABS -->
+            <ul class="nav nav-tabs" role="tablist">
+                @foreach (var dateGroup in dateGroups)
+                {
+                    <li class="nav-item">
+                        <button type="button"
+                                class="nav-link @(dateGroup.Key == selectedDate ? "active" : null)"
+                                @onclick="() => SelectForecast(dateKey, dateGroup.Key)">
+                            @dateGroup.Key.ToString("yyyy-MM-dd")
+                        </button>
+                    </li>
+                }
+            </ul>
+
+            <!-- HOUR TABS -->
+            @* @foreach (var dayGroup in cityGroup
                 .OrderBy(f => f.Date)
-                .GroupBy(f => f.Date.Date))
-            {
-                var orderedForecasts = dayGroup.OrderBy(f => f.Date).ToList();
+                .GroupBy(f => f.Date.Date)) *@
+            @{
+                var dayGroup = dateGroups.First(g => g.Key == selectedDate);
+                var orderedHours = dayGroup.OrderBy(f => f.Date).ToList();
                 var groupKey = GetGroupKey(cityGroup.Key, dayGroup.Key);
-                var selectedForecast = GetSelectedForecast(groupKey, orderedForecasts);
+                var selectedForecast = GetSelectedForecast(groupKey, orderedHours);
 
                 <div class="mb-4">
                     <h5 class="text-body-secondary mb-3">@dayGroup.Key.ToString("yyyy-MM-dd")</h5>
 
-                    <ul class="nav nav-tabs" role="tablist">
-                        @foreach (var forecast in orderedForecasts)
+                    <ul class="nav nav-pills" role="tablist">
+                        @foreach (var forecast in orderedHours)
                         {
                             <li class="nav-item">
-                            <button type="button"
-                                    class="nav-link @(selectedForecast.Date == forecast.Date ? "active" : null)"
-                                    @onclick="() => SelectForecast(groupKey, forecast.Date)">
-                                @forecast.Date.ToString("HH")
-                            </button>
+                                <button type="button"
+                                        class="nav-link @(selectedForecast.Date == forecast.Date ? "active" : null)"
+                                        @onclick="() => SelectForecast(groupKey, forecast.Date)">
+                                    @forecast.Date.ToString("HH")
+                                </button>
                             </li>
                         }
                     </ul>
 
+                    <!-- FORECAST CARD -->
                     <div class="card h-100 shadow-sm">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div>
@@ -146,6 +203,10 @@ else
                             </div>
                         </div>
                     </div>
+
+
+                    <CurrentLocationMap Markers="_markers" />
+
                 </div>
             }
         </section>
@@ -157,6 +218,8 @@ else
     public IEnumerable<WeatherForecast> Forecasts { get; set; } = [];
 
     private readonly Dictionary<string, DateTime> _selectedForecasts = [];
+
+    public List<MapMarker> _markers = [];
 
     protected override void OnParametersSet()
     {
@@ -188,6 +251,37 @@ else
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        var forecast = Forecasts.FirstOrDefault();
+        var location = new Goke.Core.Map.Location
+        {
+            Latitude = forecast?.Latitude ?? 0,
+            Longitude = forecast?.Longitude ?? 0,      
+            Name = forecast?.City ?? "Unknown"
+        };
+
+        _markers = new[] { location }.Select(location => new MapMarker
+        {
+            Latitude = location.Latitude,
+            Longitude = location.Longitude,
+            Name = location.Name,
+            Description = $"Lat: {location.Latitude}, Lon: {location.Longitude}",
+            MarkerShape = "Circle",
+            MarkerColor = MapMarker.GetColor(location.Name),
+        }).ToList();
+
+        StateHasChanged();
+    }
+
+    private static string GetGroupKey(string city, string key)
+        => $"{city}|{key}";
+
     private static string GetGroupKey(string city, DateTime day)
         => $"{city}|{day:yyyyMMdd}";
 
@@ -212,4 +306,6 @@ else
 
     private void SelectForecast(string groupKey, DateTime forecastDate)
         => _selectedForecasts[groupKey] = forecastDate;
+
+
 }
