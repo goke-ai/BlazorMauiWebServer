@@ -1,0 +1,28 @@
+﻿@using Goke.Blazor.Components
+
+<li class="nav-item dropdown">
+    <NavLink class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <BsIcon Name="@Icons.MapFill" />
+        Map
+    </NavLink>
+    <ul class="dropdown-menu">
+        <li>
+            <NavLink class="dropdown-item" href="location">
+                <BsIcon Name="@Icons.GeoAltFill" />
+                <span>Location</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="dropdown-item" href="tracker">
+                <BsIcon Name="@Icons.GeoFill" />
+                <span>Tracker</span>
+            </NavLink>
+        </li>
+        <li>
+            <NavLink class="dropdown-item" href="direction">
+                <BsIcon Name="@Icons.CursorFill" />
+                <span>Direction</span>
+            </NavLink>
+        </li>
+    </ul>
+</li>
