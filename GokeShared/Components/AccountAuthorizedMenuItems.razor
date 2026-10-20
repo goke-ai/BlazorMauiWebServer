@@ -1,0 +1,36 @@
+﻿@using Goke.Blazor.Components
+
+@if (UserName is not null)
+{
+    <li class="nav-item dropdown">
+        <NavLink class="nav-link dropdown-toggle" href="Account/Manage" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @UserName
+        </NavLink>
+        <ul class="dropdown-menu">
+            <li>
+                <NavLink class="dropdown-item" href="Account/Manage">
+                    <BsIcon Name="@Icons.PersonFillGear" />
+                    <span>Manage</span>
+                </NavLink>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form action="Account/Logout" method="post">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ReturnUrl" value="@CurrentUrl" />
+                    <button type="submit" class="dropdown-item nav-button">
+                        <BsIcon Name="@Icons.BoxArrowLeft" />
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
+}
+
+@code {
+    [Parameter]
+    public string? UserName { get; set; }
+    [Parameter]
+    public string? CurrentUrl { get; set; }
+}

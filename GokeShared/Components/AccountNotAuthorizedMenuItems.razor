@@ -1,0 +1,28 @@
+﻿@using Goke.Blazor.Components
+<li class="nav-item dropdown">
+    <NavLink class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <BsIcon Name="@Icons.PersonFillGear" />
+        Account
+    </NavLink>
+    <ul class="dropdown-menu">
+        <li class="nav-item">
+            <NavLink class="dropdown-item" href="Account/Login">
+                <BsIcon Name="@Icons.PersonBadge" />
+                <span>Login</span>
+            </NavLink>
+        </li>
+        <li class="nav-item">
+            <NavLink class="dropdown-item" href="Account/ExternalLogin">
+                <BsIcon Name="@Icons.PersonFillUp" />
+                <span>External Login</span>
+            </NavLink>
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li class="nav-item">
+            <NavLink class="dropdown-item" href="Account/Register">
+                <BsIcon Name="@Icons.PersonFillAdd" />
+                <span>Register</span>
+            </NavLink>
+        </li>
+    </ul>
+</li>

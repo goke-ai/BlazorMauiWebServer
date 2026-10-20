@@ -15,7 +15,7 @@ public sealed class WeatherForecastService : IWeatherForecastService
 
     public Task<IEnumerable<WeatherForecast>> GetWeatherForecastsForCities(params string[] cities)
     {
-        var forecastWindowStart = WeatherForecastEngine.GetForecastWindowStart(DateTime.UtcNow);
+        var forecastWindowStart = WeatherForecastEngine.GetForecastWindowStart(DateTime.UtcNow).AddDays(-1);
         var forecasts = WeatherForecastEngine.BuildForecasts(forecastWindowStart, WeatherForecastEngine.ForecastPeriods, cities);
 
         return Task.FromResult<IEnumerable<WeatherForecast>>(forecasts);

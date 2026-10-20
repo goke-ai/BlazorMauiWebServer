@@ -40,7 +40,8 @@ else
                 .GroupBy(f => f.Date.Date)
                 .OrderBy(g => g.Key).ToList();
 
-                var selectedDate = dateGroups.First().Key;
+                // Select the default date for this city group
+                var selectedDate = dateGroups.FirstOrDefault(f => f.Key == DateTime.UtcNow.Date)?.Key ?? dateGroups.First().Key;
 
                 // Select the first date as default
                 var dateKey = GetGroupKey(cityGroup.Key, "DATE");
@@ -185,7 +186,7 @@ else
 
         if (_selectedForecasts.TryGetValue(groupKey, out var selectedDate))
         {
-            var selectedForecast = forecasts.FirstOrDefault(f => f.Date == selectedDate);
+            var selectedForecast = forecasts.FirstOrDefault(f => f.Date.Date == selectedDate && f.Date.Hour == DateTime.UtcNow.Hour);
             if (selectedForecast is not null)
             {
                 return selectedForecast;
