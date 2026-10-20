@@ -1,7 +1,7 @@
+using Goke.Blazor.Components.Services;
 using Goke.Core.Authorization;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
-using GokeShared.Services;
 using GokeWebServer.Components;
 using GokeWebServer.Components.Account;
 using GokeWebServer.Data;

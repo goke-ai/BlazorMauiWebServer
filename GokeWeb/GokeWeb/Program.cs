@@ -1,6 +1,6 @@
+using Goke.Blazor.Components.Services;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
-using GokeShared.Services;
 using GokeWeb.Components;
 using GokeWeb.Components.Account;
 using GokeWeb.Endpoints;

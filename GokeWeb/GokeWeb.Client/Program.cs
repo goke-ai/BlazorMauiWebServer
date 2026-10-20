@@ -1,8 +1,8 @@
+using Goke.Blazor.Components.Services;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
 using Goke.Core.Options;
 using Goke.Core.Services;
-using GokeShared.Services;
 using GokeWeb.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
