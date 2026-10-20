@@ -1,5 +1,7 @@
 using Goke.Core.Authorization;
 using Goke.Core.Interfaces;
+using Goke.Core.Map;
+using GokeShared.Services;
 using GokeWebServer.Components;
 using GokeWebServer.Components.Account;
 using GokeWebServer.Data;
@@ -45,7 +47,9 @@ builder.Services.AddTransient<IFormFactor, FormFactorService>();
 builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
 builder.Services.AddScoped<RoleAdministrationService>();
 builder.Services.AddScoped<AdminActivityLog>();
-builder.Services.AddScoped<AdminStatusMessageStore>();  
+builder.Services.AddScoped<AdminStatusMessageStore>();
+builder.Services.AddScoped<ILocationService, BrowserLocationService>();
+builder.Services.AddSingleton<TrackerEngine>();
 
 
 var app = builder.Build();
