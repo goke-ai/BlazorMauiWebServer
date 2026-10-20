@@ -23,12 +23,6 @@
     </NavLink>
 </li>
 
-<AuthorizeView Roles="Administrators">
-    <Authorized>
-        <AdminMenuItems />
-    </Authorized>
-</AuthorizeView>
-
 <AuthorizeView>
     <Authorized>
         <AccountAuthorizedMenuItems UserName="@context.User.Identity?.Name" CurrentUrl="@currentUrl" />
