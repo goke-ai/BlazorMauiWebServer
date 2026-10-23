@@ -2,13 +2,19 @@ using Goke.Blazor.Components.Services;
 using Goke.Core.Authorization;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
+using Goke.Core.Options;
+using Goke.Core.Services;
 using GokeWebServer.Components;
 using GokeWebServer.Components.Account;
 using GokeWebServer.Data;
 using GokeWebServer.Endpoints;
 using GokeWebServer.Extensions.DependencyInjection;
+using GokeWebServer.Hubs;
 using GokeWebServer.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +26,14 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
+//builder.Services.AddHttpContextAccessor();
+
 builder.Services
     .AddAuthentication(builder.Configuration)
     .AddAuthorization(builder.Configuration);
+
+builder.Services.Configure<BackendApiOptions>(builder.Configuration.GetSection(BackendApiOptions.SectionName));
+builder.Services.AddSingleton<BackendApiEndpoints>();
 
 // Add a CORS policy for the client
 builder.Services.AddCors(
@@ -33,14 +44,50 @@ builder.Services.AddCors(
             {
                 // Allow any HTTPS origin under *.dev.localhost
                 var uris = builder.Configuration.GetSection("Cors:AllowedOriginsForDevelopment")
-                        .Get<string[]>() ?? ["https://gokeweb.dev.localhost"];
+                        .Get<string[]>() ?? ["https://gokewebserver.dev.localhost", "https://gokeweb.dev.localhost"];
                 return uris.Any(uri => origin.StartsWith(uri));
             })
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials()));
 
+// Add a no-op email sender for development purposes
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+// Add rate limiting to prevent brute force attacks on the Identity endpoints
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        var bucket = httpContext.Request.Path.StartsWithSegments("/identity", StringComparison.OrdinalIgnoreCase)
+            ? "identity"
+            : "default";
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            bucket,
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = bucket == "identity" ? 5 : int.MaxValue,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            });
+    });
+    options.OnRejected = static (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        return ValueTask.CompletedTask;
+    };
+});
+
+// +signalr
+builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(options =>
+{
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        ["application/octet-stream"]);
+});
+// -signalr
 
 // Add other services
 builder.Services.AddTransient<IFormFactor, FormFactorService>();
@@ -50,9 +97,17 @@ builder.Services.AddScoped<AdminActivityLog>();
 builder.Services.AddScoped<AdminStatusMessageStore>();
 builder.Services.AddScoped<ILocationService, BrowserLocationService>();
 builder.Services.AddSingleton<TrackerEngine>();
+builder.Services.AddTransient<IUserConnectionManager, UserConnectionManager>();
+builder.Services.AddTransient<IMessageService, MessageService>();
+builder.Services.AddSingleton<ChatDbContext>();
 
+
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// signalr hub requires response compression to be enabled
+app.UseResponseCompression();
 
 app.MapDefaultEndpoints();
 
@@ -67,6 +122,13 @@ if (app.Environment.IsDevelopment())
 
     app.UseWebAssemblyDebugging();
     app.UseMigrationsEndPoint();
+
+    app.MapOpenApi();
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    });
 }
 else
 {
@@ -79,6 +141,8 @@ app.UseHttpsRedirection();
 
 // Activate the CORS policy
 app.UseCors();
+
+app.UseRateLimiter();
 
 app.UseAntiforgery();
 
@@ -97,6 +161,10 @@ app.MapIdentityEndpoints();
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
-app.MapWeatherForecastEndpoints();  
+// Add endpoints for the WeatherForecast service    
+app.MapWeatherForecastEndpoints();
+
+// ChatHub endpoint for SignalR
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();

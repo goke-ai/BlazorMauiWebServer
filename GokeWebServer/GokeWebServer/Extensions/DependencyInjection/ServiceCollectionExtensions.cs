@@ -12,6 +12,7 @@ internal static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAuthorization(this IServiceCollection services, IConfiguration configuration)
     {
+        //services.AddAuthorization();
         services.AddAuthorizationBuilder()
             .AddPolicy("AdminOnlyPolicy", policy => policy.RequireRole("Administrators"))
             .AddPolicy("AdminCanDeletePolicy", policy => policy.RequireClaim("Permission", "Admin.CanDelete"))

@@ -1,0 +1,427 @@
+﻿@page "/chat"
+@using System.Net
+@using Goke.Core.Chat
+@using Goke.Core.Services
+@using GokeWebServer.Data
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.SignalR.Client
+
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@inject BackendApiEndpoints BackendApiEndpoints
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
+
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+<PageTitle>Chat</PageTitle>
+<h3>Welcome, @senderName!</h3>
+<div class="form-group">
+    <label>
+        User:
+        <input @bind="userInput" />
+    </label>
+@foreach (var user in users)
+    {
+        <div @onclick="() => SelectUser(user)">@user.FullName</div>
+    }
+</div>
+<div class="form-group">
+    <label>
+        Message:
+        <input @bind="messageInput" size="50" />
+
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+</ul>
+
+@code {
+    private HubConnection? hubConnection;
+    List<User> users = new List<User>();
+    private User? _selectedUser;
+    private List<string> messages = new List<string>();
+    private List<MessageDto> Messages = new List<MessageDto>();
+    private Dictionary<string, bool> Users = new Dictionary<string, bool>();
+    private string? userInput;
+    private string? messageInput;
+
+
+    Uri? hubUri;
+    Func<Task<string?>>? accessTokenProvider = null;
+    Func<HttpMessageHandler>? httpMessageHandlerFactory = null;
+    CookieContainer? cookies = null;
+    public event EventHandler<RealtimeConnectionStateChangedEventArgs>? ConnectionStateChanged;
+
+
+    string? senderName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        var user = authState.User;
+
+        messages.Add(
+            $"Authenticated: {user.Identity?.IsAuthenticated}");
+
+        messages.Add(
+            $"User: {user.Identity?.Name}");
+
+        senderName = user.Identity?.Name;
+
+        users = await GetUsersAsync();
+
+        await InitializeRealtimeAsync();
+    }
+
+
+    void RegisterHubConnectionMethodHandlers()
+    {
+        if (hubConnection is null)
+        {
+            throw new InvalidOperationException("Hub connection is not initialized.");
+        };
+
+        hubConnection.On<string>("UserConnected",
+        userId =>
+        {
+            Users[userId] = true;
+            messages.Add($"User {userId} connected.");
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<string>("UserDisconnected",
+            userId =>
+            {
+                Users[userId] = false;
+                messages.Add($"User {userId} disconnected.");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<MessageDto>("ReceivePrivateMessage",
+            message =>
+            {
+                Messages.Add(message);
+                messages.Add($"Private message from {message.SenderId}: {message.Content}");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<MessageDto>("MessageSent",
+            message =>
+            {
+                Messages.Add(message);
+                messages.Add($"Message sent to {message.ReceiverId}: {message.Content}");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<MessageDto>("ReceiveGroupMessage",
+            message =>
+            {
+                Messages.Add(message);
+                messages.Add($"Group message from {message.SenderId}: {message.Content}");
+                InvokeAsync(StateHasChanged);
+            });
+
+        // startTyping and stopTyping events
+        hubConnection.On<string>("StartTyping",
+            userId =>
+            {
+                // Handle start typing event
+                messages.Add($"User {userId} is typing...");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("StopTyping",
+            userId =>
+            {
+                // Handle stop typing event
+                messages.Add($"User {userId} stopped typing.");
+                InvokeAsync(StateHasChanged);
+            });
+
+        // message read, delivered, and seen events
+        hubConnection.On<string>("MessageRead",
+            messageId =>
+            {
+                // Handle message read event
+                messages.Add($"Message {messageId} has been read.");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("MessageDelivered",
+            messageId =>
+            {
+                // Handle message delivered event
+                messages.Add($"Message {messageId} has been delivered.");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("MessageSeen",
+            messageId =>
+            {
+                // Handle message seen event
+                messages.Add($"Message {messageId} has been seen.");
+                InvokeAsync(StateHasChanged);
+            });
+
+
+        // group join, leave, and remove events
+        hubConnection.On<string>("GroupJoined",
+            groupId =>
+            {
+                // Handle group joined event
+                messages.Add($"You have joined group {groupId}.");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("GroupLeft",
+            groupId =>
+            {
+                // Handle group left event
+                messages.Add($"You have left group {groupId}.");
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("GroupRemoved",
+            groupId =>
+            {
+                // Handle group removed event
+                messages.Add($"Group {groupId} has been removed.");
+                InvokeAsync(StateHasChanged);
+            });
+
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null 
+            && _selectedUser is not null
+        && !string.IsNullOrWhiteSpace(messageInput))
+        {
+            await hubConnection.SendAsync("SendPrivateMessage",
+                                    new SendMessageRequest
+                                    {
+                                        ReceiverId = _selectedUser.UserId,
+                                        Content = messageInput,
+                                        MessageType = MessageType.Text
+                                    });
+        }
+    }
+
+    public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    private async Task<List<User>> GetUsersAsync()
+    {
+        List<User> users = UserManager.Users.Select(u => new User
+        {
+            UserId = u.Id,
+            FullName = u.UserName,
+            DisplayName = u.UserName,
+            Bio = u.Id + " " + u.UserName,
+            PhotoUrl = null,
+            IsOnline = false
+
+        }).ToList();
+        return users;
+    }
+
+
+    private void SelectUser(User user)
+    {
+        _selectedUser = user;
+        userInput = user.FullName;
+    }
+
+
+    protected async Task InitializeRealtimeAsync()
+    {
+        hubUri = //CreateHubUri(Navigation.BaseUri, "hubs/chat"); 
+                 CreateHubUri("hubs/chat");
+        cookies = //CreateAuthCookies(Navigation.BaseUri, httpContextAccessor.HttpContext?.Request.Cookies);
+                  CreateAuthCookies();
+
+        //RealtimeClientService.LocationReceived += OnLocationReceived;
+        await EnsureConnectedAsync();
+    }
+
+    public async Task EnsureConnectedAsync(CancellationToken cancellationToken = default)
+    {
+        if (hubConnection is not null)
+        {
+            if (hubConnection.State == HubConnectionState.Disconnected)
+            {
+                OnConnectionStateChanged(HubConnectionState.Connecting, "Connecting to location sharing...");
+                await hubConnection.StartAsync(cancellationToken);
+                OnConnectionStateChanged(hubConnection.State, "Connected to location sharing.");
+            }
+
+            return;
+        }
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(hubUri, options =>
+            {
+                if (accessTokenProvider is not null)
+                {
+                    options.AccessTokenProvider = accessTokenProvider;
+                }
+
+                if (httpMessageHandlerFactory is not null)
+                {
+                    options.HttpMessageHandlerFactory = _ => httpMessageHandlerFactory();
+                }
+
+                if (cookies is not null)
+                {
+                    options.Cookies = cookies;
+                }
+            })
+            .WithAutomaticReconnect()
+            .Build();
+
+        
+        RegisterHubConnectionMethodHandlers();       
+        
+        
+        hubConnection.Reconnecting += _ =>
+        {
+            OnConnectionStateChanged(HubConnectionState.Reconnecting, "Reconnecting to chat hub...");
+            return Task.CompletedTask;
+        };
+
+        hubConnection.Reconnected += _ =>
+        {
+            OnConnectionStateChanged(hubConnection.State, "Connected to chat hub...");
+            return Task.CompletedTask;
+        };
+
+        hubConnection.Closed += _ =>
+        {
+            OnConnectionStateChanged(HubConnectionState.Disconnected, "Disconnected from chat hub.");
+            return Task.CompletedTask;
+        };
+
+        OnConnectionStateChanged(HubConnectionState.Connecting, "Connecting to chat hub...");
+        await hubConnection.StartAsync(cancellationToken);
+        OnConnectionStateChanged(hubConnection.State, "Connected to chat hub.");
+    }
+
+    public async Task ShareMessageAsync(SendMessageRequest request, CancellationToken cancellationToken = default)
+    {
+        await EnsureConnectedAsync(cancellationToken);
+        if (hubConnection is not null)
+        {
+            await hubConnection.InvokeAsync("ShareMessage", request, cancellationToken);
+        }
+    }
+
+    private Uri CreateHubUri(string relativePath)
+    {
+        // var u = CreateHubUri(Navigation.BaseUri, relativePath);
+
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext is null)
+        {
+            throw new InvalidOperationException("The current HTTP context is unavailable.");
+        }
+
+        var request = httpContext.Request;
+        var baseUri = new Uri($"{request.Scheme}://{request.Host}{request.PathBase}/", UriKind.Absolute);
+        return new Uri(baseUri, relativePath);
+    }
+
+    private CookieContainer? CreateAuthCookies()
+    {
+
+        // var c = CreateAuthCookies(Navigation.BaseUri, httpContextAccessor.HttpContext?.Request.Cookies);
+
+
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext is null || httpContext.Request.Cookies.Count == 0)
+        {
+            return null;
+        }
+
+        var request = httpContext.Request;
+        var baseUri = new Uri($"{request.Scheme}://{request.Host}{request.PathBase}/", UriKind.Absolute);
+        var cookies = new CookieContainer();
+
+        foreach (var cookie in request.Cookies)
+        {
+            cookies.Add(baseUri, new Cookie(cookie.Key, cookie.Value, "/"));
+        }
+
+        return cookies;
+    }
+
+    private async Task<string?> GetAccessTokenAsync()
+    {
+        var authenticationResult = await httpContextAccessor.HttpContext!.AuthenticateAsync();
+        return authenticationResult.Properties?.GetTokenValue("access_token");
+    }
+
+
+    private Uri CreateHubUri(string baseUri, string relativePath)
+    {
+        var uri = Navigation.ToAbsoluteUri(relativePath);
+        return uri;
+    }
+
+    private CookieContainer CreateAuthCookies(string baseUri, IRequestCookieCollection? requestCookies)
+    {
+        var uri = new Uri(baseUri, UriKind.Absolute);
+        var cookies = new CookieContainer();
+
+        if (requestCookies is not null)
+        {
+            foreach (var cookie in requestCookies)
+            {
+                cookies.Add(
+                    uri,
+                    new Cookie
+                    {
+                        Name = cookie.Key,
+                        Value = cookie.Value,
+                        Path = "/",
+                        Domain = uri.Host
+                    });
+            }
+        }   
+        return cookies;
+    }
+
+
+    private void OnConnectionStateChanged(HubConnectionState state, string message)
+    {
+        ConnectionStateChanged?.Invoke(this, new RealtimeConnectionStateChangedEventArgs(state, message));
+    }
+
+
+    public sealed record RealtimeConnectionStateChangedEventArgs(HubConnectionState State, string Message);
+    
+
+
+}

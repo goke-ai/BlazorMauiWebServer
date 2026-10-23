@@ -1,0 +1,10 @@
+﻿@GokeWebServer_HostAddress = https://gokewebserver.dev.localhost:7000
+
+GET {{GokeWebServer_HostAddress}}/api/weather
+
+###
+
+
+POST {{GokeWebServer_HostAddress}}/hubs/chat/negotiate?negotiateVersion=1
+
+###
