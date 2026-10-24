@@ -5,6 +5,7 @@
 @using Goke.Core.Authentication
 @using Goke.Core.Chat
 @using Goke.Core.Services
+@using GokeShared.Components
 @using GokeWeb.Client.Services
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.SignalR.Client
@@ -21,45 +22,24 @@
 
 <PageTitle>Chat</PageTitle>
 <h3>Welcome, @senderName!</h3>
-<div class="form-group">
-    <label>
-        User:
-        <input @bind="userInput" />
-    </label>
-    @foreach (var user in users)
-    {
-        <div @onclick="() => SelectUser(user)">@user.FullName</div>
-    }
-</div>
-<div class="form-group">
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" />
 
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+<ChatArea Users="FilteredUsers"
+          Messages="messages"
+          IsConnected="IsConnected"
+          OnSendMessage="Send"
+          OnSelectedUser="SelectUser" />
 
-<hr>
-
-<ul id="messagesList">
-    @foreach (var message in messages)
-    {
-        <li>@message</li>
-    }
-</ul>
 
 @code {
-    private HubConnection? hubConnection;
-    private List<User> users = [];
+    List<User> users = new List<User>();
     private User? _selectedUser;
-    private readonly List<string> messages = [];
-    private readonly List<MessageDto> Messages = [];
-    private readonly Dictionary<string, bool> Users = [];
-    private string? userInput;
-    private string? messageInput;
+    private List<MessageDto> messages = new List<MessageDto>();
+    private Dictionary<string, bool> Users = new Dictionary<string, bool>();
 
-    private string? senderName;
+    string? senderName;
+    string? currentUserId;
+
+    public List<User> FilteredUsers => users.Where(w => w.UserId != currentUserId).ToList();
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,13 +47,12 @@
 
         var user = authState.User;
 
-        messages.Add($"Authenticated: {user.Identity?.IsAuthenticated}");
-        messages.Add($"User: {user.Identity?.Name}");
-
         senderName = user.Identity?.Name;
 
         users = await GetUsersAsync();
 
+        var currentUser = users.FirstOrDefault(u => u.FullName == senderName);
+        currentUserId = currentUser?.UserId;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -84,144 +63,6 @@
         }
 
         await InitializeRealtimeAsync();
-    }
-
-
-    private void RegisterHubConnectionMethodHandlers()
-    {
-        if (hubConnection is null)
-        {
-            throw new InvalidOperationException("Hub connection is not initialized.");
-        }
-
-        hubConnection.On<string>("UserConnected",
-        userId =>
-        {
-            Users[userId] = true;
-            messages.Add($"User {userId} connected.");
-            InvokeAsync(StateHasChanged);
-        });
-
-        hubConnection.On<string>("UserDisconnected",
-            userId =>
-            {
-                Users[userId] = false;
-                messages.Add($"User {userId} disconnected.");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<MessageDto>("ReceivePrivateMessage",
-            message =>
-            {
-                Messages.Add(message);
-                messages.Add($"Private message from {message.SenderId}: {message.Content}");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<MessageDto>("MessageSent",
-            message =>
-            {
-                Messages.Add(message);
-                messages.Add($"Message sent to {message.ReceiverId}: {message.Content}");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<MessageDto>("ReceiveGroupMessage",
-            message =>
-            {
-                Messages.Add(message);
-                messages.Add($"Group message from {message.SenderId}: {message.Content}");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<string>("StartTyping",
-            userId =>
-            {
-                messages.Add($"User {userId} is typing...");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<string>("StopTyping",
-            userId =>
-            {
-                messages.Add($"User {userId} stopped typing.");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<string>("MessageRead",
-            messageId =>
-            {
-                messages.Add($"Message {messageId} has been read.");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<string>("MessageDelivered",
-            messageId =>
-            {
-                messages.Add($"Message {messageId} has been delivered.");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<string>("MessageSeen",
-            messageId =>
-            {
-                messages.Add($"Message {messageId} has been seen.");
-                InvokeAsync(StateHasChanged);
-            });
-
-
-        hubConnection.On<string>("GroupJoined",
-            groupId =>
-            {
-                messages.Add($"You have joined group {groupId}.");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<string>("GroupLeft",
-            groupId =>
-            {
-                messages.Add($"You have left group {groupId}.");
-                InvokeAsync(StateHasChanged);
-            });
-
-        hubConnection.On<string>("GroupRemoved",
-            groupId =>
-            {
-                messages.Add($"Group {groupId} has been removed.");
-                InvokeAsync(StateHasChanged);
-            });
-
-    }
-
-    private async Task Send()
-    {
-        if (hubConnection is not null
-            && !string.IsNullOrWhiteSpace(messageInput))
-        {
-            var receiverId = _selectedUser?.UserId ?? userInput;
-            if (string.IsNullOrWhiteSpace(receiverId))
-            {
-                return;
-            }
-
-            await hubConnection.SendAsync("SendPrivateMessage",
-                                    new SendMessageRequest
-                                    {
-                                        ReceiverId = receiverId,
-                                        Content = messageInput,
-                                        MessageType = MessageType.Text
-                                    });
-        }
-    }
-
-    public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
-
-    public async ValueTask DisposeAsync()
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
     }
 
     private async Task<List<User>> GetUsersAsync()
@@ -249,13 +90,12 @@
         }
     }
 
-
     private void SelectUser(User user)
     {
         _selectedUser = user;
-        userInput = user.FullName;
     }
 
+    private HubConnection? hubConnection;
     Uri? hubUri;
     Func<Task<string?>>? accessTokenProvider = null;
     Func<HttpMessageHandler>? httpMessageHandlerFactory = null;
@@ -263,16 +103,222 @@
     public event EventHandler<RealtimeConnectionStateChangedEventArgs>? ConnectionStateChanged;
 
 
+    void RegisterHubConnectionMethodHandlers()
+    {
+        if (hubConnection is null)
+        {
+            throw new InvalidOperationException("Hub connection is not initialized.");
+        }
+
+        hubConnection.On<string>("UserConnected",
+        userId =>
+        {
+            Users[userId] = true;
+            users.FirstOrDefault(u => u.UserId == userId)!.IsOnline = true;
+
+            messages.Add(new MessageDto
+            {
+                SenderId = userId,
+                ReceiverId = null,
+                Content = $"User {userId} connected.",
+                Type = MessageType.Text,
+                CreatedAt = DateTime.UtcNow
+            });
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<string>("UserDisconnected",
+            userId =>
+            {
+                Users[userId] = false;
+                users.FirstOrDefault(u => u.UserId == userId)!.IsOnline = false;
+                messages.Add(new MessageDto
+                {
+                    SenderId = userId,
+                    ReceiverId = null,
+                    Content = $"User {userId} disconnected.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<MessageDto>("ReceivePrivateMessage",
+            message =>
+            {
+                messages.Add(message);
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<MessageDto>("MessageSent",
+            message =>
+            {
+                messages.Add(message);
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<MessageDto>("ReceiveGroupMessage",
+            message =>
+            {
+                messages.Add(message);
+                InvokeAsync(StateHasChanged);
+            });
+
+        // startTyping and stopTyping events
+        hubConnection.On<string>("StartTyping",
+            userId =>
+            {
+                // Handle start typing event
+                messages.Add(new MessageDto
+                {
+                    SenderId = userId,
+                    ReceiverId = null,
+                    Content = $"User {userId} is typing...",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("StopTyping",
+            userId =>
+            {
+                // Handle stop typing event
+                messages.Add(new MessageDto
+                {
+                    SenderId = userId,
+                    ReceiverId = null,
+                    Content = $"User {userId} stopped typing.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+        // message read, delivered, and seen events
+        hubConnection.On<string>("MessageRead",
+            messageId =>
+            {
+                // Handle message read event
+                messages.Add(new MessageDto
+                {
+                    Id = Guid.Parse(messageId),
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Message {messageId} has been read.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("MessageDelivered",
+            messageId =>
+            {
+                // Handle message delivered event
+                messages.Add(new MessageDto
+                {
+                    Id = Guid.Parse(messageId),
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Message {messageId} has been delivered.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("MessageSeen",
+            messageId =>
+            {
+                // Handle message seen event
+                messages.Add(new MessageDto
+                {
+                    Id = Guid.Parse(messageId),
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Message {messageId} has been seen.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+
+        // group join, leave, and remove events
+        hubConnection.On<string>("GroupJoined",
+            groupId =>
+            {
+                // Handle group joined event
+                messages.Add(new MessageDto
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"You have joined group {groupId}.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("GroupLeft",
+            groupId =>
+            {
+                // Handle group left event
+                messages.Add(new MessageDto
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"You have left group {groupId}.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+        hubConnection.On<string>("GroupRemoved",
+            groupId =>
+            {
+                // Handle group removed event
+                messages.Add(new MessageDto
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Group {groupId} has been removed.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            });
+
+    }
+
+    private async Task Send(SendMessageRequest request)
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendPrivateMessage", request);
+        }
+    }
+
+    public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
     protected async Task InitializeRealtimeAsync()
     {
         hubUri = CreateHubUri("hubs/chat");
         accessTokenProvider = GetAccessTokenAsync;
         //cookies = await CreateAuthCookies();
 
-    await EnsureConnectedAsync();
+        await EnsureConnectedAsync();
     }
-
-   
 
     public async Task EnsureConnectedAsync(CancellationToken cancellationToken = default)
     {
@@ -288,34 +334,26 @@
             return;
         }
 
-        // hubConnection = new HubConnectionBuilder()
-        //     .WithUrl(hubUri!, options =>
-        //     {
-        //         options.AccessTokenProvider = GetAccessTokenAsync;
-        //     })
-        //     .WithAutomaticReconnect()
-        //     .Build();
-
         hubConnection = new HubConnectionBuilder()
-                    .WithUrl(hubUri!, options =>
-                    {
-                        if (accessTokenProvider is not null)
-                        {
-                            options.AccessTokenProvider = accessTokenProvider;
-                        }
+            .WithUrl(hubUri!, options =>
+            {
+                if (accessTokenProvider is not null)
+                {
+                    options.AccessTokenProvider = accessTokenProvider;
+                }
 
-                        if (httpMessageHandlerFactory is not null)
-                        {
-                            options.HttpMessageHandlerFactory = _ => httpMessageHandlerFactory();
-                        }
+                if (httpMessageHandlerFactory is not null)
+                {
+                    options.HttpMessageHandlerFactory = _ => httpMessageHandlerFactory();
+                }
 
-                        if (cookies is not null)
-                        {
-                            options.Cookies = cookies;
-                        }
-                    })
-                    .WithAutomaticReconnect()
-                    .Build();
+                if (cookies is not null)
+                {
+                    options.Cookies = cookies;
+                }
+            })
+            .WithAutomaticReconnect()
+            .Build();
 
         RegisterHubConnectionMethodHandlers();
 

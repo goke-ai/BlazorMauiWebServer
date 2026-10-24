@@ -21,7 +21,7 @@ namespace GokeWebServer.Hubs
 
             await connectionManager.AddAsync(userId, Context.ConnectionId);
 
-            await Clients.All.SendAsync("UserConnected", userId);
+            await Clients.Others.SendAsync("UserConnected", userId);
 
             await base.OnConnectedAsync();
         }
