@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
 
 namespace GokeWeb.Components.Account;
 
@@ -28,6 +29,28 @@ public static class AccountEndpoints
             IWebAccountService accountService) =>
         {
             return await accountService.LogoutAsync(form, httpContext);
+        }).RequireAuthorization();
+
+        endpoints.MapGet("/account/access-token", async (HttpContext httpContext, IWebAccountService accountService) =>
+        {
+            var token = await accountService.GetAccessTokenAsync(httpContext);
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Results.Unauthorized();
+            }
+
+            return Results.Ok(new { accessToken = token });
+        }).RequireAuthorization();
+
+        endpoints.MapGet("/account/cookies", async (HttpContext httpContext, IWebAccountService accountService) =>
+        {
+            var cookieContainer = await accountService.CreateAuthCookies(httpContext);
+            if (cookieContainer is null)
+            {
+                return Results.Unauthorized();
+            }
+
+            return Results.Ok(new { cookieContainer });
         }).RequireAuthorization();
 
         return endpoints;

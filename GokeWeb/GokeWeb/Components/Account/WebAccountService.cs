@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
-using Goke.Core.Authentication;
-using Goke.Core.Authorization;
+﻿using Goke.Core.Authentication;
 using Goke.Core.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
+using System.Security.Claims;
 
 namespace GokeWeb.Components.Account;
 
@@ -93,4 +93,53 @@ internal sealed class WebAccountService(AuthApiClient client) : IWebAccountServi
 
         return properties;
     }
+
+    public Task<string?> GetAccessTokenAsync(HttpContext httpContext)
+    {
+        if (httpContext is null)
+        {
+            return Task.FromResult<string?>(null);
+        }
+
+        return httpContext.GetTokenAsync("access_token");        
+    }
+
+    public Task<CookieContainer?> CreateAuthCookies(HttpContext httpContext)
+    {
+        if (httpContext is null || httpContext.Request.Cookies.Count == 0)
+        {
+            return Task.FromResult<CookieContainer?>(null);
+        }
+
+        var request = httpContext.Request;
+        var baseUri = new Uri($"{request.Scheme}://{request.Host}{request.PathBase}/", UriKind.Absolute);
+        var cookies = new CookieContainer();
+
+        foreach (var cookie in request.Cookies)
+        {
+            cookies.Add(baseUri, new Cookie(cookie.Key, cookie.Value, "/"));
+        }
+
+        return Task.FromResult<CookieContainer?>(cookies);
+    }
+
+    //public Task<List<Cookie>?> CreateAuthCookies(HttpContext httpContext)
+    //{
+    //    if (httpContext is null || httpContext.Request.Cookies.Count == 0)
+    //    {
+    //        return Task.FromResult<List<Cookie>?>(null);
+    //    }
+
+    //    var request = httpContext.Request;
+    //    var baseUri = new Uri($"{request.Scheme}://{request.Host}{request.PathBase}/", UriKind.Absolute);
+    //    var cookies = new List<Cookie>();
+    //    var domain = request.Host.Host;
+
+    //    foreach (var cookie in request.Cookies)
+    //    {
+    //        cookies.Add(new Cookie(cookie.Key, cookie.Value, "/", domain));
+    //    }
+
+    //    return Task.FromResult<List<Cookie>?>(cookies);
+    //}
 }

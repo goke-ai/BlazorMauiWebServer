@@ -1,4 +1,5 @@
 using Goke.Blazor.Components.Services;
+using Goke.Core.Authentication;
 using Goke.Core.Authorization;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
@@ -26,7 +27,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
-//builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IAccessTokenProvider, ServerAccessTokenProvider>();
+builder.Services.AddScoped<ICookieProvider, ServerCookieProvider>();
 
 builder.Services
     .AddAuthentication(builder.Configuration)
@@ -144,6 +148,9 @@ app.UseCors();
 
 app.UseRateLimiter();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseAntiforgery();
 
 app.MapStaticAssets();
@@ -163,6 +170,9 @@ app.MapAdditionalIdentityEndpoints();
 
 // Add endpoints for the WeatherForecast service    
 app.MapWeatherForecastEndpoints();
+
+// Chat API endpoints
+app.MapChatEndpoints();
 
 // ChatHub endpoint for SignalR
 app.MapHub<ChatHub>("/hubs/chat");

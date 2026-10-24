@@ -1,4 +1,5 @@
-﻿using Goke.Core.Chat;
+﻿using Azure.Core;
+using Goke.Core.Chat;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;

@@ -1,4 +1,5 @@
-﻿using Goke.Core.Authorization;
+﻿using Goke.Core.Authentication;
+using Goke.Core.Authorization;
 using Goke.Core.Options;
 using Goke.Core.Security;
 using Goke.Core.Services;

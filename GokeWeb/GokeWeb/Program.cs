@@ -1,6 +1,8 @@
 using Goke.Blazor.Components.Services;
+using Goke.Core.Authentication;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
+using GokeWeb.Client.Services;
 using GokeWeb.Components;
 using GokeWeb.Components.Account;
 using GokeWeb.Endpoints;
@@ -17,10 +19,17 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IAccessTokenProvider, ServerAccessTokenProvider>();
+builder.Services.AddScoped<ICookieProvider, ServerCookieProvider>();
+
+
 builder.Services
            .AddBackendApi(builder.Configuration)
            .AddAuthentication(builder.Configuration)
            .AddAuthorization(builder.Configuration);
+
 
 // Add other services
 builder.Services.AddTransient<IFormFactor, FormFactorService>();
