@@ -104,7 +104,7 @@ builder.Services.AddSingleton<TrackerEngine>();
 builder.Services.AddTransient<IUserConnectionManager, UserConnectionManager>();
 builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddSingleton<ChatDbContext>();
-
+builder.Services.AddScoped<IHubClientFactory, HubClientFactory>();
 
 builder.Services.AddOpenApi();
 

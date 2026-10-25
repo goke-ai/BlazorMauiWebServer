@@ -4,6 +4,7 @@
 @using Goke.Core.Chat
 @using Goke.Core.Services
 @using GokeWebServer.Data
+@using GokeWebServer.Services
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Http
@@ -17,6 +18,7 @@
 @inject BackendApiEndpoints BackendApiEndpoints
 @inject IAccessTokenProvider AccessTokenProvider
 @inject ICookieProvider CookieProvider
+@inject IHubClientFactory HubClientFactory
 
 @inject UserManager<ApplicationUser> UserManager
 
@@ -35,9 +37,10 @@
           OnSelectedUser="SelectUser" />
 
 
-
-
 @code {
+    HubClientService? hubClientService;
+    public bool IsConnected => hubClientService?.IsConnected == true;
+
     List<User> users = new List<User>();
     private User? _selectedUser;
     private List<MessageDto> messages = new List<MessageDto>();
@@ -67,7 +70,23 @@
         if (!firstRender)
             return;
 
-        await InitializeRealtimeAsync();
+
+        hubClientService = await HubClientFactory.CreateWithCookieAsync("hubs/chat");
+
+        hubClientService.ConnectionStateChanged += (sender, args) =>
+        {
+            messages.Add(new MessageDto
+            {
+                SenderId = currentUserId,
+                ReceiverId = null,
+                Content = $"Connection state changed: {args.State}-{args.Message}",
+                Type = MessageType.Text,
+                CreatedAt = DateTime.UtcNow
+            });
+            InvokeAsync(StateHasChanged);
+        };
+
+        RegisterHubConnectionMethodHandlers();
     }
 
     private async Task<List<User>> GetUsersAsync()
@@ -90,68 +109,63 @@
         _selectedUser = user;
     }
 
-    private HubConnection? hubConnection;
-    Uri? hubUri;
-    Func<Task<string?>>? accessTokenProvider = null;
-    Func<HttpMessageHandler>? httpMessageHandlerFactory = null;
-    CookieContainer? cookies = null;
-    public event EventHandler<RealtimeConnectionStateChangedEventArgs>? ConnectionStateChanged;
-
     void RegisterHubConnectionMethodHandlers()
     {
-        if (hubConnection is null)
+        if (hubClientService is null)
         {
             throw new InvalidOperationException("Hub connection is not initialized.");
-        };
+        }
+        ;
 
-        hubConnection.On<string>("UserConnected",
+        hubClientService.On<string>("UserConnected",
         userId =>
         {
             Users[userId] = true;
             users.FirstOrDefault(u => u.UserId == userId)!.IsOnline = true;
 
             messages.Add(new MessageDto
-            {
-                SenderId = userId,
-                ReceiverId = null,
-                Content = $"User {userId} connected.",
-                Type = MessageType.Text,
-                CreatedAt = DateTime.UtcNow
-            });
+                {
+                    SenderId = userId,
+                    ReceiverId = null,
+                    Content = $"User {userId} connected.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
             InvokeAsync(StateHasChanged);
         });
 
-        hubConnection.On<string>("UserDisconnected",
+        hubClientService.On<string>("UserDisconnected",
             userId =>
             {
                 Users[userId] = false;
                 users.FirstOrDefault(u => u.UserId == userId)!.IsOnline = false;
                 messages.Add(new MessageDto
-                {
-                    SenderId = userId,
-                    ReceiverId = null,
-                    Content = $"User {userId} disconnected.",
-                    Type = MessageType.Text,
-                    CreatedAt = DateTime.UtcNow
-                });
+                    {
+                        SenderId = userId,
+                        ReceiverId = null,
+                        Content = $"User {userId} disconnected.",
+                        Type = MessageType.Text,
+                        CreatedAt = DateTime.UtcNow
+                    });
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<MessageDto>("ReceivePrivateMessage",
+        hubClientService.On<MessageDto>("ReceivePrivateMessage",
             message =>
             {
                 messages.Add(message);
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<MessageDto>("MessageSent",
+        hubClientService.On<MessageDto>("MessageSent",
             message =>
             {
                 messages.Add(message);
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<MessageDto>("ReceiveGroupMessage",
+
+        hubClientService.On<MessageDto>("ReceiveGroupMessage",
             message =>
             {
                 messages.Add(message);
@@ -159,7 +173,7 @@
             });
 
         // startTyping and stopTyping events
-        hubConnection.On<string>("StartTyping",
+        hubClientService.On<string>("StartTyping",
             userId =>
             {
                 // Handle start typing event
@@ -174,7 +188,7 @@
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<string>("StopTyping",
+        hubClientService.On<string>("StopTyping",
             userId =>
             {
                 // Handle stop typing event
@@ -190,7 +204,7 @@
             });
 
         // message read, delivered, and seen events
-        hubConnection.On<string>("MessageRead",
+        hubClientService.On<string>("MessageRead",
             messageId =>
             {
                 // Handle message read event
@@ -206,7 +220,7 @@
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<string>("MessageDelivered",
+        hubClientService.On<string>("MessageDelivered",
             messageId =>
             {
                 // Handle message delivered event
@@ -222,7 +236,7 @@
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<string>("MessageSeen",
+        hubClientService.On<string>("MessageSeen",
             messageId =>
             {
                 // Handle message seen event
@@ -240,7 +254,7 @@
 
 
         // group join, leave, and remove events
-        hubConnection.On<string>("GroupJoined",
+        hubClientService.On<string>("GroupJoined",
             groupId =>
             {
                 // Handle group joined event
@@ -255,7 +269,7 @@
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<string>("GroupLeft",
+        hubClientService.On<string>("GroupLeft",
             groupId =>
             {
                 // Handle group left event
@@ -270,7 +284,7 @@
                 InvokeAsync(StateHasChanged);
             });
 
-        hubConnection.On<string>("GroupRemoved",
+        hubClientService.On<string>("GroupRemoved",
             groupId =>
             {
                 // Handle group removed event
@@ -284,104 +298,29 @@
                 });
                 InvokeAsync(StateHasChanged);
             });
-
     }
 
     private async Task Send(SendMessageRequest request)
     {
-        if (hubConnection is not null)
+        if (hubClientService is not null)
         {
-            await hubConnection.SendAsync("SendPrivateMessage", request);
+            await hubClientService.SendAsync("SendPrivateMessage", request);
         }
     }
-
-    public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;
 
     public async ValueTask DisposeAsync()
     {
-        if (hubConnection is not null)
+        if (hubClientService is not null)
         {
-            await hubConnection.DisposeAsync();
+            await hubClientService.DisposeAsync();
         }
-    }
-
-    protected async Task InitializeRealtimeAsync()
-    {
-        hubUri = CreateHubUri("hubs/chat");
-        //accessTokenProvider = GetAccessTokenAsync;
-        cookies = await CreateAuthCookies();
-
-        await EnsureConnectedAsync();
-    }
-
-    public async Task EnsureConnectedAsync(CancellationToken cancellationToken = default)
-    {
-        if (hubConnection is not null)
-        {
-            if (hubConnection.State == HubConnectionState.Disconnected)
-            {
-                OnConnectionStateChanged(HubConnectionState.Connecting, "Connecting to location sharing...");
-                await hubConnection.StartAsync(cancellationToken);
-                OnConnectionStateChanged(hubConnection.State, "Connected to location sharing.");
-            }
-
-            return;
-        }
-
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl(hubUri!, options =>
-            {
-                if (accessTokenProvider is not null)
-                {
-                    options.AccessTokenProvider = accessTokenProvider;
-                }
-
-                if (httpMessageHandlerFactory is not null)
-                {
-                    options.HttpMessageHandlerFactory = _ => httpMessageHandlerFactory();
-                }
-
-                if (cookies is not null)
-                {
-                    options.Cookies = cookies;
-                }
-            })
-            .WithAutomaticReconnect()
-            .Build();
-
-        
-        RegisterHubConnectionMethodHandlers();       
-        
-        
-        hubConnection.Reconnecting += _ =>
-        {
-            OnConnectionStateChanged(HubConnectionState.Reconnecting, "Reconnecting to chat hub...");
-            return Task.CompletedTask;
-        };
-
-        hubConnection.Reconnected += _ =>
-        {
-            OnConnectionStateChanged(hubConnection.State, "Connected to chat hub...");
-            return Task.CompletedTask;
-        };
-
-        hubConnection.Closed += _ =>
-        {
-            OnConnectionStateChanged(HubConnectionState.Disconnected, "Disconnected from chat hub.");
-            return Task.CompletedTask;
-        };
-
-        OnConnectionStateChanged(HubConnectionState.Connecting, "Connecting to chat hub...");
-        await hubConnection.StartAsync(cancellationToken);
-        OnConnectionStateChanged(hubConnection.State, "Connected to chat hub.");
     }
 
     public async Task ShareMessageAsync(SendMessageRequest request, CancellationToken cancellationToken = default)
     {
-        await EnsureConnectedAsync(cancellationToken);
-        if (hubConnection is not null)
+        if (hubClientService is not null)
         {
-            await hubConnection.InvokeAsync("ShareMessage", request, cancellationToken);
+            var result = await hubClientService.InvokeAsync<bool>("ShareMessage", request, cancellationToken);
         }
     }
 
@@ -390,8 +329,8 @@
         var uri = Navigation.ToAbsoluteUri(relativePath);
         return uri;
 
-        var hubBaseUri = BackendApiEndpoints.BaseUri;
-        return new Uri(hubBaseUri, relativePath);
+        // var hubBaseUri = BackendApiEndpoints.BaseUri;
+        // return new Uri(hubBaseUri, relativePath);
 
         // var httpContext = httpContextAccessor.HttpContext;
         // if (httpContext is null)
@@ -412,45 +351,6 @@
         return CookieProvider.CreateAuthCookies();
     }
 
-
-    private Uri CreateHubUri(string baseUri, string relativePath)
-    {
-        var hubBaseUri = new Uri(baseUri, UriKind.Absolute);
-        var uri = new Uri(hubBaseUri, relativePath);
-        return uri;
-    }
-
-    private CookieContainer CreateAuthCookies(string baseUri, IRequestCookieCollection? requestCookies)
-    {
-        var uri = new Uri(baseUri, UriKind.Absolute);
-        var cookies = new CookieContainer();
-
-        if (requestCookies is not null)
-        {
-            foreach (var cookie in requestCookies)
-            {
-                cookies.Add(
-                    uri,
-                    new Cookie
-                    {
-                        Name = cookie.Key,
-                        Value = cookie.Value,
-                        Path = "/",
-                        Domain = uri.Host
-                    });
-            }
-        }   
-        return cookies;
-    }
-
-
-    private void OnConnectionStateChanged(HubConnectionState state, string message)
-    {
-        ConnectionStateChanged?.Invoke(this, new RealtimeConnectionStateChangedEventArgs(state, message));
-    }
-
-
-    public sealed record RealtimeConnectionStateChangedEventArgs(HubConnectionState State, string Message);
     
 
 
