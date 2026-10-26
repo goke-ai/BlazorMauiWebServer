@@ -5,6 +5,7 @@ using Goke.Core.Map;
 using Goke.Maui.Core.Extensions;
 using Goke.Maui.Core.Services;
 using GokeApp.Extensions.DependencyInjection;
+using GokeSharedCore.MapApp;
 using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Toolkit.Hosting;
 using System.Reflection;

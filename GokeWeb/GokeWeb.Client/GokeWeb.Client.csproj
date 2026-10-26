@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\GokeBlazorCore\Goke.Aspnet.Core\Goke.Aspnet.Core.csproj" />
+    <ProjectReference Include="..\..\GokeSharedCore\GokeSharedCore.csproj" />
     <ProjectReference Include="..\..\GokeShared\GokeShared.csproj" />
   </ItemGroup>
 

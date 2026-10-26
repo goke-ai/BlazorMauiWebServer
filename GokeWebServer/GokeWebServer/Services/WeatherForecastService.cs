@@ -1,5 +1,4 @@
-﻿using Goke.Core.Engines;
-using Goke.Core.Models;
+﻿using GokeSharedCore.WeatherApp;
 
 namespace GokeWebServer.Services;
 

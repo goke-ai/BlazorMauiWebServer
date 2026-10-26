@@ -1,15 +1,63 @@
-﻿@using Goke.Core.Models
+﻿@using System.Net
+@using Goke.Core.Models
 @using Goke.Core.Services
+@using GokeSharedCore.WeatherApp
+@using Microsoft.Extensions.Logging
 
+@inject ILogger<Weather> Logger
 @inject IHttpClientFactory httpClientFactory
 
 <h1>Weather</h1>
 
-<p>This component demonstrates showing data.</p>
+<div class="mb-3">
+    <h3>Weather Forecast Map</h3>
+    <p class="text-muted">
+        Explore weather forecasts displayed on an interactive map.
+    </p>
+</div>
 
-@if (forecasts == null)
+@if (_isLoading)
 {
-    <p><em>Loading...</em></p>
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary mb-3"
+                 role="status">
+                <span class="visually-hidden">
+                    Loading...
+                </span>
+            </div>
+            <p class="mb-0 text-muted">
+                Loading weather forecasts...
+            </p>
+        </div>
+    </div>
+}
+else if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>
+            <strong>Unable to load weather data.</strong><br />
+            @_errorMessage
+        </div>
+    </div>
+    <button class="btn btn-outline-danger"
+            disabled="@_isLoading"
+            @onclick="RetryAsync">
+        @if (_isLoading)
+        {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+        }
+
+        Retry
+    </button>
+}
+else if (!(forecasts?.Any() ?? true))
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        No weather forecasts are available for the selected date.
+    </div>
 }
 else
 {
@@ -17,27 +65,92 @@ else
         <Authorized>
             <WeatherForecastMapList Forecasts="forecasts" CanEdit="true" />
         </Authorized>
+
         <NotAuthorized>
-            <WeatherForecastMapList Forecasts="forecasts" />
+            <WeatherForecastMapList Forecasts="forecasts" CanEdit="false" />
         </NotAuthorized>
     </AuthorizeView>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
-    List<WeatherForecast> DATA = new List<WeatherForecast>();
+    private bool _isLoading = true;
+    private string? _errorMessage;
+    private List<WeatherForecast>? forecasts;
+    List<WeatherForecast> DATA = [];
 
-    DateTime current = DateTime.UtcNow;
+    DateTime current = DateTime.UtcNow;   
 
-
-    protected override async Task OnInitializedAsync()
+   protected override async Task OnInitializedAsync()
     {
-        HttpClient httpClient = httpClientFactory.CreateClient(BackendApiEndpoints.ClientName);
+        await LoadForecastsAsync();
+    }
 
-        // Seed weather data here
-        DATA = await httpClient.GetFromJsonAsync<List<WeatherForecast>>($"api/weather/datetime/{current:u}") ?? [];
+    private async Task RetryAsync()
+    {
+        await LoadForecastsAsync();
+    }
 
-        await OnLoadDataAsync();
+    private async Task LoadForecastsAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        try
+        {
+            HttpClient httpClient = httpClientFactory.CreateClient(BackendApiEndpoints.ClientName);
+
+            using var response = await httpClient.GetAsync($"api/weather/datetime/{current:u}");
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                _errorMessage = "You are not authorized to access this resource.";
+                return;
+            }
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                _errorMessage = "Weather data was not found.";
+                return;
+            }
+
+            response.EnsureSuccessStatusCode();
+
+            DATA = await response.Content.ReadFromJsonAsync<List<WeatherForecast>>()
+                ?? [];
+
+            await OnLoadDataAsync();
+        }
+        catch (HttpRequestException ex)
+        {
+            Logger.LogError(
+                ex,
+                "Unable to retrieve weather forecasts.");
+
+            _errorMessage =
+                "Unable to contact the server.";
+        }
+        catch (TaskCanceledException ex)
+        {
+            Logger.LogWarning(
+                ex,
+                "Weather request timed out.");
+
+            _errorMessage =
+                "The request timed out.";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(
+                ex,
+                "Unexpected error loading weather forecasts.");
+
+            _errorMessage =
+                "An unexpected error occurred.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     protected async Task OnLoadDataAsync()

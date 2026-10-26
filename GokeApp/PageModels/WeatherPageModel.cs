@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using GokeApp.Services;
-using Goke.Core.Models;
 using Goke.Core.Services;
 using System.Net.Http.Json;
+using GokeSharedCore.WeatherApp;
 
 namespace GokeApp.PageModels
 {

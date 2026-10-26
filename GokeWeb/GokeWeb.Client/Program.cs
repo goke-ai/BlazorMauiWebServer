@@ -1,9 +1,12 @@
+using Goke.Aspnet.Core;
 using Goke.Blazor.Components.Services;
 using Goke.Core.Authentication;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
 using Goke.Core.Options;
 using Goke.Core.Services;
+using GokeSharedCore.ChatApp;
+using GokeSharedCore.MapApp;
 using GokeWeb.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -25,14 +28,15 @@ builder.Services.AddScoped(_ => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
-//builder.Services.AddScoped(sp =>
-//    new HttpClient
-//    {
-//        BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7002")
-//    });
 
+builder.Services.AddSingleton<ChatDbContext>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddTransient<IUserService, UserApiClient>();
+builder.Services.Configure<HubOptions>(builder.Configuration.GetSection(HubOptions.SectionName));
 builder.Services.AddScoped<IAccessTokenProvider, ClientAccessTokenProvider>();
 builder.Services.AddScoped<ICookieProvider, ClientCookieProvider>();
+builder.Services.AddScoped<IHubClientFactory, HubClientFactory>();
+builder.Services.AddScoped<ChatHubClientService>();
 
 
 // Add other services

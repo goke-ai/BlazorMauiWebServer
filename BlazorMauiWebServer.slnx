@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Libs/">
+    <Project Path="../GokeBlazorCore/Goke.Aspnet.Core/Goke.Aspnet.Core.csproj" />
     <Project Path="../GokeBlazorCore/Goke.Blazor.Components/Goke.Blazor.Components.csproj" />
     <Project Path="../GokeCore/Goke.Core/Goke.Core.csproj" />
     <Project Path="../GokeCore/Goke.Maui.Core/Goke.Maui.Core.csproj" Id="6a355088-77c0-4fa9-adc1-cb0d104ba4a8" />
@@ -14,6 +15,7 @@
     <Deploy Solution="Debug|*" />
   </Project>
   <Project Path="GokeShared/GokeShared.csproj" />
+  <Project Path="GokeSharedCore/GokeSharedCore.csproj" Id="6297a760-dff0-4409-8e86-cd56fbee40f4" />
   <Project Path="GokeWeb/GokeWeb.Client/GokeWeb.Client.csproj" />
   <Project Path="GokeWeb/GokeWeb/GokeWeb.csproj" />
   <Project Path="GokeWebServer/GokeWebServer.Client/GokeWebServer.Client.csproj" />

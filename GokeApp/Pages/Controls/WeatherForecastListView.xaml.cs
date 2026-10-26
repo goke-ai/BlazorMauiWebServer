@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using Goke.Core.Models;
+using GokeSharedCore.WeatherApp;
 
 namespace GokeApp.Pages.Controls;
 

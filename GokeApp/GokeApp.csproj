@@ -153,6 +153,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\..\GokeCore\Goke.Core\Goke.Core.csproj" />
 	  <ProjectReference Include="..\..\GokeCore\Goke.Maui.Core\Goke.Maui.Core.csproj" />
+	  <ProjectReference Include="..\GokeSharedCore\GokeSharedCore.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

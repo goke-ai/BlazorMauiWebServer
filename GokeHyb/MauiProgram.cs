@@ -4,6 +4,7 @@ using Goke.Maui.Core.Extensions;
 using Goke.Maui.Core.Services;
 using GokeHyb.Extensions.DependencyInjection;
 using GokeHyb.Services;
+using GokeSharedCore.MapApp;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 

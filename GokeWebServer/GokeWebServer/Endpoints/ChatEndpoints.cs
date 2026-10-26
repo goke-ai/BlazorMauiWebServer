@@ -1,7 +1,4 @@
-using Goke.Core.Chat;
-using GokeWebServer.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using GokeSharedCore.ChatApp;
 
 namespace GokeWebServer.Endpoints
 {
@@ -9,24 +6,30 @@ namespace GokeWebServer.Endpoints
     {
         public static IEndpointRouteBuilder MapChatEndpoints(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapGet("api/chat/users", async (UserManager<ApplicationUser> userManager) =>
+            endpoints.MapGet("api/chat/users", async (IUserService userService) =>
             {
-                var users = await userManager.Users
-                    .Select(u => new User
-                    {
-                        UserId = u.Id,
-                        FullName = u.UserName,
-                        DisplayName = u.UserName,
-                        Bio = u.Id + " " + u.UserName,
-                        PhotoUrl = null,
-                        IsOnline = false
-                    })
-                    .ToListAsync();
+                var users = await userService.GetUsersAsync();
 
+                return Results.Ok(users);
+            }).RequireAuthorization();
+
+            endpoints.MapGet("api/chat/users/{userId}", async (string userId, IUserService userService) =>
+            {
+                var user = await userService.GetUserByIdAsync(userId);
+                if (user == null)
+                    return Results.NotFound();
+
+                return Results.Ok(user);
+            }).RequireAuthorization();
+
+            endpoints.MapGet("api/chat/online-users", async (IUserService userService) =>
+            {
+                var users = await userService.GetOnlineUsersAsync();
                 return Results.Ok(users);
             }).RequireAuthorization();
 
             return endpoints;
         }
     }
+
 }

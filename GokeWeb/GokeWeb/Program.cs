@@ -1,7 +1,11 @@
+using Goke.Aspnet.Core;
 using Goke.Blazor.Components.Services;
 using Goke.Core.Authentication;
 using Goke.Core.Interfaces;
 using Goke.Core.Map;
+using Goke.Core.Options;
+using GokeSharedCore.ChatApp;
+using GokeSharedCore.MapApp;
 using GokeWeb.Client.Services;
 using GokeWeb.Components;
 using GokeWeb.Components.Account;
@@ -21,14 +25,22 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<IAccessTokenProvider, ServerAccessTokenProvider>();
-builder.Services.AddScoped<ICookieProvider, ServerCookieProvider>();
 
 
 builder.Services
            .AddBackendApi(builder.Configuration)
            .AddAuthentication(builder.Configuration)
            .AddAuthorization(builder.Configuration);
+
+//
+builder.Services.AddSingleton<ChatDbContext>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IUserService, UserApiClient>();
+builder.Services.Configure<HubOptions>(builder.Configuration.GetSection(HubOptions.SectionName));
+builder.Services.AddScoped<IAccessTokenProvider, ServerAccessTokenProvider>();
+builder.Services.AddScoped<ICookieProvider, ServerCookieProvider>();
+builder.Services.AddScoped<IHubClientFactory, HubClientFactory>();
+builder.Services.AddScoped<ChatHubClientService>();
 
 
 // Add other services

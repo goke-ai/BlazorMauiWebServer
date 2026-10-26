@@ -1,5 +1,5 @@
-﻿using Goke.Core.Models;
-using Goke.Core.Services;
+﻿using Goke.Core.Services;
+using GokeSharedCore.WeatherApp;
 
 namespace GokeWeb.Endpoints
 {

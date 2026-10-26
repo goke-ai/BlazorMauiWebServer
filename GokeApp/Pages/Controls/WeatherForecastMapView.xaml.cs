@@ -1,4 +1,4 @@
-using Goke.Core.Models;
+using GokeSharedCore.WeatherApp;
 using System.Text.Json;
 
 namespace GokeApp.Pages.Controls;

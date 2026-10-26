@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Goke.Core.Map;
 using Goke.Core.Services;
 using GokeApp.Services;
+using GokeSharedCore.MapApp;
 using System.Net.Http.Json;
 
 namespace GokeApp.PageModels

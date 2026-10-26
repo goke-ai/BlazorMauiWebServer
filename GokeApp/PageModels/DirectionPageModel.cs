@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Goke.Core.Map;
+using GokeSharedCore.MapApp;
 
 namespace GokeApp.PageModels;
 

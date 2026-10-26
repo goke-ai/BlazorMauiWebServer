@@ -1,0 +1,350 @@
+﻿@using System.Text.Json
+@using Goke.Aspnet.Core
+@using Goke.Core.Authentication
+@using Goke.Core.Chat
+@using Goke.Core.Map
+@using Goke.Core.Services
+@using GokeSharedCore.ChatApp
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Logging
+
+@attribute [Authorize]
+
+@inject ILogger<Chat> Logger
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAccessTokenProvider AccessTokenProvider
+@inject ICookieProvider CookieProvider
+@inject IHubClientFactory HubClientFactory
+@inject ChatHubClientService ChatHubClient
+@inject IMessageService MessageService
+@inject ILocationService LocationService
+
+@inject IUserService UserService
+
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+<h3>Welcome, @senderName!</h3>
+
+<ChatArea Users="FilteredUsers"
+          Messages="messages"
+          IsConnected="IsConnected"
+          OnSendMessage="Send"
+          OnSelectedUser="SelectUser" />
+
+
+@code {
+    private readonly SubscriptionBag subscriptions = new();
+    private bool disposed = false;
+
+    public bool IsConnected => ChatHubClient?.IsConnected == true;
+
+    List<User> users = new List<User>();
+    List<MessageDto> messages = new List<MessageDto>();
+    private User? _selectedUser;
+    private Dictionary<string, bool> Users = new Dictionary<string, bool>();
+
+    string? senderName;
+    string? currentUserId;
+
+    public List<User> FilteredUsers => users.Where(w => w.UserId != currentUserId).ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        var user = authState.User;
+
+        senderName = user.Identity?.Name;
+
+        users = await UserService.GetUsersAsync();
+
+        var currentUser = users.FirstOrDefault(u => u.FullName == senderName);
+        currentUserId = currentUser?.UserId;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+
+        await ChatHubClient.InitializeAsync();
+        RegisterHubConnectionMethodHandlers();
+
+        ChatHubClient.Reconnected += OnHubReconnected;
+    }
+
+    private void SelectUser(User user)
+    {
+        _selectedUser = user;
+    }
+
+    private Task OnHubReconnected()
+    {
+        return RefreshConversationAsync();
+    }
+
+    private async Task RefreshConversationAsync()
+    {
+        try
+        {
+            if (_selectedUser is null)
+            {
+                return;
+            }
+
+            messages = (await MessageService.GetConversationAsync(
+                _selectedUser.UserId))
+                .ToList();
+
+            var onlineUsers = await UserService.GetOnlineUsersAsync();
+
+            foreach (var user in users)
+            {
+                user.IsOnline = onlineUsers.Any(u => u.UserId == user.UserId);
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(
+                ex,
+                "Failed to refresh conversation after reconnect.");
+        }
+    }
+
+    void RegisterHubConnectionMethodHandlers()
+    {
+        if (ChatHubClient is null)
+        {
+            throw new InvalidOperationException("Hub connection is not initialized.");
+        };
+
+
+        subscriptions.Add(ChatHubClient.OnUserConnected(
+        userId =>
+        {
+            Users[userId] = true;
+            users.FirstOrDefault(u => u.UserId == userId)!.IsOnline = true;
+
+            messages.Add(new MessageDto
+                {
+                    SenderId = userId,
+                    ReceiverId = null,
+                    Content = $"User {userId} connected.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+            InvokeAsync(StateHasChanged);
+        }));
+
+        subscriptions.Add(ChatHubClient.OnUserDisconnected(
+            userId =>
+            {
+                Users[userId] = false;
+                users.FirstOrDefault(u => u.UserId == userId)!.IsOnline = false;
+                messages.Add(new MessageDto
+                    {
+                        SenderId = userId,
+                        ReceiverId = null,
+                        Content = $"User {userId} disconnected.",
+                        Type = MessageType.Text,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                InvokeAsync(StateHasChanged);
+            }));
+
+        subscriptions.Add(ChatHubClient.OnReceivePrivateMessage(
+            message =>
+            {
+                messages.Add(message);
+                InvokeAsync(StateHasChanged);
+            }));
+
+        subscriptions.Add(ChatHubClient.OnMessageSent(
+            message =>
+            {
+                messages.Add(message);
+                InvokeAsync(StateHasChanged);
+            }));
+
+
+        subscriptions.Add(ChatHubClient.OnReceiveGroupMessage(
+            message =>
+            {
+                messages.Add(message);
+                InvokeAsync(StateHasChanged);
+            }));
+
+        // startTyping and stopTyping events
+        subscriptions.Add(ChatHubClient.OnStartTyping(
+            userId =>
+            {
+                // Handle start typing event
+                messages.Add(new MessageDto
+                {
+                    SenderId = userId,
+                    ReceiverId = null,
+                    Content = $"User {userId} is typing...",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
+        subscriptions.Add(ChatHubClient.OnStopTyping(
+            userId =>
+            {
+                // Handle stop typing event
+                messages.Add(new MessageDto
+                {
+                    SenderId = userId,
+                    ReceiverId = null,
+                    Content = $"User {userId} stopped typing.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
+        // message read, delivered, and seen events
+        subscriptions.Add(ChatHubClient.OnMessageRead(
+            messageId =>
+            {
+                // Handle message read event
+                messages.Add(new MessageDto
+                {
+                    Id = Guid.Parse(messageId),
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Message {messageId} has been read.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
+        subscriptions.Add(ChatHubClient.OnMessageDelivered(
+            messageId =>
+            {
+                // Handle message delivered event
+                messages.Add(new MessageDto
+                {
+                    Id = Guid.Parse(messageId),
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Message {messageId} has been delivered.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
+        subscriptions.Add(ChatHubClient.OnMessageSeen(
+            messageId =>
+            {
+                // Handle message seen event
+                messages.Add(new MessageDto
+                {
+                    Id = Guid.Parse(messageId),
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Message {messageId} has been seen.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
+
+        // group join, leave, and remove events
+        subscriptions.Add(ChatHubClient.OnGroupJoined(
+            groupId =>
+            {
+                // Handle group joined event
+                messages.Add(new MessageDto
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"You have joined group {groupId}.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
+        subscriptions.Add(ChatHubClient.OnGroupLeft(
+            groupId =>
+            {
+                // Handle group left event
+                messages.Add(new MessageDto
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"You have left group {groupId}.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
+        subscriptions.Add(ChatHubClient.OnGroupRemoved(
+            groupId =>
+            {
+                // Handle group removed event
+                messages.Add(new MessageDto
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"Group {groupId} has been removed.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            })) ;
+    }
+
+
+    private async Task Send(SendMessageRequest request)
+    {
+        if (ChatHubClient is not null)
+        {
+            await ChatHubClient.SendPrivateMessageAsync(request);
+        }
+    }
+
+    public async Task ShareLocationAsync()
+    {
+        if (ChatHubClient is not null)
+        {
+            var location = await LocationService.GetCurrentLocationAsync();
+            SendMessageRequest request = new SendMessageRequest
+            {
+                ReceiverId = _selectedUser?.UserId,
+                Content = location != null ? JsonSerializer.Serialize(location) : "Location not available",
+                MessageType = MessageType.Location,
+            };
+            var result = await ChatHubClient.ShareLocationAsync(request);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        disposed = true;
+
+        ChatHubClient.Reconnected -= OnHubReconnected;
+
+        subscriptions.Dispose();
+
+        await Task.CompletedTask;
+    }
+
+}

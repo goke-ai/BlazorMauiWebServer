@@ -1,4 +1,4 @@
-using Goke.Core.Map;
+using GokeSharedCore.MapApp;
 using System.Text.Json;
 
 namespace GokeApp.Pages.Controls;

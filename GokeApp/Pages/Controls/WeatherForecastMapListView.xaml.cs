@@ -1,5 +1,5 @@
-using Goke.Core.Map;
-using Goke.Core.Models;
+using GokeSharedCore.MapApp;
+using GokeSharedCore.WeatherApp;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls.Maps;
 using Microsoft.Maui.Maps;
