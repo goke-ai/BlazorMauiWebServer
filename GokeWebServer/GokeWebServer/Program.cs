@@ -103,9 +103,12 @@ builder.Services.AddScoped<AdminStatusMessageStore>();
 builder.Services.AddScoped<ILocationService, BrowserLocationService>();
 builder.Services.AddSingleton<TrackerEngine>();
 
-builder.Services.AddTransient<IUserConnectionManager, UserConnectionManager>();
 builder.Services.AddSingleton<ChatDbContext>();
+builder.Services.AddTransient<IUserConnectionManager, UserConnectionManager>();
+builder.Services.AddTransient<IUserPresenceService, UserPresenceService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IGroupAuthorizationService, GroupAuthorizationService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddTransient<IUserService,ChatUserService>();
 builder.Services.Configure<HubOptions>(builder.Configuration.GetSection(HubOptions.SectionName));
 builder.Services.AddScoped<IAccessTokenProvider, ServerAccessTokenProvider>();

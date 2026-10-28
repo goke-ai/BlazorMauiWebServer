@@ -2,25 +2,14 @@
 
 namespace GokeSharedCore.ChatApp
 {
-    public interface IUserPresenceService
-    {
-        Task SetOnlineAsync(string userId);
 
-        Task SetOfflineAsync(string userId);
-
-        Task<UserPresenceDto?> GetAsync(string userId);
-
-        // getonlineusers
-        Task<List<string>> GetOnlineUsersAsync();
-    }
-
-    public class UserPresenceService(IUserConnectionStore connectionStore) : IUserPresenceService
+    public class UserPresenceService(IUserConnectionManager connectionManager) : IUserPresenceService
     {
         private readonly ConcurrentDictionary<string, UserPresence> _userPresences = new();
 
         public async Task SetOnlineAsync(string userId)
         {
-            var isOnline = await connectionStore.IsOnlineAsync(userId);
+            var isOnline = await connectionManager.IsOnlineAsync(userId);
             if (isOnline)
             {
                 var presence = new UserPresence
@@ -36,7 +25,7 @@ namespace GokeSharedCore.ChatApp
         }
         public async Task SetOfflineAsync(string userId)
         {
-            var isOnline = await connectionStore.IsOnlineAsync(userId);
+            var isOnline = await connectionManager.IsOnlineAsync(userId);
             if (!isOnline)
             {
                 var presence = new UserPresence
@@ -50,10 +39,10 @@ namespace GokeSharedCore.ChatApp
                 _userPresences[userId] = presence;
             }
         }
-        public Task<UserPresenceDto?> GetAsync(string userId)
+        public Task<UserPresence?> GetAsync(string userId)
         {
             _userPresences.TryGetValue(userId, out var presence);
-            return Task.FromResult(UserPresenceDto.FromEntity(presence));
+            return Task.FromResult(presence);
         }
 
         public Task<List<string>> GetOnlineUsersAsync()

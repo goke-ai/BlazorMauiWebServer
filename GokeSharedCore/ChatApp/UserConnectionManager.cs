@@ -36,11 +36,32 @@
             return Task.CompletedTask;
         }
 
+        public Task<IReadOnlyCollection<string>> GetConnectionsAsync(string userId)
+        {
+            lock (_connections)
+            {
+                if (_connections.TryGetValue(userId, out HashSet<string>? value))
+                {
+                    return Task.FromResult((IReadOnlyCollection<string>)value.ToList());
+                }
+            }
+            return Task.FromResult((IReadOnlyCollection<string>)Array.Empty<string>());
+        }
+
+
         public bool IsConnected(string userId)
         {
             lock (_connections)
             {
                 return _connections.TryGetValue(userId, out HashSet<string>? value) && value.Count > 0;
+            }
+        }
+
+        public Task<bool> IsOnlineAsync(string userId)
+        {
+            lock (_connections)
+            {
+                return Task.FromResult(_connections.TryGetValue(userId, out HashSet<string>? value) && value.Count > 0);
             }
         }
 
@@ -86,5 +107,6 @@
             }
             return Task.CompletedTask;
         }
+
     }
 }

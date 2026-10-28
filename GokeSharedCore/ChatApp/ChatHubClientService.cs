@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace GokeSharedCore.ChatApp
 {
+
     public class ChatHubClientService(IHubClientFactory factory) : IAsyncDisposable
     {
         private HubClientService? hub;
@@ -30,7 +31,7 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "UserConnected",
+                HubMethods.On.UserConnected,
                 handler);
         }
 
@@ -38,7 +39,15 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "UserDisconnected",
+                HubMethods.On.UserDisconnected,
+                handler);
+        }
+
+        public IDisposable OnConnectionEstablished(
+                    Action<string> handler)
+        {
+            return hub!.On(
+                HubMethods.On.ConnectionEstablished,
                 handler);
         }
 
@@ -46,7 +55,7 @@ namespace GokeSharedCore.ChatApp
             Action<MessageDto> handler)
         {
             return hub!.On(
-                "ReceivePrivateMessage",
+                HubMethods.On.ReceivePrivateMessage,
                 handler);
         }
 
@@ -55,7 +64,7 @@ namespace GokeSharedCore.ChatApp
             Action<MessageDto> handler)
         {
             return hub!.On(
-                "MessageSent",
+                HubMethods.On.MessageSent,
                 handler);
         }
 
@@ -63,7 +72,7 @@ namespace GokeSharedCore.ChatApp
             Action<MessageDto> handler)
         {
             return hub!.On(
-                "ReceiveGroupMessage",
+                HubMethods.On.ReceiveGroupMessage,
                 handler);
         }
 
@@ -71,7 +80,7 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "StartTyping",
+                HubMethods.On.StartTyping,
                 handler);
         }
 
@@ -79,7 +88,7 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "StopTyping",
+                HubMethods.On.StopTyping,
                 handler);
         }
 
@@ -88,7 +97,7 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "MessageRead",
+                HubMethods.On.MessageRead,
                 handler);
         }
 
@@ -96,23 +105,7 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "MessageDelivered",
-                handler);
-        }
-
-        public IDisposable OnMessageSeen(
-            Action<string> handler)
-        {
-            return hub!.On(
-                "MessageSeen",
-                handler);
-        }
-
-        public IDisposable OnMessageDeleted(
-            Action<string> handler)
-        {
-            return hub!.On(
-                "MessageDeleted",
+                HubMethods.On.MessageDelivered,
                 handler);
         }
 
@@ -120,7 +113,7 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "GroupJoined",
+                HubMethods.On.GroupJoined,
                 handler);
         }
 
@@ -128,7 +121,7 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "GroupLeft",
+                HubMethods.On.GroupLeft,
                 handler);
         }
 
@@ -136,33 +129,52 @@ namespace GokeSharedCore.ChatApp
             Action<string> handler)
         {
             return hub!.On(
-                "GroupRemoved",
+                HubMethods.On.GroupRemoved,
                 handler);
         }
 
+        //presenceupdate
+        public IDisposable OnPresenceUpdate(
+            Action<UserPresence> handler)
+        {
+            return hub!.On(
+                HubMethods.On.PresenceUpdate,
+                handler);
+        }
+
+
+        // send methods
         public Task SendPrivateMessageAsync(
             SendMessageRequest request)
         {
             return hub!.SendAsync(
-                "SendPrivateMessage",
+                HubMethods.Send.SendPrivateMessage,
                 request);
         }
 
+
+        // invoke methods
         public Task<bool> ShareLocationAsync(
             SendMessageRequest request)
         {
             return hub!.InvokeAsync<bool>(
-                "ShareLocation",
+                HubMethods.Invoke.ShareLocation,
                 request);
         }
 
-        public Task<List<UiChatUser>> GetConnectedUsersAsync(
-            SendMessageRequest request)
+        public Task<UserPresence?> GetPresenceAsync(string userId)
         {
-            return hub!.InvokeAsync<List<UiChatUser>>(
-                "GetConnectedUsers",
-                request);
+            return hub!.InvokeAsync<UserPresence?>(
+                HubMethods.Invoke.GetPresence,
+                userId);
         }
+
+        public Task<List<string>> GetOnlineUsersAsync()
+        {
+            return hub!.InvokeAsync<List<string>>(
+                HubMethods.Invoke.GetOnlineUsers);
+        }
+
 
         public async ValueTask DisposeAsync()
         {

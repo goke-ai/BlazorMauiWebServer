@@ -24,7 +24,7 @@
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
 
-<h3>Welcome, @senderName!</h3>
+<h3>Welcome, @senderName! Your connection ID is @_connectionId</h3>
 
 <ChatArea Users="FilteredUsers"
           Messages="messages"
@@ -46,6 +46,7 @@
 
     string? senderName;
     string? currentUserId;
+    string? _connectionId;
 
     public List<UiChatUser> FilteredUsers => users.Where(w => w.UserId != currentUserId).ToList();
 
@@ -156,6 +157,29 @@
                 InvokeAsync(StateHasChanged);
             }));
 
+        subscriptions.Add(ChatHubClient.OnConnectionEstablished(
+            connectionId =>
+            {
+                _connectionId = connectionId;
+
+                if (currentUserId is null)
+                {
+                    return;
+                }
+
+                Users[currentUserId] = true;
+                users.FirstOrDefault(u => u.UserId == currentUserId)!.IsOnline = true;
+                messages.Add(new MessageDto
+                {
+                    SenderId = currentUserId,
+                    ReceiverId = null,
+                    Content = $"User {currentUserId} with connection ID {connectionId} established a connection.",
+                    Type = MessageType.Text,
+                    CreatedAt = DateTime.UtcNow
+                });
+                InvokeAsync(StateHasChanged);
+            }));
+
         subscriptions.Add(ChatHubClient.OnReceivePrivateMessage(
             message =>
             {
@@ -217,7 +241,7 @@
                 messages.Add(new MessageDto
                 {
                     Id = Guid.Parse(messageId),
-                    SenderId = currentUserId,
+                    SenderId = currentUserId!,
                     ReceiverId = null,
                     Content = $"Message {messageId} has been read.",
                     Type = MessageType.Text,
@@ -233,25 +257,9 @@
                 messages.Add(new MessageDto
                 {
                     Id = Guid.Parse(messageId),
-                    SenderId = currentUserId,
+                    SenderId = currentUserId!,
                     ReceiverId = null,
                     Content = $"Message {messageId} has been delivered.",
-                    Type = MessageType.Text,
-                    CreatedAt = DateTime.UtcNow
-                });
-                InvokeAsync(StateHasChanged);
-            }));
-
-        subscriptions.Add(ChatHubClient.OnMessageSeen(
-            messageId =>
-            {
-                // Handle message seen event
-                messages.Add(new MessageDto
-                {
-                    Id = Guid.Parse(messageId),
-                    SenderId = currentUserId,
-                    ReceiverId = null,
-                    Content = $"Message {messageId} has been seen.",
                     Type = MessageType.Text,
                     CreatedAt = DateTime.UtcNow
                 });
@@ -266,7 +274,7 @@
                 // Handle group joined event
                 messages.Add(new MessageDto
                 {
-                    SenderId = currentUserId,
+                    SenderId = currentUserId!,
                     ReceiverId = null,
                     Content = $"You have joined group {groupId}.",
                     Type = MessageType.Text,
@@ -281,7 +289,7 @@
                 // Handle group left event
                 messages.Add(new MessageDto
                 {
-                    SenderId = currentUserId,
+                    SenderId = currentUserId!,
                     ReceiverId = null,
                     Content = $"You have left group {groupId}.",
                     Type = MessageType.Text,
@@ -296,7 +304,7 @@
                 // Handle group removed event
                 messages.Add(new MessageDto
                 {
-                    SenderId = currentUserId,
+                    SenderId = currentUserId!,
                     ReceiverId = null,
                     Content = $"Group {groupId} has been removed.",
                     Type = MessageType.Text,

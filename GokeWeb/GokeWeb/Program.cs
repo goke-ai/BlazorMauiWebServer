@@ -34,8 +34,10 @@ builder.Services
 
 //
 builder.Services.AddSingleton<ChatDbContext>();
+builder.Services.AddTransient<IUserConnectionManager, UserConnectionManager>();
+builder.Services.AddTransient<IUserPresenceService, UserPresenceService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<IUserService, UserApiClient>();
+builder.Services.AddTransient<IUserService, ChatUserApiClient>();
 builder.Services.Configure<HubOptions>(builder.Configuration.GetSection(HubOptions.SectionName));
 builder.Services.AddScoped<IAccessTokenProvider, ServerAccessTokenProvider>();
 builder.Services.AddScoped<ICookieProvider, ServerCookieProvider>();

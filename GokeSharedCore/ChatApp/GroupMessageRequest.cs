@@ -6,5 +6,4 @@
         public required string Content { get; set; }
     }
 
-
 }
