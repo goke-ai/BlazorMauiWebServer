@@ -67,6 +67,15 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AndroidResource Remove="Services\Auth\**" />
+      <Compile Remove="Services\Auth\**" />
+      <Content Remove="Services\Auth\**" />
+      <EmbeddedResource Remove="Services\Auth\**" />
+      <MauiXaml Remove="Services\Auth\**" />
+      <None Remove="Services\Auth\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Content Remove="appsettings.json" />
     </ItemGroup>
 
@@ -86,10 +95,6 @@
       <ProjectReference Include="..\..\GokeCore\Goke.Maui.Core\Goke.Maui.Core.csproj" />
       <ProjectReference Include="..\GokeSharedCore\GokeSharedCore.csproj" />
       <ProjectReference Include="..\GokeShared\GokeShared.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Services\Auth\" />
     </ItemGroup>
 
 </Project>

@@ -106,7 +106,7 @@ builder.Services.AddSingleton<TrackerEngine>();
 builder.Services.AddTransient<IUserConnectionManager, UserConnectionManager>();
 builder.Services.AddSingleton<ChatDbContext>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddTransient<IUserService,UserService>();
+builder.Services.AddTransient<IUserService,ChatUserService>();
 builder.Services.Configure<HubOptions>(builder.Configuration.GetSection(HubOptions.SectionName));
 builder.Services.AddScoped<IAccessTokenProvider, ServerAccessTokenProvider>();
 builder.Services.AddScoped<ICookieProvider, ServerCookieProvider>();

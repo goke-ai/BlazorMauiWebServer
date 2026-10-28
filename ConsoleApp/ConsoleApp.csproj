@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\GokeCore\Goke.Core\Goke.Core.csproj" />
+    <ProjectReference Include="..\GokeSharedCore\GokeSharedCore.csproj" />
   </ItemGroup>
 
 </Project>

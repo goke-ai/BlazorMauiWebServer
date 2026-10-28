@@ -1,12 +1,10 @@
-﻿using Goke.Core.Chat;
-
-namespace GokeSharedCore.ChatApp
+﻿namespace GokeSharedCore.ChatApp
 {
     public interface IUserService
     {
-        Task<List<User>> GetUsersAsync();
-        Task<List<User>> GetOnlineUsersAsync();
-        Task<User?> GetUserByIdAsync(string userId);
+        Task<List<UiChatUser>> GetUsersAsync();
+        Task<List<UiChatUser>> GetOnlineUsersAsync();
+        Task<UiChatUser?> GetUserByIdAsync(string userId);
 
     }
 }

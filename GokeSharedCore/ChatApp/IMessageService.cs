@@ -1,6 +1,4 @@
-﻿using Goke.Core.Chat;
-
-namespace GokeSharedCore.ChatApp
+﻿namespace GokeSharedCore.ChatApp
 {
     public interface IMessageService
     {

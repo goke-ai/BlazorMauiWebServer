@@ -1,5 +1,4 @@
 using Goke.Core.Authentication;
-using Goke.Core.Chat;
 using Goke.Core.Services;
 using GokeSharedCore.ChatApp;
 using System.Net.Http.Headers;
@@ -13,7 +12,7 @@ namespace GokeWeb.Client.Services
     {
         private readonly HttpClient httpClient = httpClientFactory.CreateClient(BackendApiEndpoints.ClientName);
 
-        public async Task<List<User>> GetUsersAsync()
+        public async Task<List<UiChatUser>> GetUsersAsync()
         {
             try
             {
@@ -29,7 +28,7 @@ namespace GokeWeb.Client.Services
                 using var response = await httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                return await response.Content.ReadFromJsonAsync<List<User>>() ?? [];
+                return await response.Content.ReadFromJsonAsync<List<UiChatUser>>() ?? [];
             }
             catch
             {
@@ -37,7 +36,7 @@ namespace GokeWeb.Client.Services
             }
         }
 
-        public async Task<User?> GetUserByIdAsync(string userId)
+        public async Task<UiChatUser?> GetUserByIdAsync(string userId)
         {
             var accessToken = await accessTokenProvider.GetAccessTokenAsync();
 
@@ -52,10 +51,10 @@ namespace GokeWeb.Client.Services
 
             response.EnsureSuccessStatusCode();
 
-            return await response.Content.ReadFromJsonAsync<User>();
+            return await response.Content.ReadFromJsonAsync<UiChatUser>();
         }
 
-        public async Task<List<User>> GetOnlineUsersAsync()
+        public async Task<List<UiChatUser>> GetOnlineUsersAsync()
         {
             try
             {
@@ -71,7 +70,7 @@ namespace GokeWeb.Client.Services
                 using var response = await httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                return await response.Content.ReadFromJsonAsync<List<User>>() ?? [];
+                return await response.Content.ReadFromJsonAsync<List<UiChatUser>>() ?? [];
             }
             catch
             {

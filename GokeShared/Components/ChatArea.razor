@@ -1,4 +1,4 @@
-﻿@using Goke.Core.Chat
+﻿@using GokeSharedCore.ChatApp
 
 <div style="display:flex; flex-direction:column; justify-content: space-between; align-items:stretch; height: 80vh; ">
     <div style="overflow-y:auto;">
@@ -9,7 +9,7 @@
                     <button type="button"
                             class="nav-link @(user.UserId == _selectedUser?.UserId ? "active" : null)"
                             @onclick="() => SelectUser(user)">
-                        @user.FullName @(user.IsOnline ? "(Online)" : "(Offline)")
+                        @user.DisplayName @(user.IsOnline ? "(Online)" : "(Offline)")
                     </button>
                 </li>
             }
@@ -19,7 +19,7 @@
         {
             <div class="tab-content">
                 <div class="tab-pane fade show active">
-                    <h4 class="my-2">Chat with @_selectedUser.FullName</h4>
+                    <h4 class="my-2">Chat with @_selectedUser.DisplayName</h4>
                     <ul id="messagesList">
                         @foreach (var message in Messages
                                                     .Where(w => w.SenderId == _selectedUser.UserId 
@@ -50,7 +50,7 @@
 
 @code {
     [Parameter]
-    public List<User> Users { get; set; } = new List<User>();  
+    public List<UiChatUser> Users { get; set; } = new List<UiChatUser>();  
     [Parameter]
     public List<MessageDto> Messages { get; set; } = new List<MessageDto>();
     [Parameter]
@@ -58,14 +58,13 @@
     [Parameter]
     public EventCallback<SendMessageRequest> OnSendMessage { get; set; }
     [Parameter]
-    public EventCallback<User> OnSelectedUser { get; set; }
+    public EventCallback<UiChatUser> OnSelectedUser { get; set; }
 
     private string? messageInput;
 
-    string? senderName;
-    private User? _selectedUser;
+    private UiChatUser? _selectedUser;
 
-    private void SelectUser(User user)
+    private void SelectUser(UiChatUser user)
     {
         _selectedUser = user;
         OnSelectedUser.InvokeAsync(user);

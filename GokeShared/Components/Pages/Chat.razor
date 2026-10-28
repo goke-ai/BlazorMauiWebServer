@@ -1,7 +1,6 @@
 ﻿@using System.Text.Json
 @using Goke.Aspnet.Core
 @using Goke.Core.Authentication
-@using Goke.Core.Chat
 @using Goke.Core.Map
 @using Goke.Core.Services
 @using GokeSharedCore.ChatApp
@@ -40,15 +39,15 @@
 
     public bool IsConnected => ChatHubClient?.IsConnected == true;
 
-    List<User> users = new List<User>();
+    List<UiChatUser> users = new List<UiChatUser>();
     List<MessageDto> messages = new List<MessageDto>();
-    private User? _selectedUser;
+    private UiChatUser? _selectedUser;
     private Dictionary<string, bool> Users = new Dictionary<string, bool>();
 
     string? senderName;
     string? currentUserId;
 
-    public List<User> FilteredUsers => users.Where(w => w.UserId != currentUserId).ToList();
+    public List<UiChatUser> FilteredUsers => users.Where(w => w.UserId != currentUserId).ToList();
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,7 +59,7 @@
 
         users = await UserService.GetUsersAsync();
 
-        var currentUser = users.FirstOrDefault(u => u.FullName == senderName);
+        var currentUser = users.FirstOrDefault(u => u.DisplayName == senderName);
         currentUserId = currentUser?.UserId;
     }
 
@@ -76,7 +75,7 @@
         ChatHubClient.Reconnected += OnHubReconnected;
     }
 
-    private void SelectUser(User user)
+    private void SelectUser(UiChatUser user)
     {
         _selectedUser = user;
     }

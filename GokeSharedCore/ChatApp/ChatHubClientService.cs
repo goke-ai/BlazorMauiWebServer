@@ -1,5 +1,4 @@
 ﻿using Goke.Aspnet.Core;
-using Goke.Core.Chat;
 using Goke.Core.Options;
 using Microsoft.Extensions.Options;
 
@@ -157,10 +156,10 @@ namespace GokeSharedCore.ChatApp
                 request);
         }
 
-        public Task<List<User>> GetConnectedUsersAsync(
+        public Task<List<UiChatUser>> GetConnectedUsersAsync(
             SendMessageRequest request)
         {
-            return hub!.InvokeAsync<List<User>>(
+            return hub!.InvokeAsync<List<UiChatUser>>(
                 "GetConnectedUsers",
                 request);
         }

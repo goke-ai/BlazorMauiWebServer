@@ -1,5 +1,4 @@
-﻿using Goke.Core.Chat;
-using GokeSharedCore.ChatApp;
+﻿using GokeSharedCore.ChatApp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
